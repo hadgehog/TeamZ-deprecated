@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿using GameSaving;
+using GameSaving.States;
+using UnityEngine;
+using UniRx;
+using GameSaving.MonoBehaviours;
+using System.Linq;
+using System;
 
 public class DirectionalCamera : MonoBehaviour
 {
@@ -6,9 +12,24 @@ public class DirectionalCamera : MonoBehaviour
     public Transform target;
 
     private Vector3 velocity = Vector3.zero;
+    private Guid playerId;
+    private GameController<GameState> gameController;
+
+    private void Start()
+    {
+        this.playerId = this.target.GetComponent<PrefabMonoBehaviour>().Id;
+
+        this.gameController = GameObject.FindObjectOfType<Main>().GameController;
+        this.gameController.Loaded.Subscribe(_ =>
+        {
+            var player = GameObject.FindObjectsOfType<PrefabMonoBehaviour>().First(o => o.Id == this.playerId);
+            this.target = player.gameObject.transform;
+        });
+    }
+
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
         if (this.target)
         {

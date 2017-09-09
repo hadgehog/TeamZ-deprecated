@@ -5,7 +5,7 @@ namespace GameSaving.MonoBehaviours
 {
     public class PrefabMonoBehaviour : MonoBehaviourWithState<PrefabState>
     {
-        public Guid Id;
+        public Guid Id = Guid.NewGuid();
 
         public string Path;
 
