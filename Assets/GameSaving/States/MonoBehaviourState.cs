@@ -4,10 +4,13 @@ namespace GameSaving.States
 {
     public enum MonoBehaviourStateKind
     {
-        Prefab
+        Prefab,
+        Camera
     }
 
-    [Union(typeof(PrefabState))]
+    [Union(
+        typeof(PrefabState), 
+        typeof(CameraState))]
     public abstract class MonoBehaviourState
     {
         [UnionKey]

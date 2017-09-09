@@ -38,6 +38,7 @@ namespace ZeroFormatter
             ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::GameSaving.States.MonoBehaviourStateKind?>.Register(new NullableEqualityComparer<global::GameSaving.States.MonoBehaviourStateKind>());
             
             // Objects
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.CameraState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.CameraStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.GameObjectState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.GameObjectStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.GameState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.GameStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.PrefabState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.PrefabStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
@@ -82,6 +83,131 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
     using global::ZeroFormatter.Formatters;
     using global::ZeroFormatter.Internal;
     using global::ZeroFormatter.Segments;
+
+    public class CameraStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::GameSaving.States.CameraState>
+        where TTypeResolver : ITypeResolver, new()
+    {
+        public override int? GetLength()
+        {
+            return null;
+        }
+
+        public override int Serialize(ref byte[] bytes, int offset, global::GameSaving.States.CameraState value)
+        {
+            var segment = value as IZeroFormatterSegment;
+            if (segment != null)
+            {
+                return segment.Serialize(ref bytes, offset);
+            }
+            else if (value == null)
+            {
+                BinaryUtil.WriteInt32(ref bytes, offset, -1);
+                return 4;
+            }
+            else
+            {
+                var startOffset = offset;
+
+                offset += (8 + 4 * (1 + 1));
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Guid>(ref bytes, startOffset, offset, 0, value.PlayerId);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Vector3>(ref bytes, startOffset, offset, 1, value.Position);
+
+                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 1);
+            }
+        }
+
+        public override global::GameSaving.States.CameraState Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        {
+            byteSize = BinaryUtil.ReadInt32(ref bytes, offset);
+            if (byteSize == -1)
+            {
+                byteSize = 4;
+                return null;
+            }
+            return new CameraStateObjectSegment<TTypeResolver>(tracker, new ArraySegment<byte>(bytes, offset, byteSize));
+        }
+    }
+
+    public class CameraStateObjectSegment<TTypeResolver> : global::GameSaving.States.CameraState, IZeroFormatterSegment
+        where TTypeResolver : ITypeResolver, new()
+    {
+        static readonly int[] __elementSizes = new int[]{ 16, 0 };
+
+        readonly ArraySegment<byte> __originalBytes;
+        readonly global::ZeroFormatter.DirtyTracker __tracker;
+        readonly int __binaryLastIndex;
+        readonly byte[] __extraFixedBytes;
+
+        CacheSegment<TTypeResolver, global::UnityEngine.Vector3> _Position;
+
+        // 0
+        public override global::System.Guid PlayerId
+        {
+            get
+            {
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, __tracker);
+            }
+            set
+            {
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+            }
+        }
+
+        // 1
+        public override global::UnityEngine.Vector3 Position
+        {
+            get
+            {
+                return _Position.Value;
+            }
+            set
+            {
+                _Position.Value = value;
+            }
+        }
+
+
+        public CameraStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
+        {
+            var __array = originalBytes.Array;
+
+            this.__originalBytes = originalBytes;
+            this.__tracker = dirtyTracker = dirtyTracker.CreateChild();
+            this.__binaryLastIndex = BinaryUtil.ReadInt32(ref __array, originalBytes.Offset + 4);
+
+            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 1, __elementSizes);
+
+            _Position = new CacheSegment<TTypeResolver, global::UnityEngine.Vector3>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 1, __binaryLastIndex, __tracker));
+        }
+
+        public bool CanDirectCopy()
+        {
+            return !__tracker.IsDirty;
+        }
+
+        public ArraySegment<byte> GetBufferReference()
+        {
+            return __originalBytes;
+        }
+
+        public int Serialize(ref byte[] targetBytes, int offset)
+        {
+            if (__extraFixedBytes != null || __tracker.IsDirty)
+            {
+                var startOffset = offset;
+                offset += (8 + 4 * (1 + 1));
+
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, global::System.Guid>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Vector3>(ref targetBytes, startOffset, offset, 1, ref _Position);
+
+                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 1);
+            }
+            else
+            {
+                return ObjectSegmentHelper.DirectCopyAll(__originalBytes, ref targetBytes, offset);
+            }
+        }
+    }
 
     public class GameObjectStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::GameSaving.States.GameObjectState>
         where TTypeResolver : ITypeResolver, new()
@@ -701,8 +827,9 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         public MonoBehaviourStateFormatter()
         {
             comparer = global::ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::GameSaving.States.MonoBehaviourStateKind>.Default;
-            unionKeys = new global::GameSaving.States.MonoBehaviourStateKind[1];
+            unionKeys = new global::GameSaving.States.MonoBehaviourStateKind[2];
             unionKeys[0] = new global::GameSaving.States.PrefabState().Type;
+            unionKeys[1] = new global::GameSaving.States.CameraState().Type;
             
         }
 
@@ -726,6 +853,10 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             if (value is global::GameSaving.States.PrefabState)
             {
                 offset += Formatter<TTypeResolver, global::GameSaving.States.PrefabState>.Default.Serialize(ref bytes, offset, (global::GameSaving.States.PrefabState)value);
+            }
+            else if (value is global::GameSaving.States.CameraState)
+            {
+                offset += Formatter<TTypeResolver, global::GameSaving.States.CameraState>.Default.Serialize(ref bytes, offset, (global::GameSaving.States.CameraState)value);
             }
             
             else
@@ -755,6 +886,10 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             if (comparer.Equals(unionKey, unionKeys[0]))
             {
                 result = Formatter<TTypeResolver, global::GameSaving.States.PrefabState>.Default.Deserialize(ref bytes, offset, tracker, out size);
+            }
+            else if (comparer.Equals(unionKey, unionKeys[1]))
+            {
+                result = Formatter<TTypeResolver, global::GameSaving.States.CameraState>.Default.Deserialize(ref bytes, offset, tracker, out size);
             }
             else
             {

@@ -46,7 +46,7 @@ namespace GameSaving
             }
         }
 
-        public async void SaveAsync(TGameState game, string slotName)
+        public async Task SaveAsync(TGameState game, string slotName)
         {
             var bytes = ZeroFormatterSerializer.Serialize(game);
             using (var writer = new FileStream(this.path + slotName + ".save", FileMode.Create))

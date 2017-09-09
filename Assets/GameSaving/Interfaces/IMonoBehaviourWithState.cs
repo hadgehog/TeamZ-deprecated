@@ -10,6 +10,8 @@ namespace GameSaving.Interfaces
         MonoBehaviourState GetState();
 
         void SetState(MonoBehaviourState state);
+
+        void Loaded();
     }
 
     public interface IMonoBehaviourWithState<TState> : IMonoBehaviourWithState

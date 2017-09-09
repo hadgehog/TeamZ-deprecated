@@ -15,6 +15,7 @@ public class Main : MonoBehaviour
     private void Start()
     {
         this.GameController = new GameController<GameState>();
+        //this.GameController.Boostrap();
     }
 
     public void Update()

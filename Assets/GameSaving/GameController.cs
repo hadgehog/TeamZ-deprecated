@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using GameSaving.Interfaces;
 using GameSaving.MonoBehaviours;
 using GameSaving.States;
@@ -33,7 +34,13 @@ namespace GameSaving
             this.loaded = new Subject<Unit>();
         }
 
-        public async void LoadAsync(string slotName)
+        public async void Boostrap()
+        {
+            await this.SaveAsync("temp");
+            await this.LoadAsync("temp");
+        }
+
+        public async Task LoadAsync(string slotName)
         {
             var gameState = await this.Storage.LoadAsync(slotName);
 
@@ -46,7 +53,7 @@ namespace GameSaving
             Time.timeScale = 1;
         }
 
-        public void SaveAsync(string slotName)
+        public async Task SaveAsync(string slotName)
         {
             var gameState = new TGameState();
 
@@ -55,7 +62,7 @@ namespace GameSaving
                 Select(o => new GameObjectState().SetGameObject(o.gameObject)).ToList();
             Time.timeScale = 1;
 
-            this.Storage.SaveAsync(gameState, slotName);
+            await this.Storage.SaveAsync(gameState, slotName);
         }
 
         private void CleanupLevel()
@@ -69,6 +76,7 @@ namespace GameSaving
         private void InstantiateGameState(TGameState gameState)
         {
             var cache = new Dictionary<string, GameObject>();
+            var monoBehaviours = new LinkedList<IMonoBehaviourWithState>();
             foreach (var gameObjectState in gameState.GameObjectsStates)
             {
                 var prefabInformation = gameObjectState.MonoBehaviousStates.OfType<PrefabState>().First();
@@ -84,7 +92,14 @@ namespace GameSaving
                     var stateType = monoBehaviour.GetStateType();
                     var monoBehaviourState = gameObjectState.MonoBehaviousStates.First(o => stateType.IsInstanceOfType(o));
                     monoBehaviour.SetState(monoBehaviourState);
+
+                    monoBehaviours.AddLast(monoBehaviour);
                 }
+            }
+
+            foreach (var monoBehaviour in monoBehaviours)
+            {
+                monoBehaviour.Loaded();
             }
 
             this.loaded.OnNext(Unit.Default);

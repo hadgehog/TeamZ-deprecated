@@ -26,5 +26,10 @@ namespace GameSaving.MonoBehaviours
         }
 
         public abstract void SetState(TState state);
+
+        public virtual void Loaded()
+        {
+
+        }
     }
 }
