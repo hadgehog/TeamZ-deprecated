@@ -18,16 +18,16 @@ public class Main : MonoBehaviour
         //this.GameController.Boostrap();
     }
 
-    public void Update()
+    public async void Update()
     {
         if (Input.GetKeyUp(KeyCode.F5))
         {
-            this.GameController.SaveAsync("test");
+            await this.GameController.SaveAsync("test");
         }
 
         if (Input.GetKeyUp(KeyCode.F9))
         {
-            this.GameController.LoadAsync("test");
+            await this.GameController.LoadAsync("test");
         }
     }
 }

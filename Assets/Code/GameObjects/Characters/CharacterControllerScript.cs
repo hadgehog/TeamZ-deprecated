@@ -100,27 +100,22 @@ public class CharacterControllerScript : MonoBehaviour
 
     protected virtual void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.name == "first_aid_pack")
+        if (col.gameObject.GetComponent<FirstAidKit>() != null)
         {
-            this.Character.TakeHealth(80.0f);
-
-            Debug.Log("First aid kit is taken! +80 health. now you have " + this.Character.Health + " health");
+            // TODO: add effect of flying aid kit to health bar on HUD            
             Destroy(col.gameObject);
         }
 
-        if (col.gameObject.name == "armor")
+        if (col.gameObject.GetComponent<ArmorKit>() != null)
         {
-            this.Character.TakeArmor(50.0f);
-
-            Debug.Log("Armor is taken! +50 armor. now you have " + this.Character.Armor + " armor");
+            // TODO: add effect of flying armor kit to armor bar on HUD            
             Destroy(col.gameObject);
         }
 
-        if (col.gameObject.name == "DieCollider")
+        if (col.gameObject.GetComponent<AbyssCollider>() != null)
         {
-            this.Character.TakeDamage(500.0f);
-
-            Debug.Log("Damage is taken! -500 damage. now you have " + this.Character.Armor + " armor and " + this.Character.Health + " health");
+            // TODO: game over. show menu
+            SceneManager.LoadScene("Laboratory");
         }
     }
 

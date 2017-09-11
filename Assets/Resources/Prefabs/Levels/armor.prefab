@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4507357812282182}
   - component: {fileID: 212001515644604840}
   - component: {fileID: 61676484517078798}
+  - component: {fileID: 114024561237552088}
   m_Layer: 0
   m_Name: armor
   m_TagString: Foreground
@@ -66,6 +67,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.4, y: 0.95}
   m_EdgeRadius: 0
+--- !u!114 &114024561237552088
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1397972212539876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67c47a2cbf419c441817af372d651cab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ArmorKitCapacity: 50
 --- !u!212 &212001515644604840
 SpriteRenderer:
   m_ObjectHideFlags: 1

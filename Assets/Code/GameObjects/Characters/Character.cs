@@ -3,13 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class Character : MonoBehaviour
 {
-    public float Health;
-    public float Armor;
-    public float Damage;
+    public int Health;
+    public int Armor;
+    public int Damage;
 
-    public void TakeDamage(float value)
+    public void TakeDamage(int value)
     {
-        float blockedDamage = this.Armor - value;
+        int blockedDamage = this.Armor - value;
 
         if (blockedDamage >= 0)
         {
@@ -26,26 +26,25 @@ public class Character : MonoBehaviour
             this.Health = 0;
 
             Debug.Log("You are die!");
-            SceneManager.LoadScene("Laboratory");
         }
     }
 
-    public float MakeDamage()
+    public int MakeDamage()
     {
         return this.Damage;
     }
 
-    public void TakeHealth(float value)
+    public void TakeHealth(int value)
     {
         this.Health += value;
 
         if (this.Health > 100)
         {
-            this.Health = 100.0f;
+            this.Health = 100;
         }
     }
 
-    public void TakeArmor(float value)
+    public void TakeArmor(int value)
     {
         this.Armor += value;
     }

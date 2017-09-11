@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4297028329214146}
   - component: {fileID: 61619701127616920}
+  - component: {fileID: 114181256402629356}
   m_Layer: 0
   m_Name: DieCollider
   m_TagString: Untagged
@@ -65,3 +66,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 40, y: 2}
   m_EdgeRadius: 0
+--- !u!114 &114181256402629356
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1808957438829216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de1f8075813ab542ba774c88e2053cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AbyssDepth: 500

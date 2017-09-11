@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4492154945036204}
   - component: {fileID: 212892341513293084}
   - component: {fileID: 61258153958863674}
+  - component: {fileID: 114498297651179654}
   m_Layer: 0
   m_Name: first_aid_pack
   m_TagString: Foreground
@@ -66,6 +67,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.36, y: 0.95}
   m_EdgeRadius: 0
+--- !u!114 &114498297651179654
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1536211112777558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf091096774f06478684b467b23c95f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FirstAidKitCapacity: 80
 --- !u!212 &212892341513293084
 SpriteRenderer:
   m_ObjectHideFlags: 1

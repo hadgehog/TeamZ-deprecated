@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4622332297712214}
   - component: {fileID: 50552352077027320}
   - component: {fileID: 212507208232534086}
-  - component: {fileID: 61752479703607504}
   - component: {fileID: 70483118496016016}
   - component: {fileID: 95609730098257056}
   - component: {fileID: 114378013384149246}
@@ -56,7 +55,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1861923728603526}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3, y: -0.66, z: 0}
+  m_LocalPosition: {x: 0.3, y: -0.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4622332297712214}
@@ -69,7 +68,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1270094665430320}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -5.41, y: -2.65, z: 0}
   m_LocalScale: {x: 1.7514803, y: 1.7514803, z: 1.7514803}
   m_Children:
   - {fileID: 4533504897417380}
@@ -96,31 +95,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &61752479703607504
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1270094665430320}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.31}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.62, y: 1.67}
-    newSize: {x: 1.62, y: 1.64}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.85, y: 1.04}
-  m_EdgeRadius: 0
 --- !u!70 &70483118496016016
 CapsuleCollider2D:
   m_ObjectHideFlags: 1
@@ -133,9 +107,9 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.3, y: -0.42}
-  m_Size: {x: 1.19, y: 0.54}
-  m_Direction: 1
+  m_Offset: {x: 0.3, y: 0.15}
+  m_Size: {x: 1.2, y: 1.8}
+  m_Direction: 0
 --- !u!95 &95609730098257056
 Animator:
   serializedVersion: 3
