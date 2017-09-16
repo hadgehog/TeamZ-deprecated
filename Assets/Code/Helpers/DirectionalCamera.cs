@@ -17,7 +17,7 @@ public class DirectionalCamera : MonoBehaviourWithState<CameraState>
 
     public override CameraState GetState()
     {
-        this.playerId = this.target.GetComponent<PrefabMonoBehaviour>().Id;
+        this.playerId = this.target.GetComponent<Entity>().Id;
 
         return new CameraState
         {
@@ -28,7 +28,7 @@ public class DirectionalCamera : MonoBehaviourWithState<CameraState>
 
     public override void Loaded()
     {
-        var player = GameObject.FindObjectsOfType<PrefabMonoBehaviour>().First(o => o.Id == this.playerId);
+        var player = EntitiesStorage.Instance.Entities[this.playerId];
         this.target = player.gameObject.transform;
     }
 

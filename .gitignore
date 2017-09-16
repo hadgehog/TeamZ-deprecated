@@ -1,6 +1,7 @@
-
+/obj
 /Library
 /Temp
 /.vs
+/.vscode
 *.csproj
 *.sln

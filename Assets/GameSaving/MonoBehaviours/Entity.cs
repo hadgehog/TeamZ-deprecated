@@ -3,7 +3,7 @@ using GameSaving.States;
 
 namespace GameSaving.MonoBehaviours
 {
-    public class PrefabMonoBehaviour : MonoBehaviourWithState<PrefabState>
+    public class Entity : MonoBehaviourWithState<PrefabState>
     {
         public Guid Id = Guid.NewGuid();
 
