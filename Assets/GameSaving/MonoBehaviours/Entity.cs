@@ -3,16 +3,16 @@ using GameSaving.States;
 
 namespace GameSaving.MonoBehaviours
 {
-    public class Entity : MonoBehaviourWithState<PrefabState>
+    public class Entity : MonoBehaviourWithState<EntityState>
     {
         public Guid Id = Guid.NewGuid();
 
         public string Path;
 
-        public override PrefabState GetState()
+        public override EntityState GetState()
         {
             var cachedTransform = this.transform;
-            return new PrefabState
+            return new EntityState
             {
                 Id = this.Id,
                 Path = this.Path,
@@ -22,7 +22,7 @@ namespace GameSaving.MonoBehaviours
             };
         }
 
-        public override void SetState(PrefabState state)
+        public override void SetState(EntityState state)
         {
             this.Id = state.Id;
             this.Path = state.Path;

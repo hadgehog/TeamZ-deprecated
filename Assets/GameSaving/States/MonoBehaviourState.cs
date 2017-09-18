@@ -4,12 +4,12 @@ namespace GameSaving.States
 {
     public enum MonoBehaviourStateKind
     {
-        Prefab,
+        Entity,
         Camera
     }
 
     [Union(
-        typeof(PrefabState), 
+        typeof(EntityState), 
         typeof(CameraState))]
     public abstract class MonoBehaviourState
     {

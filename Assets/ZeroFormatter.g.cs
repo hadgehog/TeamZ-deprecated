@@ -41,7 +41,7 @@ namespace ZeroFormatter
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.CameraState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.CameraStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.GameObjectState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.GameObjectStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.GameState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.GameStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
-            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.PrefabState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.PrefabStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.EntityState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.EntityStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             // Structs
             {
                 var structFormatter = new ZeroFormatter.DynamicObjectSegments.UnityEngine.Vector3Formatter<ZeroFormatter.Formatters.DefaultResolver>();
@@ -429,7 +429,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         }
     }
 
-    public class PrefabStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::GameSaving.States.PrefabState>
+    public class EntityStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::GameSaving.States.EntityState>
         where TTypeResolver : ITypeResolver, new()
     {
         public override int? GetLength()
@@ -437,7 +437,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             return null;
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, global::GameSaving.States.PrefabState value)
+        public override int Serialize(ref byte[] bytes, int offset, global::GameSaving.States.EntityState value)
         {
             var segment = value as IZeroFormatterSegment;
             if (segment != null)
@@ -464,7 +464,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             }
         }
 
-        public override global::GameSaving.States.PrefabState Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        public override global::GameSaving.States.EntityState Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
         {
             byteSize = BinaryUtil.ReadInt32(ref bytes, offset);
             if (byteSize == -1)
@@ -472,11 +472,11 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
                 byteSize = 4;
                 return null;
             }
-            return new PrefabStateObjectSegment<TTypeResolver>(tracker, new ArraySegment<byte>(bytes, offset, byteSize));
+            return new EntityStateObjectSegment<TTypeResolver>(tracker, new ArraySegment<byte>(bytes, offset, byteSize));
         }
     }
 
-    public class PrefabStateObjectSegment<TTypeResolver> : global::GameSaving.States.PrefabState, IZeroFormatterSegment
+    public class EntityStateObjectSegment<TTypeResolver> : global::GameSaving.States.EntityState, IZeroFormatterSegment
         where TTypeResolver : ITypeResolver, new()
     {
         static readonly int[] __elementSizes = new int[]{ 16, 0, 0, 0, 0 };
@@ -557,7 +557,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         }
 
 
-        public PrefabStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
+        public EntityStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
         {
             var __array = originalBytes.Array;
 
@@ -828,7 +828,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         {
             comparer = global::ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::GameSaving.States.MonoBehaviourStateKind>.Default;
             unionKeys = new global::GameSaving.States.MonoBehaviourStateKind[2];
-            unionKeys[0] = new global::GameSaving.States.PrefabState().Type;
+            unionKeys[0] = new global::GameSaving.States.EntityState().Type;
             unionKeys[1] = new global::GameSaving.States.CameraState().Type;
             
         }
@@ -850,9 +850,9 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             offset += 4;
             offset += Formatter<TTypeResolver, global::GameSaving.States.MonoBehaviourStateKind>.Default.Serialize(ref bytes, offset, value.Type);
 
-            if (value is global::GameSaving.States.PrefabState)
+            if (value is global::GameSaving.States.EntityState)
             {
-                offset += Formatter<TTypeResolver, global::GameSaving.States.PrefabState>.Default.Serialize(ref bytes, offset, (global::GameSaving.States.PrefabState)value);
+                offset += Formatter<TTypeResolver, global::GameSaving.States.EntityState>.Default.Serialize(ref bytes, offset, (global::GameSaving.States.EntityState)value);
             }
             else if (value is global::GameSaving.States.CameraState)
             {
@@ -885,7 +885,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             global::GameSaving.States.MonoBehaviourState result;
             if (comparer.Equals(unionKey, unionKeys[0]))
             {
-                result = Formatter<TTypeResolver, global::GameSaving.States.PrefabState>.Default.Deserialize(ref bytes, offset, tracker, out size);
+                result = Formatter<TTypeResolver, global::GameSaving.States.EntityState>.Default.Deserialize(ref bytes, offset, tracker, out size);
             }
             else if (comparer.Equals(unionKey, unionKeys[1]))
             {

@@ -112,7 +112,7 @@ namespace GameSaving
 
             foreach (var gameObjectState in gameState.GameObjectsStates)
             {
-                var prefabInformation = gameObjectState.MonoBehaviousStates.OfType<PrefabState>().First();
+                var prefabInformation = gameObjectState.MonoBehaviousStates.OfType<EntityState>().First();
                 if (!cache.ContainsKey(prefabInformation.Path))
                 {
                     cache.Add(prefabInformation.Path, Resources.Load<GameObject>(prefabInformation.Path));

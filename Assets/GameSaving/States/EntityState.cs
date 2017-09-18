@@ -4,7 +4,7 @@ using ZeroFormatter;
 namespace GameSaving.States
 {
     [ZeroFormattable]
-    public class PrefabState : MonoBehaviourState
+    public class EntityState : MonoBehaviourState
     {
         [Index(0)]
         public virtual Guid Id { get; set; }
@@ -25,7 +25,7 @@ namespace GameSaving.States
         {
             get
             {
-                return MonoBehaviourStateKind.Prefab;
+                return MonoBehaviourStateKind.Entity;
             }
         }
     }
