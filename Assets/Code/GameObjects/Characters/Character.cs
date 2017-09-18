@@ -1,11 +1,49 @@
-﻿using UnityEngine;
+﻿using GameSaving.MonoBehaviours;
+using GameSaving.States.Charaters;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Character : MonoBehaviour
+public interface ICharacter
 {
-    public int Health;
-    public int Armor;
-    public int Damage;
+    int Health { get; set; }
+    int Armor { get; set; }
+    int Damage { get; set; }
+
+    void TakeArmor(int armor);
+    int MakeDamage();
+    void TakeDamage(int damage);
+    void TakeHealth(int health);
+}
+
+
+public abstract class Character<TState> : MonoBehaviourWithState<TState>, ICharacter
+    where TState : CharacterState
+{
+    public int Health
+    {
+        get;
+        set;
+    }
+
+    public int Armor
+    {
+        get;
+        set;
+    }
+
+    public int Damage
+    {
+        get;
+        set;
+    }
+
+    public override void SetState(TState state)
+    {
+        this.Armor = state.Armor;
+        this.Damage = state.Damage;
+        this.Health = state.Health;
+    }
+
 
     public void TakeDamage(int value)
     {

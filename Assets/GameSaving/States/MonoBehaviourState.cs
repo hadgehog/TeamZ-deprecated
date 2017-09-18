@@ -1,16 +1,19 @@
-﻿using ZeroFormatter;
+﻿using GameSaving.States.Charaters;
+using ZeroFormatter;
 
 namespace GameSaving.States
 {
     public enum MonoBehaviourStateKind
     {
         Entity,
-        Camera
+        Camera,
+        Lizard,
     }
 
-    [Union(
-        typeof(EntityState), 
-        typeof(CameraState))]
+    [ZeroFormattable]
+    [Union(typeof(EntityState),
+           typeof(CameraState),
+           typeof(LizardState))]
     public abstract class MonoBehaviourState
     {
         [UnionKey]

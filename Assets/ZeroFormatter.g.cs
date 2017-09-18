@@ -39,9 +39,10 @@ namespace ZeroFormatter
             
             // Objects
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.CameraState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.CameraStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.EntityState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.EntityStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.GameObjectState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.GameObjectStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.GameState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.GameStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
-            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.EntityState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.EntityStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.Charaters.LizardState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters.LizardStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             // Structs
             {
                 var structFormatter = new ZeroFormatter.DynamicObjectSegments.UnityEngine.Vector3Formatter<ZeroFormatter.Formatters.DefaultResolver>();
@@ -201,6 +202,182 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
                 offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Vector3>(ref targetBytes, startOffset, offset, 1, ref _Position);
 
                 return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 1);
+            }
+            else
+            {
+                return ObjectSegmentHelper.DirectCopyAll(__originalBytes, ref targetBytes, offset);
+            }
+        }
+    }
+
+    public class EntityStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::GameSaving.States.EntityState>
+        where TTypeResolver : ITypeResolver, new()
+    {
+        public override int? GetLength()
+        {
+            return null;
+        }
+
+        public override int Serialize(ref byte[] bytes, int offset, global::GameSaving.States.EntityState value)
+        {
+            var segment = value as IZeroFormatterSegment;
+            if (segment != null)
+            {
+                return segment.Serialize(ref bytes, offset);
+            }
+            else if (value == null)
+            {
+                BinaryUtil.WriteInt32(ref bytes, offset, -1);
+                return 4;
+            }
+            else
+            {
+                var startOffset = offset;
+
+                offset += (8 + 4 * (4 + 1));
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Guid>(ref bytes, startOffset, offset, 0, value.Id);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, string>(ref bytes, startOffset, offset, 1, value.Path);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Vector3>(ref bytes, startOffset, offset, 2, value.Scale);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Quaternion>(ref bytes, startOffset, offset, 3, value.Rotation);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Vector3>(ref bytes, startOffset, offset, 4, value.Position);
+
+                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 4);
+            }
+        }
+
+        public override global::GameSaving.States.EntityState Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        {
+            byteSize = BinaryUtil.ReadInt32(ref bytes, offset);
+            if (byteSize == -1)
+            {
+                byteSize = 4;
+                return null;
+            }
+            return new EntityStateObjectSegment<TTypeResolver>(tracker, new ArraySegment<byte>(bytes, offset, byteSize));
+        }
+    }
+
+    public class EntityStateObjectSegment<TTypeResolver> : global::GameSaving.States.EntityState, IZeroFormatterSegment
+        where TTypeResolver : ITypeResolver, new()
+    {
+        static readonly int[] __elementSizes = new int[]{ 16, 0, 0, 0, 0 };
+
+        readonly ArraySegment<byte> __originalBytes;
+        readonly global::ZeroFormatter.DirtyTracker __tracker;
+        readonly int __binaryLastIndex;
+        readonly byte[] __extraFixedBytes;
+
+        CacheSegment<TTypeResolver, string> _Path;
+        CacheSegment<TTypeResolver, global::UnityEngine.Vector3> _Scale;
+        CacheSegment<TTypeResolver, global::UnityEngine.Quaternion> _Rotation;
+        CacheSegment<TTypeResolver, global::UnityEngine.Vector3> _Position;
+
+        // 0
+        public override global::System.Guid Id
+        {
+            get
+            {
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, __tracker);
+            }
+            set
+            {
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+            }
+        }
+
+        // 1
+        public override string Path
+        {
+            get
+            {
+                return _Path.Value;
+            }
+            set
+            {
+                _Path.Value = value;
+            }
+        }
+
+        // 2
+        public override global::UnityEngine.Vector3 Scale
+        {
+            get
+            {
+                return _Scale.Value;
+            }
+            set
+            {
+                _Scale.Value = value;
+            }
+        }
+
+        // 3
+        public override global::UnityEngine.Quaternion Rotation
+        {
+            get
+            {
+                return _Rotation.Value;
+            }
+            set
+            {
+                _Rotation.Value = value;
+            }
+        }
+
+        // 4
+        public override global::UnityEngine.Vector3 Position
+        {
+            get
+            {
+                return _Position.Value;
+            }
+            set
+            {
+                _Position.Value = value;
+            }
+        }
+
+
+        public EntityStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
+        {
+            var __array = originalBytes.Array;
+
+            this.__originalBytes = originalBytes;
+            this.__tracker = dirtyTracker = dirtyTracker.CreateChild();
+            this.__binaryLastIndex = BinaryUtil.ReadInt32(ref __array, originalBytes.Offset + 4);
+
+            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 4, __elementSizes);
+
+            _Path = new CacheSegment<TTypeResolver, string>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 1, __binaryLastIndex, __tracker));
+            _Scale = new CacheSegment<TTypeResolver, global::UnityEngine.Vector3>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 2, __binaryLastIndex, __tracker));
+            _Rotation = new CacheSegment<TTypeResolver, global::UnityEngine.Quaternion>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 3, __binaryLastIndex, __tracker));
+            _Position = new CacheSegment<TTypeResolver, global::UnityEngine.Vector3>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 4, __binaryLastIndex, __tracker));
+        }
+
+        public bool CanDirectCopy()
+        {
+            return !__tracker.IsDirty;
+        }
+
+        public ArraySegment<byte> GetBufferReference()
+        {
+            return __originalBytes;
+        }
+
+        public int Serialize(ref byte[] targetBytes, int offset)
+        {
+            if (__extraFixedBytes != null || __tracker.IsDirty)
+            {
+                var startOffset = offset;
+                offset += (8 + 4 * (4 + 1));
+
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, global::System.Guid>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, string>(ref targetBytes, startOffset, offset, 1, ref _Path);
+                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Vector3>(ref targetBytes, startOffset, offset, 2, ref _Scale);
+                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Quaternion>(ref targetBytes, startOffset, offset, 3, ref _Rotation);
+                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Vector3>(ref targetBytes, startOffset, offset, 4, ref _Position);
+
+                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 4);
             }
             else
             {
@@ -429,7 +606,25 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         }
     }
 
-    public class EntityStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::GameSaving.States.EntityState>
+
+}
+
+#pragma warning restore 168
+#pragma warning restore 414
+#pragma warning restore 618
+#pragma warning restore 612
+#pragma warning disable 618
+#pragma warning disable 612
+#pragma warning disable 414
+#pragma warning disable 168
+namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters
+{
+    using global::System;
+    using global::ZeroFormatter.Formatters;
+    using global::ZeroFormatter.Internal;
+    using global::ZeroFormatter.Segments;
+
+    public class LizardStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::GameSaving.States.Charaters.LizardState>
         where TTypeResolver : ITypeResolver, new()
     {
         public override int? GetLength()
@@ -437,7 +632,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             return null;
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, global::GameSaving.States.EntityState value)
+        public override int Serialize(ref byte[] bytes, int offset, global::GameSaving.States.Charaters.LizardState value)
         {
             var segment = value as IZeroFormatterSegment;
             if (segment != null)
@@ -453,18 +648,16 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             {
                 var startOffset = offset;
 
-                offset += (8 + 4 * (4 + 1));
-                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Guid>(ref bytes, startOffset, offset, 0, value.Id);
-                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, string>(ref bytes, startOffset, offset, 1, value.Path);
-                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Vector3>(ref bytes, startOffset, offset, 2, value.Scale);
-                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Quaternion>(ref bytes, startOffset, offset, 3, value.Rotation);
-                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Vector3>(ref bytes, startOffset, offset, 4, value.Position);
+                offset += (8 + 4 * (2 + 1));
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 0, value.Health);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 1, value.Armor);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 2, value.Damage);
 
-                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 4);
+                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 2);
             }
         }
 
-        public override global::GameSaving.States.EntityState Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        public override global::GameSaving.States.Charaters.LizardState Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
         {
             byteSize = BinaryUtil.ReadInt32(ref bytes, offset);
             if (byteSize == -1)
@@ -472,92 +665,62 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
                 byteSize = 4;
                 return null;
             }
-            return new EntityStateObjectSegment<TTypeResolver>(tracker, new ArraySegment<byte>(bytes, offset, byteSize));
+            return new LizardStateObjectSegment<TTypeResolver>(tracker, new ArraySegment<byte>(bytes, offset, byteSize));
         }
     }
 
-    public class EntityStateObjectSegment<TTypeResolver> : global::GameSaving.States.EntityState, IZeroFormatterSegment
+    public class LizardStateObjectSegment<TTypeResolver> : global::GameSaving.States.Charaters.LizardState, IZeroFormatterSegment
         where TTypeResolver : ITypeResolver, new()
     {
-        static readonly int[] __elementSizes = new int[]{ 16, 0, 0, 0, 0 };
+        static readonly int[] __elementSizes = new int[]{ 4, 4, 4 };
 
         readonly ArraySegment<byte> __originalBytes;
         readonly global::ZeroFormatter.DirtyTracker __tracker;
         readonly int __binaryLastIndex;
         readonly byte[] __extraFixedBytes;
 
-        CacheSegment<TTypeResolver, string> _Path;
-        CacheSegment<TTypeResolver, global::UnityEngine.Vector3> _Scale;
-        CacheSegment<TTypeResolver, global::UnityEngine.Quaternion> _Rotation;
-        CacheSegment<TTypeResolver, global::UnityEngine.Vector3> _Position;
 
         // 0
-        public override global::System.Guid Id
+        public override int Health
         {
             get
             {
-                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, __tracker);
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, int>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, __tracker);
             }
             set
             {
-                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, int>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, value, __tracker);
             }
         }
 
         // 1
-        public override string Path
+        public override int Armor
         {
             get
             {
-                return _Path.Value;
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, int>(__originalBytes, 1, __binaryLastIndex, __extraFixedBytes, __tracker);
             }
             set
             {
-                _Path.Value = value;
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, int>(__originalBytes, 1, __binaryLastIndex, __extraFixedBytes, value, __tracker);
             }
         }
 
         // 2
-        public override global::UnityEngine.Vector3 Scale
+        public override int Damage
         {
             get
             {
-                return _Scale.Value;
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, int>(__originalBytes, 2, __binaryLastIndex, __extraFixedBytes, __tracker);
             }
             set
             {
-                _Scale.Value = value;
-            }
-        }
-
-        // 3
-        public override global::UnityEngine.Quaternion Rotation
-        {
-            get
-            {
-                return _Rotation.Value;
-            }
-            set
-            {
-                _Rotation.Value = value;
-            }
-        }
-
-        // 4
-        public override global::UnityEngine.Vector3 Position
-        {
-            get
-            {
-                return _Position.Value;
-            }
-            set
-            {
-                _Position.Value = value;
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, int>(__originalBytes, 2, __binaryLastIndex, __extraFixedBytes, value, __tracker);
             }
         }
 
 
-        public EntityStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
+        public LizardStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
         {
             var __array = originalBytes.Array;
 
@@ -565,12 +728,8 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             this.__tracker = dirtyTracker = dirtyTracker.CreateChild();
             this.__binaryLastIndex = BinaryUtil.ReadInt32(ref __array, originalBytes.Offset + 4);
 
-            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 4, __elementSizes);
+            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 2, __elementSizes);
 
-            _Path = new CacheSegment<TTypeResolver, string>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 1, __binaryLastIndex, __tracker));
-            _Scale = new CacheSegment<TTypeResolver, global::UnityEngine.Vector3>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 2, __binaryLastIndex, __tracker));
-            _Rotation = new CacheSegment<TTypeResolver, global::UnityEngine.Quaternion>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 3, __binaryLastIndex, __tracker));
-            _Position = new CacheSegment<TTypeResolver, global::UnityEngine.Vector3>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 4, __binaryLastIndex, __tracker));
         }
 
         public bool CanDirectCopy()
@@ -588,15 +747,13 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             if (__extraFixedBytes != null || __tracker.IsDirty)
             {
                 var startOffset = offset;
-                offset += (8 + 4 * (4 + 1));
+                offset += (8 + 4 * (2 + 1));
 
-                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, global::System.Guid>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
-                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, string>(ref targetBytes, startOffset, offset, 1, ref _Path);
-                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Vector3>(ref targetBytes, startOffset, offset, 2, ref _Scale);
-                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Quaternion>(ref targetBytes, startOffset, offset, 3, ref _Rotation);
-                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Vector3>(ref targetBytes, startOffset, offset, 4, ref _Position);
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 1, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 2, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
 
-                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 4);
+                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 2);
             }
             else
             {
@@ -827,9 +984,10 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         public MonoBehaviourStateFormatter()
         {
             comparer = global::ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::GameSaving.States.MonoBehaviourStateKind>.Default;
-            unionKeys = new global::GameSaving.States.MonoBehaviourStateKind[2];
+            unionKeys = new global::GameSaving.States.MonoBehaviourStateKind[3];
             unionKeys[0] = new global::GameSaving.States.EntityState().Type;
             unionKeys[1] = new global::GameSaving.States.CameraState().Type;
+            unionKeys[2] = new global::GameSaving.States.Charaters.LizardState().Type;
             
         }
 
@@ -857,6 +1015,10 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             else if (value is global::GameSaving.States.CameraState)
             {
                 offset += Formatter<TTypeResolver, global::GameSaving.States.CameraState>.Default.Serialize(ref bytes, offset, (global::GameSaving.States.CameraState)value);
+            }
+            else if (value is global::GameSaving.States.Charaters.LizardState)
+            {
+                offset += Formatter<TTypeResolver, global::GameSaving.States.Charaters.LizardState>.Default.Serialize(ref bytes, offset, (global::GameSaving.States.Charaters.LizardState)value);
             }
             
             else
@@ -890,6 +1052,10 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             else if (comparer.Equals(unionKey, unionKeys[1]))
             {
                 result = Formatter<TTypeResolver, global::GameSaving.States.CameraState>.Default.Deserialize(ref bytes, offset, tracker, out size);
+            }
+            else if (comparer.Equals(unionKey, unionKeys[2]))
+            {
+                result = Formatter<TTypeResolver, global::GameSaving.States.Charaters.LizardState>.Default.Deserialize(ref bytes, offset, tracker, out size);
             }
             else
             {

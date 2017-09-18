@@ -20,7 +20,7 @@ public class ArmorKit : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        var character = col.gameObject.GetComponent<Character>();
+        var character = col.gameObject.GetComponent<ICharacter>();
 
         if (character == null)
         {

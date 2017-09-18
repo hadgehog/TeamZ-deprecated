@@ -33,7 +33,7 @@ public class CharacterControllerScript : MonoBehaviour
     protected Rigidbody2D rigidBody;
     protected Direction currentDirection = Direction.Right;
 
-    protected Character Character;
+    protected ICharacter Character;
 
     // Use this for initialization
     protected virtual void Start()
