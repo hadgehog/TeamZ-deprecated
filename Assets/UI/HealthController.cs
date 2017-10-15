@@ -26,7 +26,9 @@ public class HealthController : MonoBehaviour
     {
         if (this.character)
         {
-            this.Text.text = this.character.Health.ToString();
+            this.Text.text = "Health: " + this.character.Health.ToString();
+            this.Text.text += "  ";
+            this.Text.text += "Armor: " + this.character.Armor.ToString();
         }
     }
 }
