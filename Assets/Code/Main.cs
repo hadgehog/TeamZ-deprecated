@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GameSaving;
 using GameSaving.States;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Main : MonoBehaviour
 {
@@ -12,9 +13,15 @@ public class Main : MonoBehaviour
         private set;
     }
 
-    private void Start()
+    private async void Start()
     {
         this.GameController = new GameController<GameState>();
+
+#if UNITY_EDITOR
+        this.GameController.BootstrapFromEditor();
+#else
+        await this.GameController.LevelManager.Load(Level.Laboratory);
+#endif
         this.GameController.Boostrap();
     }
 

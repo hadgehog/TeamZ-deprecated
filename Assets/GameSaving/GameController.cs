@@ -50,20 +50,22 @@ namespace GameSaving
             this.EnttiesStorage.Entities.Clear();
         }
 
-        public async void Boostrap()
+        public void BootstrapFromEditor()
         {
             var levelBootstraper = GameObject.FindObjectOfType<LevelBootstraper>();
             this.LevelManager.CurrentLevel = Level.All.First(o => o.Name == levelBootstraper.LevelName);
-            await this.LevelManager.Load(this.LevelManager.CurrentLevel);
+        }
 
+        public void Boostrap()
+        {
             foreach (var entity in GameObject.FindObjectsOfType<Entity>())
             {
                 entity.LevelId = this.LevelManager.CurrentLevel.Id;
                 this.EnttiesStorage.Entities.Add(entity.Id, entity);
             };
 
-            await this.SaveAsync("temp");
-            await this.LoadAsync("temp");
+            //await this.SaveAsync("temp");
+            //await this.LoadAsync("temp");
         }
 
         public async Task LoadAsync(string slotName)
@@ -79,6 +81,7 @@ namespace GameSaving
             this.EnttiesStorage.Root.SetActive(false);
 
             this.InstantiateGameState(gameState);
+            this.Boostrap();
 
             GC.Collect();
 
