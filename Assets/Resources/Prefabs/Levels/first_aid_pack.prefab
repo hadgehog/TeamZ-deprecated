@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf091096774f06478684b467b23c95f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FirstAidKitCapacity: 80
+  FirstAidKitCapacity: 50
 --- !u!212 &212892341513293084
 SpriteRenderer:
   m_ObjectHideFlags: 1

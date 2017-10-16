@@ -20,6 +20,7 @@ public class CharacterControllerScript : MonoBehaviour
 
     public enum FightMode
     {
+        None = -1,
         Punch = 0,
         Kick,
         TailHit,
@@ -34,6 +35,8 @@ public class CharacterControllerScript : MonoBehaviour
     protected Direction currentDirection = Direction.Right;
 
     protected ICharacter Character;
+
+    protected FightMode fightMode = FightMode.None;
 
     // Use this for initialization
     protected virtual void Start()
@@ -50,9 +53,6 @@ public class CharacterControllerScript : MonoBehaviour
 
         this.anim.SetBool("Ground", this.IsGrounded);
         this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
-
-        if (!this.IsGrounded)
-            return;
 
         float move = Input.GetAxis("Horizontal");
 
@@ -77,22 +77,29 @@ public class CharacterControllerScript : MonoBehaviour
     // called once per frame
     protected virtual void Update()
     {
-        if (Input.GetKey(KeyCode.Z))
+        this.fightMode = FightMode.None;
+        this.anim.SetInteger("HitType", -1);
+
+        if (Input.GetKeyDown(KeyCode.Z))
         {
-            this.anim.SetInteger("HitType", (int)FightMode.Punch);
-        }
-        else
-        {
-            this.anim.SetInteger("HitType", -1);
+            this.fightMode = FightMode.Punch;
+            this.anim.SetInteger("HitType", (int)this.fightMode);
         }
 
-        if (this.IsGrounded && Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            this.fightMode = FightMode.Kick;
+            this.anim.SetInteger("HitType", (int)this.fightMode);
+            this.rigidBody.AddForce(new Vector2(0.0f, 800.0f));
+        }
+
+        if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space) && this.fightMode == FightMode.None)
         {
             this.anim.SetBool("Ground", false);
             this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
         }
 
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
@@ -114,7 +121,7 @@ public class CharacterControllerScript : MonoBehaviour
 
         if (col.gameObject.GetComponent<AbyssCollider>() != null)
         {
-            // TODO: game over. show menu
+            // TODO: call LoadAsync instead LoadScene
             SceneManager.LoadScene("Laboratory");
         }
     }
