@@ -138,9 +138,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9bef14a4e5441c4fbb7a376f2a3d3d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthValue: 50
-  ArmorValue: 0
-  DamageValue: 0
+  health: 80
+  armor: 0
+  damage: 10
 --- !u!114 &114378013384149246
 MonoBehaviour:
   m_ObjectHideFlags: 1

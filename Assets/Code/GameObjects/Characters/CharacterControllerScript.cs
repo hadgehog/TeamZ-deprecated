@@ -49,6 +49,7 @@ public class CharacterControllerScript : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
+        this.fightMode = FightMode.None;
         this.IsGrounded = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, this.WhatIsGround);
 
         this.anim.SetBool("Ground", this.IsGrounded);
@@ -77,23 +78,19 @@ public class CharacterControllerScript : MonoBehaviour
     // called once per frame
     protected virtual void Update()
     {
-        this.fightMode = FightMode.None;
-        this.anim.SetInteger("HitType", -1);
-
         if (Input.GetKeyDown(KeyCode.Z))
         {
             this.fightMode = FightMode.Punch;
-            this.anim.SetInteger("HitType", (int)this.fightMode);
+            this.anim.SetTrigger("Punch");
         }
 
         if (Input.GetKeyDown(KeyCode.X))
         {
             this.fightMode = FightMode.Kick;
-            this.anim.SetInteger("HitType", (int)this.fightMode);
-            this.rigidBody.AddForce(new Vector2(0.0f, 800.0f));
+            this.anim.SetTrigger("Kick");
         }
 
-        if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space) && this.fightMode == FightMode.None)
+        if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             this.anim.SetBool("Ground", false);
             this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
@@ -121,7 +118,9 @@ public class CharacterControllerScript : MonoBehaviour
 
         if (col.gameObject.GetComponent<AbyssCollider>() != null)
         {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             GameObject.FindObjectOfType<Main>().GameController.LoadAsync("test");
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
     }
 
