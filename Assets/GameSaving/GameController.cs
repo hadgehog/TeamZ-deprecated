@@ -41,6 +41,7 @@ namespace GameSaving
             this.Storage = new GameStorage<TGameState>();
             this.loaded = new Subject<Unit>();
             this.EnttiesStorage.Root = GameObject.Find("Root");
+            this.EnttiesStorage.Entities.Clear();
         }
 
         public async void Boostrap()
