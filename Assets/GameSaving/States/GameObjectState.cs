@@ -10,6 +10,13 @@ namespace GameSaving.States
     public class GameObjectState
     {
         [Index(0)]
+        public virtual EntityState Entity
+        {
+            get;
+            set;
+        }
+
+        [Index(1)]
         public virtual IEnumerable<MonoBehaviourState> MonoBehaviousStates
         {
             get;
@@ -22,8 +29,12 @@ namespace GameSaving.States
 
         public GameObjectState SetGameObject(GameObject gameObject)
         {
-            this.MonoBehaviousStates = gameObject.GetComponents<IMonoBehaviourWithState>().
+            var states = gameObject.GetComponents<IMonoBehaviourWithState>().
                                     Select(o => (MonoBehaviourState)o.GetState()).ToList();
+
+            this.Entity = (EntityState)states.First(o => o.Type == MonoBehaviourStateKind.Entity);
+            states.Remove(this.Entity);
+            this.MonoBehaviousStates = states;
 
             return this;
         }

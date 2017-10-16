@@ -18,7 +18,7 @@ public class HealthController : MonoBehaviour
     {
         this.Main.GameController.Loaded.Subscribe(_ =>
         {
-            this.character = EntitiesStorage.Instance.Entities.Values.OfType<Entity>().Where(o => o.GetComponent<Lizard>() != null).First().GetComponent<Lizard>();
+            this.character = EntitiesStorage.Instance.Entities.Values.Where(o => o.GetComponent<Lizard>() != null).FirstOrDefault()?.GetComponent<Lizard>();
         });
     }
 

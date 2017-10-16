@@ -19,27 +19,31 @@ public interface ICharacter
 public abstract class Character<TState> : MonoBehaviourWithState<TState>, ICharacter
     where TState : CharacterState
 {
-    // Since Unity redactor not supported properties
-    public int HealthValue;
-    public int ArmorValue;
-    public int DamageValue;
+    [SerializeField]
+    private int health;
+
+    [SerializeField]
+    private int armor;
+
+    [SerializeField]
+    private int damage;
 
     public int Health
     {
-        get { return this.HealthValue; }
-        set { this.HealthValue = value; }
+        get { return this.health; }
+        set { this.health = value; }
     }
 
     public int Armor
     {
-        get { return this.ArmorValue; }
-        set { this.ArmorValue = value; }
+        get { return this.armor; }
+        set { this.armor = value; }
     }
 
     public int Damage
     {
-        get { return this.DamageValue; }
-        set { this.DamageValue = value; }
+        get { return this.damage; }
+        set { this.damage = value; }
     }
 
     public override void SetState(TState state)

@@ -28,5 +28,12 @@ namespace GameSaving.States
                 return MonoBehaviourStateKind.Entity;
             }
         }
+
+        [Index(5)]
+        public virtual Guid LevelId
+        {
+            get;
+            set;
+        }
     }
 }

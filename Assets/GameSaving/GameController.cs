@@ -36,18 +36,29 @@ namespace GameSaving
             get;
         }
 
+        public LevelManager LevelManager
+        {
+            get;
+        }
+
         public GameController()
         {
             this.Storage = new GameStorage<TGameState>();
+            this.LevelManager = new LevelManager();
             this.loaded = new Subject<Unit>();
-            this.EnttiesStorage.Root = GameObject.Find("Root");
+            this.EnttiesStorage.Root = null;
             this.EnttiesStorage.Entities.Clear();
         }
 
         public async void Boostrap()
         {
+            var levelBootstraper = GameObject.FindObjectOfType<LevelBootstraper>();
+            this.LevelManager.CurrentLevel = Level.All.First(o => o.Name == levelBootstraper.LevelName);
+            await this.LevelManager.Load(this.LevelManager.CurrentLevel);
+
             foreach (var entity in GameObject.FindObjectsOfType<Entity>())
             {
+                entity.LevelId = this.LevelManager.CurrentLevel.Id;
                 this.EnttiesStorage.Entities.Add(entity.Id, entity);
             };
 
@@ -58,6 +69,9 @@ namespace GameSaving
         public async Task LoadAsync(string slotName)
         {
             var gameState = await this.Storage.LoadAsync(slotName);
+
+            await this.LevelManager.Load(Level.All.First(o => o.Id == gameState.LevelId));
+            this.EnttiesStorage.Root = GameObject.Find("Root");
 
             this.CleanupLevel();
 
@@ -76,7 +90,9 @@ namespace GameSaving
             var gameState = new TGameState();
 
             Time.timeScale = 0;
+            gameState.LevelId = this.LevelManager.CurrentLevel.Id;
             gameState.GameObjectsStates = this.EnttiesStorage.Entities.Values.Select(o => new GameObjectState().SetGameObject(o.gameObject)).ToList();
+
             Time.timeScale = 1;
 
             await this.Storage.SaveAsync(gameState, slotName);
@@ -84,26 +100,8 @@ namespace GameSaving
 
         private void CleanupLevel()
         {
-            if (this.EnttiesStorage.Root)
-            {
-                this.EnttiesStorage.Entities.Clear();
-                GameObject.Destroy(this.EnttiesStorage.Root);
-            }
-            else
-            {
-#if UNITY_EDITOR
-                var entities = GameObject.FindObjectsOfType<Entity>();
-                if (entities.Any())
-                {
-                    Debug.LogError("Move all entities to \"Root\" gameObject!");
-                    Debug.LogError("There are next entities outside:");
-                    foreach (var entity in entities)
-                    {
-                        Debug.LogError(entity.gameObject.name);
-                    }
-                }
-#endif
-            }
+            this.EnttiesStorage.Entities.Clear();
+            GameObject.Destroy(this.EnttiesStorage.Root);
         }
 
         private void InstantiateGameState(TGameState gameState)
@@ -111,20 +109,23 @@ namespace GameSaving
             var cache = new Dictionary<string, GameObject>();
             var monoBehaviours = new LinkedList<IMonoBehaviourWithState>();
 
-            foreach (var gameObjectState in gameState.GameObjectsStates)
+            foreach (var gameObjectState in gameState.GameObjectsStates.Where(o => o.Entity.LevelId == this.LevelManager.CurrentLevel.Id))
             {
-                var prefabInformation = gameObjectState.MonoBehaviousStates.OfType<EntityState>().First();
-                if (!cache.ContainsKey(prefabInformation.Path))
+                var entityInfotration = gameObjectState.Entity;
+                if (!cache.ContainsKey(entityInfotration.Path))
                 {
-                    cache.Add(prefabInformation.Path, Resources.Load<GameObject>(prefabInformation.Path));
+                    cache.Add(entityInfotration.Path, Resources.Load<GameObject>(entityInfotration.Path));
                 }
 
-                var gameObject = GameObject.Instantiate<GameObject>(cache[prefabInformation.Path], this.EnttiesStorage.Root.transform);
+                var gameObject = GameObject.Instantiate<GameObject>(cache[entityInfotration.Path], this.EnttiesStorage.Root.transform);
+
+                var states = gameObjectState.MonoBehaviousStates.ToList();
+                states.Add(entityInfotration);
 
                 foreach (var monoBehaviour in gameObject.GetComponents<IMonoBehaviourWithState>())
                 {
                     var stateType = monoBehaviour.GetStateType();
-                    var monoBehaviourState = gameObjectState.MonoBehaviousStates.First(o => stateType.IsInstanceOfType(o));
+                    var monoBehaviourState = states.First(o => stateType.IsInstanceOfType(o));
                     monoBehaviour.SetState(monoBehaviourState);
                     monoBehaviours.AddLast(monoBehaviour);
                 }

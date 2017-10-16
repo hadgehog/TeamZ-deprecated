@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ZeroFormatter;
 
 namespace GameSaving.States
@@ -11,6 +12,13 @@ namespace GameSaving.States
         }
 
         [Index(0)]
+        public virtual Guid LevelId
+        {
+            get;
+            set;
+        }
+
+        [Index(1)]
         public virtual IEnumerable<GameObjectState> GameObjectsStates
         {
             get;

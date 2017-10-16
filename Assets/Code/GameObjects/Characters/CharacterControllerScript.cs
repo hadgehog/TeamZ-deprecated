@@ -121,8 +121,7 @@ public class CharacterControllerScript : MonoBehaviour
 
         if (col.gameObject.GetComponent<AbyssCollider>() != null)
         {
-            // TODO: call LoadAsync instead LoadScene
-            SceneManager.LoadScene("Laboratory");
+            GameObject.FindObjectOfType<Main>().GameController.LoadAsync("test");
         }
     }
 
