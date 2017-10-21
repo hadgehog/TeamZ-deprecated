@@ -7,15 +7,17 @@ using GameSaving.MonoBehaviours;
 using GameSaving.States;
 using UniRx;
 using UnityEngine;
+using Effects;
 
 namespace GameSaving
 {
-    public class GameController<TGameState>
+    public class GameController<TGameState> : IGameController 
         where TGameState : GameState, new()
     {
-        private UniRx.Subject<Unit> loaded;
+        private Subject<Unit> loaded;
+        private BlackScreen loadingEffect;
 
-        public UniRx.IObservable<Unit> Loaded
+        public IObservable<Unit> Loaded
         {
             get
             {
@@ -46,6 +48,7 @@ namespace GameSaving
             this.Storage = new GameStorage<TGameState>();
             this.LevelManager = new LevelManager();
             this.loaded = new Subject<Unit>();
+            this.loadingEffect = GameObject.FindObjectOfType<BlackScreen>();
             this.EnttiesStorage.Root = null;
             this.EnttiesStorage.Entities.Clear();
         }
@@ -70,6 +73,8 @@ namespace GameSaving
 
         public async Task LoadAsync(string slotName)
         {
+            await this.loadingEffect.ShowAsync();
+
             var gameState = await this.Storage.LoadAsync(slotName);
 
             await this.LevelManager.Load(Level.All.First(o => o.Id == gameState.LevelId));
@@ -86,6 +91,8 @@ namespace GameSaving
             GC.Collect();
 
             this.EnttiesStorage.Root.SetActive(true);
+
+            await this.loadingEffect.HideAsync();
         }
 
         public async Task SaveAsync(string slotName)

@@ -499,7 +499,8 @@ PlayerSettings:
   webGLUseEmbeddedResources: 0
   webGLUseWasm: 0
   webGLCompressionFormat: 1
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    1: ENABLE_MONO_BLEEDING_EDGE_EDITOR;ENABLE_MONO_BLEEDING_EDGE_STANDALONE
   platformArchitecture: {}
   scriptingBackend: {}
   incrementalIl2cppBuild: {}
