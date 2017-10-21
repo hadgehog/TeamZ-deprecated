@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using GameSaving;
+﻿using GameSaving;
 using GameSaving.States;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Main : MonoBehaviour
 {

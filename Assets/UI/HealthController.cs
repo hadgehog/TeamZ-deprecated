@@ -16,19 +16,20 @@ public class HealthController : MonoBehaviour
 
     void Start()
     {
-        this.Main.GameController.Loaded.Subscribe(_ =>
-        {
-            this.character = EntitiesStorage.Instance.Entities.Values.Where(o => o.GetComponent<Lizard>() != null).FirstOrDefault()?.GetComponent<Lizard>();
-        });
+        this.Main.GameController.Loaded.Subscribe(_ => Loaded());
+        this.Loaded();
+    }
+
+    public void Loaded()
+    {
+        this.character = EntitiesStorage.Instance.Entities.Values.Where(o => o.GetComponent<Lizard>() != null).FirstOrDefault()?.GetComponent<Lizard>();
     }
 
     void Update()
     {
         if (this.character)
         {
-            this.Text.text = "Health: " + this.character.Health.ToString();
-            this.Text.text += "  ";
-            this.Text.text += "Armor: " + this.character.Armor.ToString();
+            this.Text.text = $"Health: {this.character.Health.ToString()} Armor: {this.character.Armor.ToString()}";
         }
     }
 }
