@@ -42,8 +42,8 @@ public class DirectionalCamera : MonoBehaviourWithState<CameraState>
     {
         if (this.target)
         {
-            Vector3 point = GetComponent<Camera>().WorldToViewportPoint(new Vector3(this.target.position.x, this.target.position.y + 0.5f, this.target.position.z));
-            Vector3 delta = new Vector3(this.target.position.x, this.target.position.y + 0.5f, this.target.position.z) - GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
+            Vector3 point = GetComponent<Camera>().WorldToViewportPoint(new Vector3(this.target.position.x, this.target.position.y + 1.5f, this.target.position.z));
+            Vector3 delta = new Vector3(this.target.position.x, this.target.position.y + 1.5f, this.target.position.z) - GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
             Vector3 destination = this.transform.position + delta;
 
             this.transform.position = Vector3.SmoothDamp(this.transform.position, destination, ref velocity, dampTime);
