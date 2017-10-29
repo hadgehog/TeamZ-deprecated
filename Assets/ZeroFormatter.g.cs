@@ -32,6 +32,11 @@ namespace ZeroFormatter
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::CharacterControllerScript.FightMode?>.Register(new ZeroFormatter.DynamicObjectSegments.NullableCharacterControllerScript_FightModeFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::CharacterControllerScript.FightMode?>.Register(new NullableEqualityComparer<global::CharacterControllerScript.FightMode>());
             
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::DoorScript.DoorState>.Register(new ZeroFormatter.DynamicObjectSegments.DoorScript_DoorStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::DoorScript.DoorState>.Register(new ZeroFormatter.DynamicObjectSegments.DoorScript_DoorStateEqualityComparer());
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::DoorScript.DoorState?>.Register(new ZeroFormatter.DynamicObjectSegments.NullableDoorScript_DoorStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::DoorScript.DoorState?>.Register(new NullableEqualityComparer<global::DoorScript.DoorState>());
+            
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.MonoBehaviourStateKind>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.MonoBehaviourStateKindFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::GameSaving.States.MonoBehaviourStateKind>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.MonoBehaviourStateKindEqualityComparer());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.MonoBehaviourStateKind?>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.NullableMonoBehaviourStateKindFormatter<ZeroFormatter.Formatters.DefaultResolver>());
@@ -1269,6 +1274,77 @@ namespace ZeroFormatter.DynamicObjectSegments
         }
 
         public int GetHashCode(global::CharacterControllerScript.FightMode x)
+        {
+            return (int)x;
+        }
+    }
+
+
+
+    public class DoorScript_DoorStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::DoorScript.DoorState>
+        where TTypeResolver : ITypeResolver, new()
+    {
+        public override int? GetLength()
+        {
+            return 4;
+        }
+
+        public override int Serialize(ref byte[] bytes, int offset, global::DoorScript.DoorState value)
+        {
+            return BinaryUtil.WriteInt32(ref bytes, offset, (Int32)value);
+        }
+
+        public override global::DoorScript.DoorState Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        {
+            byteSize = 4;
+            return (global::DoorScript.DoorState)BinaryUtil.ReadInt32(ref bytes, offset);
+        }
+    }
+
+
+    public class NullableDoorScript_DoorStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::DoorScript.DoorState?>
+        where TTypeResolver : ITypeResolver, new()
+    {
+        public override int? GetLength()
+        {
+            return 5;
+        }
+
+        public override int Serialize(ref byte[] bytes, int offset, global::DoorScript.DoorState? value)
+        {
+            BinaryUtil.WriteBoolean(ref bytes, offset, value.HasValue);
+            if (value.HasValue)
+            {
+                BinaryUtil.WriteInt32(ref bytes, offset + 1, (Int32)value.Value);
+            }
+            else
+            {
+                BinaryUtil.EnsureCapacity(ref bytes, offset, offset + 5);
+            }
+
+            return 5;
+        }
+
+        public override global::DoorScript.DoorState? Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        {
+            byteSize = 5;
+            var hasValue = BinaryUtil.ReadBoolean(ref bytes, offset);
+            if (!hasValue) return null;
+
+            return (global::DoorScript.DoorState)BinaryUtil.ReadInt32(ref bytes, offset + 1);
+        }
+    }
+
+
+
+    public class DoorScript_DoorStateEqualityComparer : IEqualityComparer<global::DoorScript.DoorState>
+    {
+        public bool Equals(global::DoorScript.DoorState x, global::DoorScript.DoorState y)
+        {
+            return (Int32)x == (Int32)y;
+        }
+
+        public int GetHashCode(global::DoorScript.DoorState x)
         {
             return (int)x;
         }

@@ -7,9 +7,9 @@ using UniRx;
 
 public class LevelManager
 {
-    public LevelInformation CurrentLevel;
+    public Level CurrentLevel;
 
-    public async Task Load(LevelInformation level)
+    public async Task LoadAsync(Level level)
     {
         if (this.CurrentLevel != null)
             await SceneManager.UnloadSceneAsync(this.CurrentLevel.Scene);

@@ -5,37 +5,26 @@ using UniRx;
 using GameSaving.MonoBehaviours;
 using System.Linq;
 using System;
+using System.Collections;
 
-public class DirectionalCamera : MonoBehaviourWithState<CameraState>
+public class DirectionalCamera : MonoBehaviour
 {
     public float dampTime = 0.3f;
     public Transform target;
+    public Main Main;
 
-    private GameController<GameState> gameController;
-    private Guid playerId;
     private Vector3 velocity = Vector3.zero;
 
-    public override CameraState GetState()
+    private void Start()
     {
-        this.playerId = this.target.GetComponent<Entity>().Id;
-
-        return new CameraState
-        {
-            PlayerId = this.playerId,
-            Position = this.transform.localPosition
-        };
+        this.Main.GameController.Loaded.Subscribe(_ => Loaded());
+        this.Loaded();
     }
 
-    public override void Loaded()
+    private void Loaded()
     {
-        var player = EntitiesStorage.Instance.Entities[this.playerId];
-        this.target = player.gameObject.transform;
-    }
-
-    public override void SetState(CameraState state)
-    {
-        this.playerId = state.PlayerId;
-        this.transform.localPosition = state.Position;
+        this.target = EntitiesStorage.Instance.Entities.Values.
+            Where(o => o.GetComponent<Lizard>()).FirstOrDefault().transform;
     }
 
     void Update()
