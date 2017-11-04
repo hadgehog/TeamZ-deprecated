@@ -158,7 +158,7 @@ namespace GameSaving
         {
             this.EnttiesStorage.Entities.Clear();
             this.EnttiesStorage.Root = GameObject.Find("Root");
-            GameObject.Destroy(this.EnttiesStorage.Root);
+            GameObject.DestroyImmediate(this.EnttiesStorage.Root);
         }
 
         private void RestoreGameState(TGameState gameState)

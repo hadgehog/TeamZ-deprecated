@@ -37,6 +37,7 @@ public class CharacterControllerScript : MonoBehaviour
     protected ICharacter Character;
 
     protected FightMode fightMode = FightMode.None;
+    private bool loadingStarted;
 
     // Use this for initialization
     protected virtual void Start()
@@ -118,6 +119,13 @@ public class CharacterControllerScript : MonoBehaviour
 
         if (col.gameObject.GetComponent<AbyssCollider>() != null)
         {
+            // Something strange happening with this OnTriggerEnter
+            // It called OnTriggerEnter several times when it ought to only one
+            if (this.loadingStarted)
+                return;
+
+            this.loadingStarted = true;
+
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             GameObject.FindObjectOfType<Main>().GameController.LoadAsync("test");
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
