@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class LizardController : CharacterControllerScript
 {
-    // TODO: add specific Lizard properties and behavior
-    public Transform punch;
-    public Transform kick;
+	// TODO: add specific Lizard properties and behavior
 
-    public float punchRadius;
-    public float kickRadius;
-
-    protected override void Start()
+	protected override void Start()
     {
         base.Start();
     }

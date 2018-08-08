@@ -10,7 +10,13 @@ public class CharacterControllerScript : MonoBehaviour
     public Transform GroundCheck;
     public LayerMask WhatIsGround;
 
-    public enum Direction
+	public Transform Punch;
+	public float PunchRadius;
+
+	public Transform Kick;
+	public float KickRadius;
+
+	public enum Direction
     {
         Left,
         Right,
@@ -37,6 +43,7 @@ public class CharacterControllerScript : MonoBehaviour
     protected ICharacter Character;
 
     protected FightMode fightMode = FightMode.None;
+
     private bool loadingStarted;
 
     // Use this for initialization
