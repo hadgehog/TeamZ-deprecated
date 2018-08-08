@@ -12,16 +12,21 @@ public class MainView : MonoBehaviour
 	private Dependency<BlackScreen> blackScreen;
 
 	public async void PlayAsync()
-	{
-		var gameController = this.Main.Value.GameController;
+    {
+        var gameController = this.Main.Value.GameController;
 
-		await this.blackScreen.Value.ShowAsync();
-		this.gameObject.SetActive(false);
-		await gameController.LoadAsync(Level.Laboratory);
-		await this.blackScreen.Value.HideAsync();
-	}
+        await this.blackScreen.Value.ShowAsync();
+        this.HideMainMenu();
+        await gameController.LoadAsync(Level.Laboratory);
+        await this.blackScreen.Value.HideAsync();
+    }
 
-	public void Quit()
+    public void HideMainMenu()
+    {
+        this.gameObject.SetActive(false);
+    }
+
+    public void Quit()
 	{
 	}
 
