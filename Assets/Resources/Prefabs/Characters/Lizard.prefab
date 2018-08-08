@@ -22,7 +22,7 @@ GameObject:
   m_Layer: 0
   m_Name: arm
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -59,7 +59,7 @@ GameObject:
   m_Layer: 0
   m_Name: leg
   m_TagString: Untagged
-  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -74,7 +74,7 @@ GameObject:
   m_Layer: 0
   m_Name: groundCheck
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -199,7 +199,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 80
   armor: 0
-  damage: 10
+  punchDamage: 10
+  kickDamage: 15
 --- !u!114 &114378013384149246
 MonoBehaviour:
   m_ObjectHideFlags: 1

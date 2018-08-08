@@ -23,21 +23,33 @@ public class Fight2D : MonoBehaviour
 		return (current != null) ? current.gameObject : null;
 	}
 
+	// bool allTargets - set true for Tail Stroke
 	public static void Action(Vector2 point, float radius, int layerMask, float damage, bool allTargets)
 	{
-		//Collider2D[] colliders = Physics2D.OverlapCircleAll(point, radius, 1 << layerMask);
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(point, radius, 1 << layerMask);
 
-		//if (!allTargets)
-		//{
-		//	GameObject obj = GetNearTarget(point, colliders);
+		// hit concrete target
+		if (!allTargets)
+		{
+			GameObject obj = GetNearTarget(point, colliders);
+
+			if(obj != null)
+			{
+				Debug.Log("Fight2D::Action() - Aim object founded and punched!!!");
+			}
+			else
+			{
+				Debug.Log("Fight2D::Action() - poshel nahui");
+			}
 
 		//	if (obj != null && obj.GetComponent<EnemyHP>())
 		//	{
 		//		obj.GetComponent<EnemyHP>().HP -= damage;
 		//	}
-		//	return;
-		//}
+			return;
+		}
 
+		// hit all targets in radius
 		//foreach (Collider2D hit in colliders)
 		//{
 		//	if (hit.GetComponent<EnemyHP>())

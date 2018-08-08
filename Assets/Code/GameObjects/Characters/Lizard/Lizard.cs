@@ -13,8 +13,9 @@ public class Lizard : Character<LizardState>
         return new LizardState
         {
             Armor = this.Armor,
-            Damage = this.Damage,
-            Health = this.Health
+            PunchDamage = this.PunchDamage,
+			KickDamage = this.KickDamage,
+			Health = this.Health
         };
     }
 

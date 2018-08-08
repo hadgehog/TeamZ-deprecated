@@ -1,16 +1,17 @@
 ﻿using GameSaving.MonoBehaviours;
 using GameSaving.States.Charaters;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using static CharacterControllerScript;
 
 public interface ICharacter
 {
     int Health { get; set; }
     int Armor { get; set; }
-    int Damage { get; set; }
+    int PunchDamage { get; set; }
+	int KickDamage { get; set; }
 
-    void TakeArmor(int armor);
-    int MakeDamage();
+	void TakeArmor(int armor);
+    int MakeDamage(FightMode fightMode);
     void TakeDamage(int damage);
     void TakeHealth(int health);
 }
@@ -26,9 +27,12 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
     private int armor;
 
     [SerializeField]
-    private int damage;
+    private int punchDamage;
 
-    public int Health
+	[SerializeField]
+	private int kickDamage;
+
+	public int Health
     {
         get { return this.health; }
         set { this.health = value; }
@@ -40,17 +44,24 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
         set { this.armor = value; }
     }
 
-    public int Damage
+    public int PunchDamage
     {
-        get { return this.damage; }
-        set { this.damage = value; }
+        get { return this.punchDamage; }
+        set { this.punchDamage = value; }
     }
 
-    public override void SetState(TState state)
+	public int KickDamage
+	{
+		get { return this.kickDamage; }
+		set { this.kickDamage = value; }
+	}
+
+	public override void SetState(TState state)
     {
         this.Armor = state.Armor;
-        this.Damage = state.Damage;
-        this.Health = state.Health;
+        this.PunchDamage = state.PunchDamage;
+		this.KickDamage = state.KickDamage;
+		this.Health = state.Health;
     }
 
 
@@ -76,9 +87,12 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
         }
     }
 
-    public int MakeDamage()
+    public int MakeDamage(FightMode fightMode)
     {
-        return this.Damage;
+		if (fightMode == FightMode.Punch)
+			return this.PunchDamage;
+		else
+			return this.KickDamage;
     }
 
     public void TakeHealth(int value)

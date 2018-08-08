@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class CharacterControllerScript : MonoBehaviour
 {
@@ -90,13 +89,17 @@ public class CharacterControllerScript : MonoBehaviour
         {
             this.fightMode = FightMode.Punch;
             this.anim.SetTrigger("Punch");
-        }
 
-        if (Input.GetKeyDown(KeyCode.X))
+			Fight2D.Action(Punch.position, PunchRadius, 8, this.Character.PunchDamage, false);
+		}
+
+		if (Input.GetKeyDown(KeyCode.X))
         {
             this.fightMode = FightMode.Kick;
             this.anim.SetTrigger("Kick");
-        }
+
+			Fight2D.Action(Kick.position, KickRadius, 8, this.Character.KickDamage, false);
+		}
 
         if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space))
         {

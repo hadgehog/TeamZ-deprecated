@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZeroFormatter;
+﻿using ZeroFormatter;
 
 namespace GameSaving.States.Charaters
 {
-    public abstract class CharacterState : MonoBehaviourState
+	public abstract class CharacterState : MonoBehaviourState
     {
         [Index(0)]
         public virtual int Health
@@ -24,10 +19,17 @@ namespace GameSaving.States.Charaters
         }
 
         [Index(2)]
-        public virtual int Damage
-        {
+        public virtual int PunchDamage
+		{
             get;
             set;
         }
-    }
+
+		[Index(3)]
+		public virtual int KickDamage
+		{
+			get;
+			set;
+		}
+	}
 }
