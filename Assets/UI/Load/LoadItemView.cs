@@ -1,3 +1,5 @@
+using Assets.Code.Helpers;
+using Assets.UI;
 using GameSaving;
 using UniRx;
 using UnityEngine;
@@ -5,7 +7,7 @@ using UnityEngine.UI;
 
 namespace TeamZ.Assets.UI.Load
 {
-	public class LoadItem : MonoBehaviour
+	public class LoadItemView : MonoBehaviour
 	{
 		public Text SlotView;
 		public string SlotName { get; set; }

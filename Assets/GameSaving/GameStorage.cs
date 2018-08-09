@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using ZeroFormatter;
@@ -11,7 +12,7 @@ namespace GameSaving
 		private const string SaveDirectory = "Saves";
 
 		private readonly string path;
-		private readonly List<string> slots;
+		private readonly HashSet<string> slots;
 
 		public IEnumerable<string> Slots
 		{
@@ -23,12 +24,12 @@ namespace GameSaving
 
 		public GameStorage()
 		{
-			this.slots = new List<string>();
-
 			this.path = Path.Combine(Application.persistentDataPath, SaveDirectory);
 
 			if (!Directory.Exists(this.path))
 				Directory.CreateDirectory(this.path);
+
+			this.slots = new HashSet<string>(Directory.EnumerateFiles(this.path).Select(Path.GetFileNameWithoutExtension));
 		}
 
 		public async Task<TGameState> LoadAsync(string slotName)
@@ -52,6 +53,11 @@ namespace GameSaving
 			using (var writer = new FileStream(this.path + slotName + ".save", FileMode.Create))
 			{
 				await writer.WriteAsync(bytes, 0, bytes.Length);
+			}
+
+			if (!this.slots.Contains(slotName))
+			{
+				this.slots.Add(slotName);
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Assets.Code.Helpers;
+using Assets.UI;
 using Effects;
 using GameObjects.Activation.Core;
 using GameSaving;
@@ -8,7 +9,8 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {
-	private readonly Dependency<BlackScreen> loadingEffect;
+	private readonly Dependency<BlackScreen> BlackScreen;
+	private readonly Dependency<ViewRouter> ViewRouter;
 
 	public GameController<GameState> GameController
 	{
@@ -34,9 +36,20 @@ public class Main : MonoBehaviour
 
 		if (Input.GetKeyUp(KeyCode.F9))
 		{
-			await this.loadingEffect.Value.ShowAsync();
+			await this.BlackScreen.Value.ShowAsync();
 			await this.GameController.LoadAsync("test");
-			await this.loadingEffect.Value.HideAsync();
+			await this.BlackScreen.Value.HideAsync();
+		}
+
+		if (Input.GetKeyUp(KeyCode.Escape))
+		{
+			if (this.ViewRouter.Value.MainView.isActiveAndEnabled)
+			{
+				this.ViewRouter.Value.ShowGameView();
+				return;
+			}
+
+			this.ViewRouter.Value.ShowMainView();
 		}
 	}
 

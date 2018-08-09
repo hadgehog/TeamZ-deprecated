@@ -11,6 +11,7 @@ using Effects;
 using GameSaving.States.Charaters;
 using GameObjects.Levels;
 using Assets.Code.Helpers;
+using Assets.UI;
 
 namespace GameSaving
 {
@@ -22,7 +23,8 @@ namespace GameSaving
 	public class GameController<TGameState> : IGameController
 		where TGameState : GameState, new()
 	{
-		private Dependency<BlackScreen> blackScreen;
+		private Dependency<BlackScreen> BlackScreen;
+		private Dependency<ViewRouter> ViewRouter;
 
 		public GameController()
 		{
@@ -33,7 +35,13 @@ namespace GameSaving
 			this.EnttiesStorage.Entities.Clear();
 
 			MessageBroker.Default.Receive<LoadFromSlotName>().
-				Subscribe(async o => await this.LoadAsync(o.SlotName));
+				Subscribe(async o =>
+				{
+					await this.BlackScreen.Value.ShowAsync();
+					await this.LoadAsync(o.SlotName);
+					this.ViewRouter.Value.ShowGameView();
+					await this.BlackScreen.Value.HideAsync();
+				});
 		}
 
 		public EntitiesStorage EnttiesStorage
@@ -113,7 +121,7 @@ namespace GameSaving
 
 		public async void SwitchLevelAsync(Level level, string locationName)
 		{
-			await this.blackScreen.Value.ShowAsync();
+			await this.BlackScreen.Value.ShowAsync();
 			var autoSaveSlot = $"Autosave [{level.Name}-{DateTime.Now.ToString("dd_MMMM_yyyy")}]";
 			var gameState = this.GetState();
 			await this.SaveAsync(gameState, autoSaveSlot);
@@ -141,7 +149,7 @@ namespace GameSaving
 			}
 
 			Time.timeScale = 1;
-			await this.blackScreen.Value.HideAsync();
+			await this.BlackScreen.Value.HideAsync();
 		}
 
 		private void Bootstrap(TGameState gameState)
