@@ -24,38 +24,55 @@ public class Fight2D : MonoBehaviour
 	}
 
 	// bool allTargets - set true for Tail Stroke
-	public static void Action(Vector2 point, float radius, int layerMask, float damage, bool allTargets)
+	public static void Action(Vector2 point, float radius, int[] layers, int damage, bool allTargets)
 	{
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(point, radius, 1 << layerMask);
+		int finalLayerMask = 8;
 
-		// hit concrete target
-		if (!allTargets)
+		foreach(int layer in layers)
 		{
+			int layerMask = 1 << layer;
+			finalLayerMask |= layerMask;
+		}
+
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(point, radius, finalLayerMask);
+
+		if (allTargets)		// hit all targets in radius
+		{
+			Debug.Log("Fight2D::Action() - hit all targets in radius");
+
+			foreach (Collider2D hit in colliders)
+			{
+				if (hit != null && hit.GetComponent<Enemy>() != null)
+				{
+					hit.GetComponent<Enemy>().TakeDamage(damage);
+					Debug.Log(hit.name);
+				}
+			}			
+		}
+		else	// hit concrete target
+		{
+			Debug.Log("Fight2D::Action() - hit concrete target");
+
 			GameObject obj = GetNearTarget(point, colliders);
 
-			if(obj != null)
+			if (obj != null)
 			{
-				Debug.Log("Fight2D::Action() - Aim object founded and punched!!!");
+				if (obj.GetComponent<Enemy>() != null)
+				{
+					obj.GetComponent<Enemy>().TakeDamage(damage);
+				}
+				else if (obj.GetComponent<LevelObject>() != null)
+				{
+
+				}
+
+				Debug.Log("Fight2D::Action() - object founded");
+				Debug.Log(obj.name);
 			}
 			else
 			{
 				Debug.Log("Fight2D::Action() - poshel nahui");
 			}
-
-		//	if (obj != null && obj.GetComponent<EnemyHP>())
-		//	{
-		//		obj.GetComponent<EnemyHP>().HP -= damage;
-		//	}
-			return;
 		}
-
-		// hit all targets in radius
-		//foreach (Collider2D hit in colliders)
-		//{
-		//	if (hit.GetComponent<EnemyHP>())
-		//	{
-		//		hit.GetComponent<EnemyHP>().HP -= damage;
-		//	}
-		//}
 	}
 }

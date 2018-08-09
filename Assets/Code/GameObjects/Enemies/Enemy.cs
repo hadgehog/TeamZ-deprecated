@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float HP = 100.0f;
-    public float Damage = 10.0f;
+    public int HP = 100;
+    public int Damage = 10;
+
+	public void TakeDamage(int value)
+	{
+		this.Damage = value;
+	}
+
+	public int MakeDamage()
+	{
+		return this.Damage;
+	}
 }

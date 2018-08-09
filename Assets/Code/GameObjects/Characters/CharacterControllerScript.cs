@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 
+/*
+ * TODO: add more layers for ground check (level object, enemy)
+ * */
+
 public class CharacterControllerScript : MonoBehaviour
 {
 	public float RunSpeed;
@@ -85,12 +89,14 @@ public class CharacterControllerScript : MonoBehaviour
 	// called once per frame
 	protected virtual void Update()
 	{
+		int[] activeLayersToInteraction = { 8, 9, 10 };
+
 		if (Input.GetKeyDown(KeyCode.Z))
 		{
 			this.fightMode = FightMode.Punch;
 			this.anim.SetTrigger("Punch");
 
-			Fight2D.Action(Punch.position, PunchRadius, 8, this.Character.PunchDamage, false);
+			Fight2D.Action(Punch.position, PunchRadius, activeLayersToInteraction, this.Character.PunchDamage, false);
 		}
 
 		if (Input.GetKeyDown(KeyCode.X))
@@ -98,7 +104,7 @@ public class CharacterControllerScript : MonoBehaviour
 			this.fightMode = FightMode.Kick;
 			this.anim.SetTrigger("Kick");
 
-			Fight2D.Action(Kick.position, KickRadius, 8, this.Character.KickDamage, false);
+			Fight2D.Action(Kick.position, KickRadius, activeLayersToInteraction, this.Character.KickDamage, false);
 		}
 
 		if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space))
