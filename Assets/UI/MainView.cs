@@ -8,29 +8,42 @@ using UnityEngine;
 
 public class MainView : MonoBehaviour
 {
-	public readonly Dependency<Main> Main;
-	private Dependency<BlackScreen> blackScreen;
+    public readonly Dependency<Main> Main;
+    
+    public LoadView LoadView;
+    public SaveView SaveView;
+    public SettingsView SettingsView;
 
-	public async void PlayAsync()
+    private Dependency<BlackScreen> blackScreen;
+
+    public async void PlayAsync()
     {
         var gameController = this.Main.Value.GameController;
 
         await this.blackScreen.Value.ShowAsync();
-        this.HideMainMenu();
+        this.Deactivate();
         await gameController.LoadAsync(Level.Laboratory);
         await this.blackScreen.Value.HideAsync();
     }
 
-    public void HideMainMenu()
+    public void Load()
     {
-        this.gameObject.SetActive(false);
+        this.Deactivate();
+        this.LoadView.Activate();
+    }   
+
+    public void Save()
+    {
+        this.Deactivate();
+        this.SaveView.Activate();
     }
 
     public void Quit()
-	{
-	}
+    {
+        Application.Quit();
+    }
 
-	public void Settings()
-	{
-	}
+    public void Settings()
+    {
+    }
 }

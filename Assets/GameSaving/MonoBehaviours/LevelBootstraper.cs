@@ -26,7 +26,7 @@ namespace GameSaving.MonoBehaviours
                 {
                     this.Main.Value.GameController.LevelManager.CurrentLevel = Level.All[this.LevelName];
                     this.Main.Value.GameController.Bootstrap(true);
-                    this.MainView.Value.HideMainMenu();
+                    this.MainView.Value.Deactivate();
                 });
             }
         }

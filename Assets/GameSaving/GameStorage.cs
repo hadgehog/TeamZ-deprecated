@@ -6,53 +6,53 @@ using ZeroFormatter;
 
 namespace GameSaving
 {
-    public class GameStorage<TGameState>
-    {
-        private const string SaveDirectory = "/Saves/";
+	public class GameStorage<TGameState>
+	{
+		private const string SaveDirectory = "Saves";
 
-        private readonly string path;
-        private readonly List<string> slots;
+		private readonly string path;
+		private readonly List<string> slots;
 
-        public IEnumerable<string> Slots
-        {
-            get
-            {
-                return this.slots;
-            }
-        }
+		public IEnumerable<string> Slots
+		{
+			get
+			{
+				return this.slots;
+			}
+		}
 
-        public GameStorage()
-        {
-            this.slots = new List<string>();
+		public GameStorage()
+		{
+			this.slots = new List<string>();
 
-            this.path = Application.persistentDataPath + SaveDirectory;
+			this.path = Path.Combine(Application.persistentDataPath, SaveDirectory);
 
-            if (!Directory.Exists(this.path))
-                Directory.CreateDirectory(this.path);
-        }
+			if (!Directory.Exists(this.path))
+				Directory.CreateDirectory(this.path);
+		}
 
-        public async Task<TGameState> LoadAsync(string slotName)
-        {
-            using (var reader = new FileStream(this.path + slotName + ".save", FileMode.Open))
-            {
-                var bytes = new byte[reader.Seek(0, SeekOrigin.End)];
-                reader.Seek(0, SeekOrigin.Begin);
+		public async Task<TGameState> LoadAsync(string slotName)
+		{
+			using (var reader = new FileStream(Path.Combine(this.path, slotName + ".save"), FileMode.Open))
+			{
+				var bytes = new byte[reader.Seek(0, SeekOrigin.End)];
+				reader.Seek(0, SeekOrigin.Begin);
 
-                await reader.ReadAsync(bytes, 0, bytes.Length);
+				await reader.ReadAsync(bytes, 0, bytes.Length);
 
-                var gameState = ZeroFormatterSerializer.Deserialize<TGameState>(bytes);
+				var gameState = ZeroFormatterSerializer.Deserialize<TGameState>(bytes);
 
-                return gameState;
-            }
-        }
+				return gameState;
+			}
+		}
 
-        public async Task SaveAsync(TGameState game, string slotName)
-        {
-            var bytes = ZeroFormatterSerializer.Serialize(game);
-            using (var writer = new FileStream(this.path + slotName + ".save", FileMode.Create))
-            {
-                await writer.WriteAsync(bytes, 0, bytes.Length);
-            }
-        }
-    }
+		public async Task SaveAsync(TGameState game, string slotName)
+		{
+			var bytes = ZeroFormatterSerializer.Serialize(game);
+			using (var writer = new FileStream(this.path + slotName + ".save", FileMode.Create))
+			{
+				await writer.WriteAsync(bytes, 0, bytes.Length);
+			}
+		}
+	}
 }
