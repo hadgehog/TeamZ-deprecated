@@ -701,12 +701,13 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters
             {
                 var startOffset = offset;
 
-                offset += (8 + 4 * (2 + 1));
+                offset += (8 + 4 * (3 + 1));
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 0, value.Health);
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 1, value.Armor);
-                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 2, value.Damage);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 2, value.PunchDamage);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 3, value.KickDamage);
 
-                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 2);
+                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 3);
             }
         }
 
@@ -725,7 +726,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters
     public class LizardStateObjectSegment<TTypeResolver> : global::GameSaving.States.Charaters.LizardState, IZeroFormatterSegment
         where TTypeResolver : ITypeResolver, new()
     {
-        static readonly int[] __elementSizes = new int[]{ 4, 4, 4 };
+        static readonly int[] __elementSizes = new int[]{ 4, 4, 4, 4 };
 
         readonly ArraySegment<byte> __originalBytes;
         readonly global::ZeroFormatter.DirtyTracker __tracker;
@@ -760,7 +761,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters
         }
 
         // 2
-        public override int Damage
+        public override int PunchDamage
         {
             get
             {
@@ -769,6 +770,19 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters
             set
             {
                 ObjectSegmentHelper.SetFixedProperty<TTypeResolver, int>(__originalBytes, 2, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+            }
+        }
+
+        // 3
+        public override int KickDamage
+        {
+            get
+            {
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, int>(__originalBytes, 3, __binaryLastIndex, __extraFixedBytes, __tracker);
+            }
+            set
+            {
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, int>(__originalBytes, 3, __binaryLastIndex, __extraFixedBytes, value, __tracker);
             }
         }
 
@@ -781,7 +795,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters
             this.__tracker = dirtyTracker = dirtyTracker.CreateChild();
             this.__binaryLastIndex = BinaryUtil.ReadInt32(ref __array, originalBytes.Offset + 4);
 
-            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 2, __elementSizes);
+            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 3, __elementSizes);
 
         }
 
@@ -800,13 +814,14 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters
             if (__extraFixedBytes != null || __tracker.IsDirty)
             {
                 var startOffset = offset;
-                offset += (8 + 4 * (2 + 1));
+                offset += (8 + 4 * (3 + 1));
 
                 offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
                 offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 1, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
                 offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 2, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 3, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
 
-                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 2);
+                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 3);
             }
             else
             {

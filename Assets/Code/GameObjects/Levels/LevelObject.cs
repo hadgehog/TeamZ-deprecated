@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class LevelObject : MonoBehaviour
 {
-    public float HP = 100.0f;
-    public float HitImpuls = 0.5f;
+    public int Strength = 100;
+	public int Weight = 100;
+	public float HitImpuls = 0.5f;
     public bool IsDestructible = false;
 
-    void OnTriggerEnter(Collider other)
+	void OnTriggerEnter(Collider other)
     {
 
     }
