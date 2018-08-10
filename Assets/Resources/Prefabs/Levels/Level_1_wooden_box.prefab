@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 61090403505915270}
   - component: {fileID: 50490807590353562}
   - component: {fileID: 114532943678420652}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Level_1_wooden_box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1091919598450174}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.3, y: -2.83, z: 0}
+  m_LocalPosition: {x: 19, y: -2.83, z: 0}
   m_LocalScale: {x: 1.1999999, y: 1.1999999, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Weight: 100
   Strength: 100
-  IsDestructible: 0
+  IsDestructible: 1
 --- !u!212 &212986706663159004
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -42,9 +42,17 @@ public class Fight2D : MonoBehaviour
 
 			foreach (Collider2D hit in colliders)
 			{
-				if (hit != null && hit.GetComponent<Enemy>() != null)
+				if (hit != null)
 				{
-					hit.GetComponent<Enemy>().TakeDamage(damage);
+					if (hit.GetComponent<Enemy>() != null)
+					{
+						hit.GetComponent<Enemy>().TakeDamage(damage);
+					}
+					else if (hit.GetComponent<LevelObject>() != null)
+					{
+						hit.GetComponent<LevelObject>().TakeDamage(damage);
+					}
+
 					Debug.Log(hit.name);
 				}
 			}			
@@ -63,7 +71,14 @@ public class Fight2D : MonoBehaviour
 				}
 				else if (obj.GetComponent<LevelObject>() != null)
 				{
-
+					if (obj.GetComponent<LevelObject>().IsDestructible)
+					{
+						obj.GetComponent<LevelObject>().TakeDamage(damage);
+					}
+					else
+					{
+						obj.GetComponent<LevelObject>().TakeImpuls(damage);
+					}
 				}
 
 				Debug.Log("Fight2D::Action() - object founded");

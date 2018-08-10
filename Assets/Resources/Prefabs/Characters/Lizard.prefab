@@ -219,6 +219,12 @@ MonoBehaviour:
   WhatIsGround:
     serializedVersion: 2
     m_Bits: 256
+  WhatIsLevelObject:
+    serializedVersion: 2
+    m_Bits: 512
+  WhatIsEnemy:
+    serializedVersion: 2
+    m_Bits: 1024
   Punch: {fileID: 4946839098338384}
   PunchRadius: 0.5
   Kick: {fileID: 4495286561585158}

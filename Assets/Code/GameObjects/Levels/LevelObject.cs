@@ -10,8 +10,32 @@ public class LevelObject : MonoBehaviour
 
 	private float hitImpuls = 0.5f;
 
-	void OnTriggerEnter(Collider other)
-    {
+	public void TakeDamage(int value)
+	{
+		this.Strength -= value;
 
-    }
+		if (this.Strength <= 0)
+		{
+			this.Strength = 0;
+		}
+
+		Debug.Log("LevelObject's HP = " + this.Strength);
+	}
+
+	public void TakeImpuls(float value)
+	{
+		// TODO: add logic
+
+		Debug.Log("LevelObject take an impuls = " + value);
+	}
+
+	protected virtual void FixedUpdate()
+	{
+		// TODO: add logic
+
+		if (this.Strength <= 0)
+		{
+			Debug.Log("LevelObject is destroyed!");
+		}
+	}
 }

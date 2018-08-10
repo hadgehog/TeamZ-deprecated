@@ -1,9 +1,5 @@
 ﻿using UnityEngine;
 
-/*
- * TODO: add more layers for ground check (level object, enemy)
- * */
-
 public class CharacterControllerScript : MonoBehaviour
 {
 	public float RunSpeed;
@@ -11,7 +7,10 @@ public class CharacterControllerScript : MonoBehaviour
 	public float JumpForce;
 
 	public Transform GroundCheck;
+
 	public LayerMask WhatIsGround;
+	public LayerMask WhatIsLevelObject;
+	public LayerMask WhatIsEnemy;
 
 	public Transform Punch;
 	public float PunchRadius;
@@ -61,7 +60,7 @@ public class CharacterControllerScript : MonoBehaviour
 	protected virtual void FixedUpdate()
 	{
 		this.fightMode = FightMode.None;
-		this.IsGrounded = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, this.WhatIsGround);
+		this.IsGrounded = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, (this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy));
 
 		this.anim.SetBool("Ground", this.IsGrounded);
 		this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
