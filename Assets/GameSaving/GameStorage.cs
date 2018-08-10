@@ -34,7 +34,7 @@ namespace GameSaving
 
 		public async Task<TGameState> LoadAsync(string slotName)
 		{
-			using (var reader = new FileStream(Path.Combine(this.path, slotName + ".save"), FileMode.Open))
+			using (var reader = new FileStream(this.CreateFilePath(slotName), FileMode.Open))
 			{
 				var bytes = new byte[reader.Seek(0, SeekOrigin.End)];
 				reader.Seek(0, SeekOrigin.Begin);
@@ -50,7 +50,8 @@ namespace GameSaving
 		public async Task SaveAsync(TGameState game, string slotName)
 		{
 			var bytes = ZeroFormatterSerializer.Serialize(game);
-			using (var writer = new FileStream(this.path + slotName + ".save", FileMode.Create))
+			var path = this.CreateFilePath(slotName);
+			using (var writer = new FileStream(path, FileMode.Create))
 			{
 				await writer.WriteAsync(bytes, 0, bytes.Length);
 			}
@@ -59,6 +60,11 @@ namespace GameSaving
 			{
 				this.slots.Add(slotName);
 			}
+		}
+
+		private string CreateFilePath(string slotName)
+		{
+			return Path.Combine(this.path, slotName + ".save");
 		}
 	}
 }
