@@ -70,6 +70,7 @@ namespace GameSaving
 
 		public void Bootstrap(bool loaded = false)
 		{
+			this.EnttiesStorage.Entities.Clear();
 			foreach (var entity in GameObject.FindObjectsOfType<Entity>())
 			{
 				entity.LevelId = this.LevelManager.CurrentLevel.Id;
