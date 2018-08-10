@@ -10,25 +10,25 @@ using UnityEngine.SceneManagement;
 
 namespace GameSaving.MonoBehaviours
 {
-    public class LevelBootstraper : MonoBehaviour
-    {
-        public string LevelName;
+	public class LevelBootstraper : MonoBehaviour
+	{
+		public string LevelName;
 
-        Dependency<Main> Main;
-        Dependency<MainView> MainView;
+		private Dependency<Main> Main;
+		private Dependency<MainView> MainView;
 
-        private void Start()
-        {
-            if (this.Main.Value == null)
-            {
-                SceneManager.LoadScene("Core", LoadSceneMode.Additive);
-                Observable.NextFrame().Subscribe(_ =>
-                {
-                    this.Main.Value.GameController.LevelManager.CurrentLevel = Level.All[this.LevelName];
-                    this.Main.Value.GameController.Bootstrap(true);
-                    this.MainView.Value.Deactivate();
-                });
-            }
-        }
-    }
+		private void Start()
+		{
+			if (this.Main.Value == null)
+			{
+				SceneManager.LoadScene("Core", LoadSceneMode.Additive);
+				Observable.NextFrame().Subscribe(_ =>
+				{
+					this.Main.Value.GameController.LevelManager.CurrentLevel = Level.All[this.LevelName];
+					this.Main.Value.GameController.Bootstrap(true);
+					this.MainView.Value.Deactivate();
+				});
+			}
+		}
+	}
 }
