@@ -80,7 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Weight: 100
   Strength: 100
-  IsDestructible: 0
+  isDestructible: 1
 --- !u!212 &212856644989881912
 SpriteRenderer:
   m_ObjectHideFlags: 1

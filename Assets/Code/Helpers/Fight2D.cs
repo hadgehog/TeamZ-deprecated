@@ -65,24 +65,13 @@ public class Fight2D : MonoBehaviour
 
 			if (obj != null)
 			{
-				if (obj.GetComponent<Enemy>() != null)
-				{
-					obj.GetComponent<Enemy>().TakeDamage(damage);
-				}
-				else if (obj.GetComponent<LevelObject>() != null)
-				{
-					if (obj.GetComponent<LevelObject>().IsDestructible)
-					{
-						obj.GetComponent<LevelObject>().TakeDamage(damage);
-					}
-					else
-					{
-						obj.GetComponent<LevelObject>().TakeImpuls(damage);
-					}
-				}
-
 				Debug.Log("Fight2D::Action() - object founded");
 				Debug.Log(obj.name);
+
+				if (obj.GetComponent<IDamageable>() != null)
+				{
+					obj.GetComponent<IDamageable>().TakeDamage(damage);
+				}
 			}
 			else
 			{

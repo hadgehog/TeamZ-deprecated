@@ -2,15 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IDamageable
 {
-    public int HP = 100;
-	public int Armor = 0;
-    public int Damage = 10;
-
-	public void TakeDamage(int value)
+    public int HP
 	{
-		int blockedDamage = this.Armor - value;
+		get { return this.hp; }
+		set { this.hp = value; }
+	}
+
+	public int Armor
+	{
+		get { return this.armor; }
+		set { this.armor = value; }
+	}
+
+    public int Damage
+	{
+		get { return this.damage; }
+		set { this.damage = value; }
+	}
+
+	[SerializeField]
+	private int hp = 100;
+
+	[SerializeField]
+	private int armor = 0;
+
+	[SerializeField]
+	private int damage = 10;
+
+	public void TakeDamage(int damage)
+	{
+		int blockedDamage = this.Armor - damage;
 
 		if (blockedDamage >= 0)
 		{
@@ -25,6 +48,8 @@ public class Enemy : MonoBehaviour
 		if (this.HP <= 0)
 		{
 			this.HP = 0;
+
+			Debug.Log("Enemy is die!");
 		}
 
 		Debug.Log("Enemy's HP = " + this.HP);
@@ -41,7 +66,7 @@ public class Enemy : MonoBehaviour
 
 		if(this.HP <= 0)
 		{
-			Debug.Log("Enemy is die!");
+			return;
 		}
 	}
 }
