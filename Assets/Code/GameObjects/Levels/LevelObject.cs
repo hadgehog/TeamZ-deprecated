@@ -54,7 +54,7 @@ public class LevelObject : MonoBehaviour, IDamageable
 		}
 	}
 
-	public void TakeImpuls(float value)
+	private void TakeImpuls(float value)
 	{
 		// TODO: add logic
 
