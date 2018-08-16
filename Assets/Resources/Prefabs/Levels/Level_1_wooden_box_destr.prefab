@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212856644989881912}
   - component: {fileID: 61582955571669564}
   - component: {fileID: 114041772926746400}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Level_1_wooden_box_destr
   m_TagString: Untagged
   m_Icon: {fileID: 0}

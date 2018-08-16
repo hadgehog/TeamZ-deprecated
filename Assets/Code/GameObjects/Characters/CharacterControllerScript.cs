@@ -48,6 +48,25 @@ public class CharacterControllerScript : MonoBehaviour
 
 	private bool loadingStarted;
 
+	int[] activeLayersToInteraction = { 8, 9, 10 };
+
+	public void AlertObservers(string message)
+	{
+		switch (this.fightMode)
+		{
+			case FightMode.Punch:
+				Fight2D.Action(Punch.position, PunchRadius, this.activeLayersToInteraction, this.Character.PunchDamage, false);
+				break;
+			case FightMode.Kick:
+				Fight2D.Action(Kick.position, KickRadius, this.activeLayersToInteraction, this.Character.KickDamage, false);
+				break;
+			default:
+				break;
+		}
+
+		this.fightMode = FightMode.None;
+	}
+
 	// Use this for initialization
 	protected virtual void Start()
 	{
@@ -59,7 +78,6 @@ public class CharacterControllerScript : MonoBehaviour
 
 	protected virtual void FixedUpdate()
 	{
-		this.fightMode = FightMode.None;
 		this.IsGrounded = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, (this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy));
 
 		this.anim.SetBool("Ground", this.IsGrounded);
@@ -88,22 +106,16 @@ public class CharacterControllerScript : MonoBehaviour
 	// called once per frame
 	protected virtual void Update()
 	{
-		int[] activeLayersToInteraction = { 8, 9, 10 };
-
 		if (Input.GetKeyDown(KeyCode.Z))
 		{
 			this.fightMode = FightMode.Punch;
 			this.anim.SetTrigger("Punch");
-
-			Fight2D.Action(Punch.position, PunchRadius, activeLayersToInteraction, this.Character.PunchDamage, false);
 		}
 
 		if (Input.GetKeyDown(KeyCode.X))
 		{
 			this.fightMode = FightMode.Kick;
 			this.anim.SetTrigger("Kick");
-
-			Fight2D.Action(Kick.position, KickRadius, activeLayersToInteraction, this.Character.KickDamage, false);
 		}
 
 		if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space))

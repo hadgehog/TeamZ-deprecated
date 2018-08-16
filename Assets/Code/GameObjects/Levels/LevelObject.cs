@@ -71,8 +71,6 @@ public class LevelObject : MonoBehaviour, IDamageable
 			this.Strength -= damage;
 
 			this.SwitchVisualState();
-
-			Debug.Log("LevelObject's HP = " + this.Strength);
 		}
 		else
 		{
@@ -82,7 +80,7 @@ public class LevelObject : MonoBehaviour, IDamageable
 
 	protected virtual void FixedUpdate()
 	{
-		if (this.VisualStates.Count <=0 || this.Strength <= 0)
+		if (this.VisualStates.Count <= 0 || this.Strength <= 0)
 		{
 			return;
 		}
@@ -92,8 +90,6 @@ public class LevelObject : MonoBehaviour, IDamageable
 
 	private void TakeImpuls(float value)
 	{
-		Debug.Log("LevelObject take an impuls = " + value);
-
 		var rigidBody = GetComponent<Rigidbody2D>();
 
 		if (rigidBody != null)
@@ -116,27 +112,22 @@ public class LevelObject : MonoBehaviour, IDamageable
 		}
 		else if (this.Strength >= this.FULL_HP)
 		{
-			Debug.Log(" this.Strength >= this.FULL_HP " + this.Strength);
 			this.Renderer2D.sprite = this.VisualStates[0];
 		}
 		else if (this.Strength < this.FULL_HP && this.Strength >= this.NORM_HP)
 		{
-			Debug.Log(" this.Strength < this.FULL_HP && this.Strength >= this.HALF_HP " + this.Strength);
 			this.Renderer2D.sprite = this.VisualStates[0];
 		}
 		else if (this.Strength < this.NORM_HP && this.Strength >= this.LOW_HP)
 		{
-			Debug.Log(" this.Strength < this.FULL_HP && this.Strength >= this.HALF_HP " + this.Strength);
 			this.Renderer2D.sprite = this.VisualStates[1];
 		}
 		else if (this.Strength < this.LOW_HP && this.Strength >= this.ZERO_HP)
 		{
-			Debug.Log(" this.Strength < this.HALF_HP && this.Strength >= this.LOW_HP " + this.Strength);
 			this.Renderer2D.sprite = this.VisualStates[2];
 		}
 		else if (this.Strength < this.ZERO_HP)
 		{
-			Debug.Log(" this.Strength < this.LOW_HP " + this.Strength);
 			this.Renderer2D.sprite = this.VisualStates[3];
 		}
 	}
