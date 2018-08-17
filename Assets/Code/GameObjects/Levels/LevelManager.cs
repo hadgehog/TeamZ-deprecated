@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using GameSaving.MonoBehaviours;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UniRx;
 
 public class LevelManager
 {
@@ -11,8 +10,16 @@ public class LevelManager
 
 	public async Task LoadAsync(Level level)
 	{
+		if (this.CurrentLevel == null)
+		{
+			var bootstraper = GameObject.FindObjectOfType<LevelBootstraper>();
+			Level.All.TryGetValue(bootstraper.LevelName, out this.CurrentLevel);
+		}
+
 		if (this.CurrentLevel != null)
+		{
 			await SceneManager.UnloadSceneAsync(this.CurrentLevel.Scene);
+		}
 
 		this.CurrentLevel = level;
 		await SceneManager.LoadSceneAsync(level.Scene, LoadSceneMode.Additive);
