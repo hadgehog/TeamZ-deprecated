@@ -1593,6 +1593,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 21
       objectReference: {fileID: 0}
+    - target: {fileID: 114306285818741008, guid: 4fcbc5270458cec4da7c8406506bedfb,
+        type: 2}
+      propertyPath: deltaIntesity
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4fcbc5270458cec4da7c8406506bedfb, type: 2}
   m_IsPrefabAsset: 0
