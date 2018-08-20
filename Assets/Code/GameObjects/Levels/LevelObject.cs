@@ -47,12 +47,17 @@ public class LevelObject : MonoBehaviour, IDamageable
 
 	public void TakeDamage(int damage, int impulse)
 	{
-		Debug.Log("LevelObject TakeDamage damage =  " + damage);
-		Debug.Log("LevelObject TakeDamage impulse =  " + impulse);
-
 		if (this.IsDestructible)
 		{
 			this.Strength -= damage;
+
+			if (this.Strength <= 0 && GetComponent<BoxCollider2D>() != null)
+			{
+				this.Strength = 0;
+
+				Destroy(GetComponent<BoxCollider2D>());
+				Debug.Log("LevelObject is destroyed!");
+			}
 
 			this.SwitchVisualState();
 		}
@@ -64,6 +69,11 @@ public class LevelObject : MonoBehaviour, IDamageable
 
 	protected virtual void FixedUpdate()
 	{
+		if (this.Strength <= 0)
+		{
+			return;
+		}
+
 		this.SwitchVisualState();
 	}
 
@@ -81,22 +91,6 @@ public class LevelObject : MonoBehaviour, IDamageable
 
 	private void SwitchVisualState()
 	{
-		if (this.Strength <= 0)
-		{
-			this.Strength = 0;
-
-			var collider = GetComponent<BoxCollider2D>();
-
-			if (collider != null)
-			{
-				Destroy(collider);
-				// Destroy(collider.gameObject);
-				Debug.Log("LevelObject is destroyed!");
-			}
-
-			return;
-		}
-
 		foreach (var state in this.VisualStates)
 		{
 			if (this.Strength >= state.hp)

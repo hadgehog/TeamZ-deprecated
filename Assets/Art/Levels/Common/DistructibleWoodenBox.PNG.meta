@@ -170,10 +170,10 @@ TextureImporter:
       name: DistructibleWoodenBox_0
       rect:
         serializedVersion: 2
-        x: 28
-        y: 23
-        width: 258
-        height: 259
+        x: 31
+        y: 25
+        width: 251
+        height: 256
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,7 +181,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 59ef9f55992e6f94ea5bc9691408b2aa
+      spriteID: dd311f0cd1dfd934998b8639a1625215
       vertices: []
       indices: 
       edges: []
@@ -190,9 +190,9 @@ TextureImporter:
       name: DistructibleWoodenBox_1
       rect:
         serializedVersion: 2
-        x: 327
+        x: 325
         y: 20
-        width: 250
+        width: 249
         height: 262
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -201,7 +201,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 55067b23aa9ec4c4d8fe0235597b8ec3
+      spriteID: 9199b2ae57f594241a0bbfcafde17aa0
       vertices: []
       indices: 
       edges: []
@@ -210,10 +210,10 @@ TextureImporter:
       name: DistructibleWoodenBox_2
       rect:
         serializedVersion: 2
-        x: 614
+        x: 611
         y: 20
-        width: 246
-        height: 262
+        width: 251
+        height: 261
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -221,7 +221,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 358f9767ec037344db358cf93db0660f
+      spriteID: fab9b08bf86d6be45a179341b088ef0f
       vertices: []
       indices: 
       edges: []
@@ -233,7 +233,7 @@ TextureImporter:
         x: 894
         y: 20
         width: 261
-        height: 261
+        height: 259
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -241,7 +241,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bdaf12413234abe4a9ff0b145d427227
+      spriteID: c1836755a585e6b43b58fbb59c8a9e16
       vertices: []
       indices: 
       edges: []
@@ -250,10 +250,10 @@ TextureImporter:
       name: DistructibleWoodenBox_4
       rect:
         serializedVersion: 2
-        x: 1184
+        x: 1182
         y: 20
-        width: 249
-        height: 261
+        width: 250
+        height: 260
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -261,7 +261,27 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b54ead9a87e3ac946816852d18b97f5d
+      spriteID: b36757653e11f5f4ea7f8347bae441fa
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DistructibleWoodenBox_5
+      rect:
+        serializedVersion: 2
+        x: 1456
+        y: 20
+        width: 250
+        height: 260
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4180d697dabc6254e868c7b161e929ee
       vertices: []
       indices: 
       edges: []

@@ -35,8 +35,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1339754169959356}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.39, y: -0.59, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -2.84, z: 0}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -58,7 +58,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.58, y: 2.59}
+    oldSize: {x: 2.51, y: 2.56}
     newSize: {x: 2.5, y: 2.49}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -79,16 +79,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VisualStates:
-  - hp: 80
+  - hp: 90
     texture: {fileID: 21300000, guid: deb57f7be083c9c4296e8680ace854c0, type: 3}
-  - hp: 60
+  - hp: 70
     texture: {fileID: 21300002, guid: deb57f7be083c9c4296e8680ace854c0, type: 3}
-  - hp: 40
+  - hp: 50
     texture: {fileID: 21300004, guid: deb57f7be083c9c4296e8680ace854c0, type: 3}
-  - hp: 20
+  - hp: 30
     texture: {fileID: 21300006, guid: deb57f7be083c9c4296e8680ace854c0, type: 3}
-  - hp: 0
+  - hp: 10
     texture: {fileID: 21300008, guid: deb57f7be083c9c4296e8680ace854c0, type: 3}
+  - hp: 0
+    texture: {fileID: 21300010, guid: deb57f7be083c9c4296e8680ace854c0, type: 3}
   strength: 100
   isDestructible: 1
 --- !u!212 &212376279336142396
