@@ -24,7 +24,7 @@ public class Fight2D : MonoBehaviour
 	}
 
 	// bool allTargets - set true for Tail Stroke
-	public static void Action(Vector2 point, float radius, int[] layers, int damage, bool allTargets)
+	public static void Action(Vector2 point, float radius, int[] layers, bool allTargets, int damage, int impulse)
 	{
 		int finalLayerMask = 8;
 
@@ -46,11 +46,11 @@ public class Fight2D : MonoBehaviour
 				{
 					if (hit.GetComponent<Enemy>() != null)
 					{
-						hit.GetComponent<Enemy>().TakeDamage(damage);
+						hit.GetComponent<Enemy>().TakeDamage(damage, impulse);
 					}
 					else if (hit.GetComponent<LevelObject>() != null)
 					{
-						hit.GetComponent<LevelObject>().TakeDamage(damage);
+						hit.GetComponent<LevelObject>().TakeDamage(damage, impulse);
 					}
 
 					Debug.Log(hit.name);
@@ -70,7 +70,7 @@ public class Fight2D : MonoBehaviour
 
 				if (obj.GetComponent<IDamageable>() != null)
 				{
-					obj.GetComponent<IDamageable>().TakeDamage(damage);
+					obj.GetComponent<IDamageable>().TakeDamage(damage, impulse);
 				}
 			}
 			else

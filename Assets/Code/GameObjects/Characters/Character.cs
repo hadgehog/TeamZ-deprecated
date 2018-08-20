@@ -9,6 +9,8 @@ public interface ICharacter
     int Armor { get; set; }
     int PunchDamage { get; set; }
 	int KickDamage { get; set; }
+	int PunchImpulse { get; }
+	int KickImpulse { get; }
 
 	void TakeArmor(int armor);
     int MakeDamage(FightMode fightMode);
@@ -31,6 +33,12 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
 
 	[SerializeField]
 	private int kickDamage;
+
+	[SerializeField]
+	private int punchImpulse;
+
+	[SerializeField]
+	private int kickImpulse;
 
 	public int Health
     {
@@ -56,6 +64,16 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
 		set { this.kickDamage = value; }
 	}
 
+	public int PunchImpulse
+	{
+		get { return this.punchImpulse; }
+	}
+
+	public int KickImpulse
+	{
+		get { return this.kickImpulse; }
+	}
+
 	public override void SetState(TState state)
     {
         this.Armor = state.Armor;
@@ -64,8 +82,15 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
 		this.Health = state.Health;
     }
 
+	// Use this for initialization
+	protected virtual void Start()
+	{
+		this.punchImpulse = this.PunchDamage * 20;
+		this.kickImpulse = this.KickDamage * 20;
+	}
 
-    public void TakeDamage(int value)
+
+	public void TakeDamage(int value)
     {
         int blockedDamage = this.Armor - value;
 
