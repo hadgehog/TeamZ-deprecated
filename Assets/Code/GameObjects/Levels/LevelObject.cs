@@ -1,13 +1,14 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelObject : MonoBehaviour, IDamageable
 {
-	public int Weight
+	[Serializable]
+	public struct VisualState
 	{
-		get { return this.weight; }
-		set { this.weight = value; }
+		public int hp;
+		public Sprite texture;
 	}
 
 	public int Strength
@@ -22,11 +23,9 @@ public class LevelObject : MonoBehaviour, IDamageable
 		set { this.isDestructible = value; }
 	}
 
-	public List<Sprite> VisualStates;
-	protected SpriteRenderer Renderer2D;
+	public VisualState[] VisualStates;
 
-	[SerializeField]
-	private int weight = 100;
+	protected SpriteRenderer Renderer2D;
 
 	[SerializeField]
 	private int strength = 100;
@@ -34,53 +33,43 @@ public class LevelObject : MonoBehaviour, IDamageable
 	[SerializeField]
 	private bool isDestructible = false;
 
-	private float hitImpuls = 250.0f;
-
-	// values for switching destroy states of the object
-	private int FULL_HP;
-	private int NORM_HP;
-	private int LOW_HP;
-	private int ZERO_HP;
-
 	protected virtual void Start()
 	{
 		Debug.Log("LevelObject Start");
 
-		this.FULL_HP = this.Strength;
-		this.NORM_HP = this.Strength - (this.Strength / 4);
-		this.LOW_HP = this.Strength - (this.Strength / 4) * 2;
-		this.ZERO_HP = this.Strength - (this.Strength / 4) * 3;
-
 		this.Renderer2D = GetComponent<SpriteRenderer>();
 
-		if (this.Renderer2D != null && this.VisualStates.Count > 0)
+		if (this.Renderer2D != null && this.VisualStates.Length > 0)
 		{
-			this.Renderer2D.sprite = this.VisualStates[0];
-		}
-		else
-		{
-			Debug.Log("!!!!!!!!!!!  this.Renderer2D != null " + this.Renderer2D != null);
-			Debug.Log("!!!!!!!!!!!  this.VisualStates.Count " + this.VisualStates.Count);
+			this.Renderer2D.sprite = this.VisualStates[0].texture;
 		}
 	}
 
-	public void TakeDamage(int damage)
+	public void TakeDamage(int damage, int impulse)
 	{
 		if (this.IsDestructible)
 		{
 			this.Strength -= damage;
 
+			if (this.Strength <= 0 && GetComponent<BoxCollider2D>() != null)
+			{
+				this.Strength = 0;
+
+				Destroy(GetComponent<BoxCollider2D>());
+				Debug.Log("LevelObject is destroyed!");
+			}
+
 			this.SwitchVisualState();
 		}
 		else
 		{
-			this.TakeImpuls(this.hitImpuls * damage);
+			this.TakeImpuls(impulse * damage);
 		}
 	}
 
 	protected virtual void FixedUpdate()
 	{
-		if (this.VisualStates.Count <= 0 || this.Strength <= 0)
+		if (this.Strength <= 0)
 		{
 			return;
 		}
@@ -88,47 +77,27 @@ public class LevelObject : MonoBehaviour, IDamageable
 		this.SwitchVisualState();
 	}
 
-	private void TakeImpuls(float value)
+	private void TakeImpuls(float impulse)
 	{
 		var rigidBody = GetComponent<Rigidbody2D>();
 
 		if (rigidBody != null)
 		{
-			rigidBody.AddForce(new Vector2(value, hitImpuls * 30.0f));
+			rigidBody.AddForce(new Vector2(impulse, impulse / 2.0f));
 
-			Debug.Log("LevelObject TakeImpuls done ");
+			Debug.Log("LevelObject TakeImpuls done " + impulse);
 		}
 	}
 
 	private void SwitchVisualState()
 	{
-		if (this.Strength <= 0)
+		foreach (var state in this.VisualStates)
 		{
-			this.Strength = 0;
-
-			Debug.Log("LevelObject is destroyed!");
-
-			Destroy(GetComponent<BoxCollider2D>().gameObject);
-		}
-		else if (this.Strength >= this.FULL_HP)
-		{
-			this.Renderer2D.sprite = this.VisualStates[0];
-		}
-		else if (this.Strength < this.FULL_HP && this.Strength >= this.NORM_HP)
-		{
-			this.Renderer2D.sprite = this.VisualStates[0];
-		}
-		else if (this.Strength < this.NORM_HP && this.Strength >= this.LOW_HP)
-		{
-			this.Renderer2D.sprite = this.VisualStates[1];
-		}
-		else if (this.Strength < this.LOW_HP && this.Strength >= this.ZERO_HP)
-		{
-			this.Renderer2D.sprite = this.VisualStates[2];
-		}
-		else if (this.Strength < this.ZERO_HP)
-		{
-			this.Renderer2D.sprite = this.VisualStates[3];
+			if (this.Strength >= state.hp)
+			{
+				this.Renderer2D.sprite = state.texture;
+				return;
+			}
 		}
 	}
 }

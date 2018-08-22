@@ -48,20 +48,23 @@ public class CharacterControllerScript : MonoBehaviour
 
 	private bool loadingStarted;
 
-	int[] activeLayersToInteraction = { 8, 9, 10 };
+	private int[] activeLayersToInteraction = { 8, 9, 10 };
 
 	public void AlertObservers(string message)
 	{
-		switch (this.fightMode)
+		if (message.Equals("AttackAnimationEnded"))
 		{
-			case FightMode.Punch:
-				Fight2D.Action(Punch.position, PunchRadius, this.activeLayersToInteraction, this.Character.PunchDamage, false);
-				break;
-			case FightMode.Kick:
-				Fight2D.Action(Kick.position, KickRadius, this.activeLayersToInteraction, this.Character.KickDamage, false);
-				break;
-			default:
-				break;
+			switch (this.fightMode)
+			{
+				case FightMode.Punch:
+					Fight2D.Action(Punch.position, PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse);
+					break;
+				case FightMode.Kick:
+					Fight2D.Action(Kick.position, KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse);
+					break;
+				default:
+					break;
+			}
 		}
 
 		this.fightMode = FightMode.None;

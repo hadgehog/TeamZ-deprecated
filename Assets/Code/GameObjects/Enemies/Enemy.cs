@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour, IDamageable
 	[SerializeField]
 	private int damage = 10;
 
-	public void TakeDamage(int damage)
+	public void TakeDamage(int damage, int impulse)
 	{
 		int blockedDamage = this.Armor - damage;
 
