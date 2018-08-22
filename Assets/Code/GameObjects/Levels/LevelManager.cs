@@ -12,8 +12,8 @@ public class LevelManager
 	{
 		if (this.CurrentLevel == null)
 		{
-			var bootstraper = GameObject.FindObjectOfType<LevelBootstraper>();
-			Level.All.TryGetValue(bootstraper.LevelName, out this.CurrentLevel);
+			var levelName = GameObject.FindObjectOfType<LevelBootstraper>()?.LevelName ?? string.Empty;
+			Level.All.TryGetValue(levelName, out this.CurrentLevel);
 		}
 
 		if (this.CurrentLevel != null)

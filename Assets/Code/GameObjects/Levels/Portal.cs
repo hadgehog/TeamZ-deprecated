@@ -30,14 +30,17 @@ namespace GameObjects.Levels
 #endif
 		public string Location;
 
+		[SerializeField]
 		private string sceneName;
 
 		public void Activate()
 		{
+#if UNITY_EDITOR
 			if (string.IsNullOrWhiteSpace(this.sceneName))
 			{
 				this.sceneName = this.Scene.Value?.name ?? string.Empty;
 			}
+#endif
 
 			if (!Level.All.ContainsKey(this.sceneName))
 			{
