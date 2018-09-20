@@ -50,6 +50,8 @@ public class CharacterControllerScript : MonoBehaviour
 
 	private int[] activeLayersToInteraction = { 8, 9, 10 };
 
+	private int impulseDirection = 1;
+
 	public void AlertObservers(string message)
 	{
 		if (message.Equals("AttackAnimationEnded"))
@@ -57,10 +59,10 @@ public class CharacterControllerScript : MonoBehaviour
 			switch (this.fightMode)
 			{
 				case FightMode.Punch:
-					Fight2D.Action(Punch.position, PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse);
+					Fight2D.Action(this.Punch.position, this.PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse * this.impulseDirection);
 					break;
 				case FightMode.Kick:
-					Fight2D.Action(Kick.position, KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse);
+					Fight2D.Action(this.Kick.position, this.KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse * this.impulseDirection);
 					break;
 				default:
 					break;
@@ -163,5 +165,7 @@ public class CharacterControllerScript : MonoBehaviour
 		currentScale.x *= -1;
 
 		this.transform.localScale = currentScale;
+
+		this.impulseDirection *= -1;
 	}
 }

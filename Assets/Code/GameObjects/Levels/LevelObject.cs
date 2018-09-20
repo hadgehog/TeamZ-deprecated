@@ -83,7 +83,7 @@ public class LevelObject : MonoBehaviour, IDamageable
 
 		if (rigidBody != null)
 		{
-			rigidBody.AddForce(new Vector2(impulse, impulse / 2.0f));
+			rigidBody.AddForce(new Vector2(impulse, Math.Abs(impulse / 2.0f)));
 
 			Debug.Log("LevelObject TakeImpuls done " + impulse);
 		}
