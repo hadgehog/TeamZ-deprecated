@@ -38,8 +38,6 @@ public class Fight2D : MonoBehaviour
 
 		if (allTargets)		// hit all targets in radius
 		{
-			Debug.Log("Fight2D::Action() - hit all targets in radius");
-
 			foreach (Collider2D hit in colliders)
 			{
 				if (hit != null)
@@ -52,30 +50,19 @@ public class Fight2D : MonoBehaviour
 					{
 						hit.GetComponent<LevelObject>().TakeDamage(damage, impulse);
 					}
-
-					Debug.Log(hit.name);
 				}
 			}			
 		}
 		else	// hit concrete target
 		{
-			Debug.Log("Fight2D::Action() - hit concrete target");
-
 			GameObject obj = GetNearTarget(point, colliders);
 
 			if (obj != null)
 			{
-				Debug.Log("Fight2D::Action() - object founded");
-				Debug.Log(obj.name);
-
 				if (obj.GetComponent<IDamageable>() != null)
 				{
 					obj.GetComponent<IDamageable>().TakeDamage(damage, impulse);
 				}
-			}
-			else
-			{
-				Debug.Log("Fight2D::Action() - poshel nahui");
 			}
 		}
 	}

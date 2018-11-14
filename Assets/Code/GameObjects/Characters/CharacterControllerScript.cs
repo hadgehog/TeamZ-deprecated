@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Timers;
+using System;
 
 public class CharacterControllerScript : MonoBehaviour
 {
@@ -7,10 +9,12 @@ public class CharacterControllerScript : MonoBehaviour
 	public float JumpForce;
 
 	public Transform GroundCheck;
+	public Transform ClimbCheck;
 
 	public LayerMask WhatIsGround;
 	public LayerMask WhatIsLevelObject;
 	public LayerMask WhatIsEnemy;
+	public LayerMask WhatIsSurfaceForClimbing;
 
 	public Transform Punch;
 	public float PunchRadius;
@@ -36,11 +40,16 @@ public class CharacterControllerScript : MonoBehaviour
 	}
 
 	protected bool IsGrounded = true;
+	protected bool IsClimbed = false;
+
 	protected float GroundRadius = 0.15f;
+	protected float ClimbRadius = 0.4f;
 
 	protected Animator anim;
 	protected Rigidbody2D rigidBody;
-	protected Direction currentDirection = Direction.Right;
+
+	protected Direction currentHorizontalDirection = Direction.Right;
+	protected Direction currentVerticalDirection = Direction.Up;
 
 	protected ICharacter Character;
 
@@ -51,6 +60,10 @@ public class CharacterControllerScript : MonoBehaviour
 	private int[] activeLayersToInteraction = { 8, 9, 10 };
 
 	private int impulseDirection = 1;
+
+	private Timer strikeCooldownTimer = new Timer(600);
+
+	private bool isKeyUpWasPressed = false;
 
 	public void AlertObservers(string message)
 	{
@@ -79,54 +92,100 @@ public class CharacterControllerScript : MonoBehaviour
 		this.rigidBody = GetComponent<Rigidbody2D>();
 
 		this.Character = GetComponent<Lizard>();
+
+		this.strikeCooldownTimer.Elapsed += new ElapsedEventHandler(OnStrikeCooldownTimerEvent);
 	}
 
 	protected virtual void FixedUpdate()
 	{
 		this.IsGrounded = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, (this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy));
+		this.IsClimbed = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing);
 
 		this.anim.SetBool("Ground", this.IsGrounded);
 		this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
 
-		float move = Input.GetAxis("Horizontal");
+		float horizontalMove = Input.GetAxis("Horizontal");
+		Direction horizontalDirection = this.currentHorizontalDirection;
 
-		this.anim.SetFloat("Speed", Mathf.Abs(move));
+		if (horizontalMove < 0)
+			horizontalDirection = Direction.Left;
+		else if (horizontalMove > 0)
+			horizontalDirection = Direction.Right;
 
-		this.rigidBody.velocity = new Vector2(move * this.RunSpeed, this.rigidBody.velocity.y);
-
-		Direction tempDirection = this.currentDirection;
-
-		if (move < 0)
-			tempDirection = Direction.Left;
-		else if (move > 0)
-			tempDirection = Direction.Right;
-
-		if (tempDirection != this.currentDirection)
+		if (horizontalDirection != this.currentHorizontalDirection)
 		{
-			this.currentDirection = tempDirection;
-			this.Flip();
+			this.currentHorizontalDirection = horizontalDirection;
+			this.Flip(true);
+		}
+
+		this.anim.SetFloat("Speed", Mathf.Abs(horizontalMove));
+
+		this.rigidBody.velocity = new Vector2(horizontalMove * this.RunSpeed, this.rigidBody.velocity.y);
+
+		if (this.isKeyUpWasPressed && this.IsClimbed)
+		{
+			this.rigidBody.gravityScale = 0.0f;
+
+			float verticalMove = Input.GetAxis("Vertical");
+			Direction verticalDirection = this.currentVerticalDirection;
+
+			if (verticalMove < 0)
+				verticalDirection = Direction.Down;
+			else if (verticalMove > 0)
+				verticalDirection = Direction.Up;
+
+			if (verticalDirection != this.currentVerticalDirection)
+			{
+				this.currentVerticalDirection = verticalDirection;
+				this.Flip(false);
+			}
+
+			this.rigidBody.velocity = new Vector2(this.rigidBody.velocity.x, verticalMove * this.CreepSpeed);
+		}
+		else
+		{
+			this.isKeyUpWasPressed = false;
+
+			if (this.rigidBody.gravityScale != 1)
+			{
+				Debug.Log("gravity reset to 1");
+				this.rigidBody.gravityScale = 1.0f;
+			}
+
+			if (Direction.Down == this.currentVerticalDirection)
+			{
+				this.currentVerticalDirection = Direction.Up;
+				this.Flip(false);
+			}
 		}
 	}
 
 	// called once per frame
 	protected virtual void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Z))
+		if (Input.GetKeyDown(KeyCode.Z) && !this.strikeCooldownTimer.Enabled)
 		{
 			this.fightMode = FightMode.Punch;
 			this.anim.SetTrigger("Punch");
+			this.strikeCooldownTimer.Start();
 		}
 
-		if (Input.GetKeyDown(KeyCode.X))
+		if (Input.GetKeyDown(KeyCode.X) && !this.strikeCooldownTimer.Enabled)
 		{
 			this.fightMode = FightMode.Kick;
 			this.anim.SetTrigger("Kick");
+			this.strikeCooldownTimer.Start();
 		}
 
 		if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space))
 		{
 			this.anim.SetBool("Ground", false);
 			this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
+		}
+
+		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+		{
+			this.isKeyUpWasPressed = true;
 		}
 	}
 
@@ -159,13 +218,25 @@ public class CharacterControllerScript : MonoBehaviour
 		}
 	}
 
-	private void Flip()
+	private void Flip(bool isHorizontal)
 	{
 		Vector3 currentScale = this.transform.localScale;
-		currentScale.x *= -1;
+
+		if (isHorizontal)
+		{
+			currentScale.x *= -1;
+			this.impulseDirection *= -1;
+		}
+		else
+		{
+			currentScale.y *= -1;
+		}
 
 		this.transform.localScale = currentScale;
+	}
 
-		this.impulseDirection *= -1;
+	private void OnStrikeCooldownTimerEvent(object sender, ElapsedEventArgs e)
+	{
+		this.strikeCooldownTimer.Stop();
 	}
 }

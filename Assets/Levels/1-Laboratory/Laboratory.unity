@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
+  m_AmbientSkyColor: {r: 1.0039216, g: 1.0039216, b: 1.0039216, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 0
@@ -1430,11 +1430,6 @@ Prefab:
       propertyPath: m_Name
       value: Level_1_fence (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 212876176664687992, guid: 5946fca880e873c45a114a8396e85381,
-        type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 1b9a12f35447f3f418c63a37f98688f5, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5946fca880e873c45a114a8396e85381, type: 2}
   m_IsPrefabAsset: 0
@@ -1985,11 +1980,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 27
       objectReference: {fileID: 0}
-    - target: {fileID: 212576087144293058, guid: 5d56b316691b7784bb090aac3d4f2340,
-        type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 1b9a12f35447f3f418c63a37f98688f5, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d56b316691b7784bb090aac3d4f2340, type: 2}
   m_IsPrefabAsset: 0
@@ -2116,24 +2106,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 33
       objectReference: {fileID: 0}
-    - target: {fileID: 212696008743274732, guid: 62c44f89e3be1be4bbc78e410e1e022e,
-        type: 2}
-      propertyPath: m_SortingOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4001776656840730, guid: 62c44f89e3be1be4bbc78e410e1e022e, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1.03
-      objectReference: {fileID: 0}
-    - target: {fileID: 4001776656840730, guid: 62c44f89e3be1be4bbc78e410e1e022e, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 212696008743274732, guid: 62c44f89e3be1be4bbc78e410e1e022e,
-        type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 1b9a12f35447f3f418c63a37f98688f5, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 62c44f89e3be1be4bbc78e410e1e022e, type: 2}
   m_IsPrefabAsset: 0
@@ -2181,11 +2153,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 31
       objectReference: {fileID: 0}
-    - target: {fileID: 212876176664687992, guid: 5946fca880e873c45a114a8396e85381,
-        type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 1b9a12f35447f3f418c63a37f98688f5, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5946fca880e873c45a114a8396e85381, type: 2}
   m_IsPrefabAsset: 0
