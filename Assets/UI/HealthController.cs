@@ -22,7 +22,9 @@ public class HealthController : MonoBehaviour
 
     public void Loaded()
     {
-        this.character = EntitiesStorage.Instance.Entities.Values.Where(o => o.GetComponent<Lizard>() != null).FirstOrDefault()?.GetComponent<Lizard>();
+        this.character = EntitiesStorage.Instance.Entities.Values.
+            Where(o => o.GetComponent<Lizard>() != null).
+            FirstOrDefault()?.GetComponent<Lizard>();
     }
 
     void Update()
