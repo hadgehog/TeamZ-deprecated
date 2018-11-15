@@ -14,22 +14,13 @@ namespace Assets.UI
 		public SaveView SaveView;
 		public SettingsView SettingsView;
 
-		// TODO: Rework to proper view
-		public HealthController GameView;
-
-		public void ShowGameView()
-		{
-			this.DisableAll();
-			this.GameView.Activate();
-		}
-
 		public void ShowMainView()
 		{
 			this.DisableAll();
 			this.MainView.Activate();
 		}
 
-		private void DisableAll()
+		public void DisableAll()
 		{
 			foreach (Transform view in this.transform)
 			{

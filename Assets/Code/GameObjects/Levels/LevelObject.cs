@@ -35,8 +35,6 @@ public class LevelObject : MonoBehaviour, IDamageable
 
 	protected virtual void Start()
 	{
-		Debug.Log("LevelObject Start");
-
 		this.Renderer2D = GetComponent<SpriteRenderer>();
 
 		if (this.Renderer2D != null && this.VisualStates.Length > 0)
@@ -56,7 +54,6 @@ public class LevelObject : MonoBehaviour, IDamageable
 				this.Strength = 0;
 
 				Destroy(GetComponent<BoxCollider2D>());
-				Debug.Log("LevelObject is destroyed!");
 			}
 
 			this.SwitchVisualState();
@@ -84,8 +81,6 @@ public class LevelObject : MonoBehaviour, IDamageable
 		if (rigidBody != null)
 		{
 			rigidBody.AddForce(new Vector2(impulse, Math.Abs(impulse / 2.0f)));
-
-			Debug.Log("LevelObject TakeImpuls done " + impulse);
 		}
 	}
 

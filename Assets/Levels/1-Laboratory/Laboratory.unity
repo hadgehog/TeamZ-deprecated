@@ -1220,7 +1220,7 @@ GameObject:
   - component: {fileID: 737187728}
   - component: {fileID: 737187729}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: HealthSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1288,7 +1288,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 70
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2277,6 +2277,7 @@ GameObject:
   - component: {fileID: 1515124529}
   - component: {fileID: 1515124528}
   - component: {fileID: 1515124532}
+  - component: {fileID: 1515124533}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -2371,6 +2372,19 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &1515124533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1515124527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c71342d75080ad049ae2fef5bd097b59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthSlider: {fileID: 737187729}
+  ArmorSlider: {fileID: 1809428000}
 --- !u!1 &1531693059
 GameObject:
   m_ObjectHideFlags: 0
@@ -2611,7 +2625,7 @@ GameObject:
   - component: {fileID: 1809427999}
   - component: {fileID: 1809428000}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: ArmorSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2679,7 +2693,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 39
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

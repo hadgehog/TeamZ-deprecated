@@ -1530,8 +1530,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c71342d75080ad049ae2fef5bd097b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Main: {fileID: 2010018882}
-  Text: {fileID: 602688376}
+  HealthSlider: {fileID: 0}
+  ArmorSlider: {fileID: 0}
 --- !u!1 &602688374
 GameObject:
   m_ObjectHideFlags: 0
@@ -2913,7 +2913,6 @@ MonoBehaviour:
   LoadView: {fileID: 1944693633}
   SaveView: {fileID: 430322234}
   SettingsView: {fileID: 0}
-  GameView: {fileID: 583937441}
 --- !u!1 &2121065322
 GameObject:
   m_ObjectHideFlags: 0

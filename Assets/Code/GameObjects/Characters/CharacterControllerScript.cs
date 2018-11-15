@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Timers;
-using System;
 
 public class CharacterControllerScript : MonoBehaviour
 {
@@ -65,25 +64,6 @@ public class CharacterControllerScript : MonoBehaviour
 
 	private bool isKeyUpWasPressed = false;
 
-	public void AlertObservers(string message)
-	{
-		if (message.Equals("AttackAnimationEnded"))
-		{
-			switch (this.fightMode)
-			{
-				case FightMode.Punch:
-					Fight2D.Action(this.Punch.position, this.PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse * this.impulseDirection);
-					break;
-				case FightMode.Kick:
-					Fight2D.Action(this.Kick.position, this.KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse * this.impulseDirection);
-					break;
-				default:
-					break;
-			}
-		}
-
-		this.fightMode = FightMode.None;
-	}
 
 	// Use this for initialization
 	protected virtual void Start()
@@ -233,6 +213,26 @@ public class CharacterControllerScript : MonoBehaviour
 		}
 
 		this.transform.localScale = currentScale;
+	}
+
+	public void AlertObservers(string message)
+	{
+		if (message.Equals("AttackAnimationEnded"))
+		{
+			switch (this.fightMode)
+			{
+				case FightMode.Punch:
+					Fight2D.Action(this.Punch.position, this.PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse * this.impulseDirection);
+					break;
+				case FightMode.Kick:
+					Fight2D.Action(this.Kick.position, this.KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse * this.impulseDirection);
+					break;
+				default:
+					break;
+			}
+		}
+
+		this.fightMode = FightMode.None;
 	}
 
 	private void OnStrikeCooldownTimerEvent(object sender, ElapsedEventArgs e)
