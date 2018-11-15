@@ -7,31 +7,18 @@ using UnityEngine;
 using UniRx;
 using UnityEngine.UI;
 using GameSaving.MonoBehaviours;
+using Assets.Code.Helpers;
 
 public class HealthController : MonoBehaviour
 {
-    public Main Main;
     public Text Text;
-    private Lizard character;
-
-    void Start()
-    {
-        this.Main.GameController.Loaded.Subscribe(_ => Loaded());
-        this.Loaded();
-    }
-
-    public void Loaded()
-    {
-        this.character = EntitiesStorage.Instance.Entities.Values.
-            Where(o => o.GetComponent<Lizard>() != null).
-            FirstOrDefault()?.GetComponent<Lizard>();
-    }
+    Dependency<Lizard> character;
 
     void Update()
     {
         if (this.character)
         {
-            this.Text.text = $"Health: {this.character.Health.ToString()} Armor: {this.character.Armor.ToString()}";
+            this.Text.text = $"Health: {this.character.Value.Health.ToString()} Armor: {this.character.Value.Armor.ToString()}";
         }
     }
 }

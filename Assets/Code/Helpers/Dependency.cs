@@ -16,13 +16,23 @@ namespace Assets.Code.Helpers
 		{
 			get
 			{
-				if (this.value == null)
+				if (!this.value)
 				{
 					this.value = GameObject.FindObjectOfType<TValue>();
 				}
 
 				return this.value;
 			}
+		}
+
+		public static implicit operator TValue(Dependency<TValue> dependency)
+		{
+			return dependency.Value;
+		}
+
+		public static implicit operator bool(Dependency<TValue> dependency)
+		{
+			return dependency.Value != null;
 		}
 	}
 }
