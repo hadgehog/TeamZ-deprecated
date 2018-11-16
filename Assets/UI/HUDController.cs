@@ -10,6 +10,7 @@ using GameSaving.MonoBehaviours;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Assets.Code.Helpers;
+using Assets.UI;
 
 public class HUDController : MonoBehaviour
 {

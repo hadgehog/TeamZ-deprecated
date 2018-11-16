@@ -9,10 +9,17 @@ namespace Assets.UI
 {
 	public class ViewRouter : MonoBehaviour
 	{
+		public HUDController GameHUDView;
 		public MainView MainView;
 		public LoadView LoadView;
 		public SaveView SaveView;
 		public SettingsView SettingsView;
+
+		public void ShowGameHUDView()
+		{
+			this.DisableAll();
+			this.GameHUDView.Activate();
+		}
 
 		public void ShowMainView()
 		{
@@ -22,6 +29,8 @@ namespace Assets.UI
 
 		public void DisableAll()
 		{
+			this.GameHUDView.gameObject.SetActive(false);
+
 			foreach (Transform view in this.transform)
 			{
 				view.gameObject.SetActive(false);
