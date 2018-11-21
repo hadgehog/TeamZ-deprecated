@@ -29,7 +29,5 @@ public class FirstAidKit : MonoBehaviour
         }
 
         character.TakeHealth(this.FirstAidKitCapacity);
-
-        Debug.Log("First aid kit is taken! +80 health. now you have " + character.Health + " health");
     }
 }

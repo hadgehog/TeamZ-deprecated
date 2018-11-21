@@ -39,7 +39,6 @@ namespace GameSaving
 				{
 					await this.BlackScreen.Value.ShowAsync();
 					await this.LoadAsync(o.SlotName);
-					this.ViewRouter.Value.ShowGameView();
 					await this.BlackScreen.Value.HideAsync();
 				});
 		}

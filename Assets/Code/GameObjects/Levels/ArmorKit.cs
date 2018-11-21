@@ -29,7 +29,5 @@ public class ArmorKit : MonoBehaviour
         }
 
         character.TakeArmor(this.ArmorKitCapacity);
-
-        Debug.Log("Armor is taken! +50 armor. now you have " + character.Armor + " armor");
     }
 }

@@ -45,7 +45,7 @@ public class Main : MonoBehaviour
 		{
 			if (this.ViewRouter.Value.MainView.isActiveAndEnabled)
 			{
-				this.ViewRouter.Value.ShowGameView();
+				this.ViewRouter.Value.DisableAll();
 				return;
 			}
 
