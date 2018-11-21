@@ -95,7 +95,7 @@ public class CharacterControllerScript : MonoBehaviour
 		if (horizontalDirection != this.currentHorizontalDirection)
 		{
 			this.currentHorizontalDirection = horizontalDirection;
-			this.Flip(true);
+			this.Flip();
 		}
 
 		this.anim.SetFloat("Speed", Mathf.Abs(horizontalMove));
@@ -117,7 +117,6 @@ public class CharacterControllerScript : MonoBehaviour
 			if (verticalDirection != this.currentVerticalDirection)
 			{
 				this.currentVerticalDirection = verticalDirection;
-				this.Flip(false);
 			}
 
 			this.rigidBody.velocity = new Vector2(this.rigidBody.velocity.x, verticalMove * this.CreepSpeed);
@@ -135,7 +134,6 @@ public class CharacterControllerScript : MonoBehaviour
 			if (Direction.Down == this.currentVerticalDirection)
 			{
 				this.currentVerticalDirection = Direction.Up;
-				this.Flip(false);
 			}
 		}
 	}
@@ -198,19 +196,12 @@ public class CharacterControllerScript : MonoBehaviour
 		}
 	}
 
-	private void Flip(bool isHorizontal)
+	private void Flip()
 	{
 		Vector3 currentScale = this.transform.localScale;
 
-		if (isHorizontal)
-		{
-			currentScale.x *= -1;
-			this.impulseDirection *= -1;
-		}
-		else
-		{
-			currentScale.y *= -1;
-		}
+		currentScale.x *= -1;
+		this.impulseDirection *= -1;
 
 		this.transform.localScale = currentScale;
 	}

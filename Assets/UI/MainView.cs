@@ -20,6 +20,7 @@ public class MainView : MonoBehaviour
 
 		await this.blackScreen.Value.ShowAsync();
 		this.Deactivate();
+		this.ViewRouter.Value.GameHUDView.Activate();
 		await gameController.LoadAsync(Level.Laboratory);
 		await this.blackScreen.Value.HideAsync();
 	}
@@ -38,13 +39,11 @@ public class MainView : MonoBehaviour
 
 	public void Quit()
 	{
-		this.Deactivate();
 		Application.Quit();
 	}
 
 	public void Settings()
 	{
-		this.Deactivate();
-		this.ViewRouter.Value.SettingsView.Activate();
+
 	}
 }
