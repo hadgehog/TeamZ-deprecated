@@ -12,7 +12,7 @@ using Assets.Code.Helpers;
 public class HealthController : MonoBehaviour
 {
     public Text Text;
-    Dependency<Lizard> character;
+    UnityDependency<Lizard> character;
 
     void Update()
     {

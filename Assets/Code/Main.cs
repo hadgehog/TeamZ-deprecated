@@ -9,8 +9,8 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {
-	private readonly Dependency<BlackScreen> BlackScreen;
-	private readonly Dependency<ViewRouter> ViewRouter;
+	private readonly UnityDependency<BlackScreen> BlackScreen;
+	private readonly UnityDependency<ViewRouter> ViewRouter;
 
 	public GameController<GameState> GameController
 	{

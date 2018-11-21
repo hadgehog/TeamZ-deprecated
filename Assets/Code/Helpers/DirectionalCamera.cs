@@ -12,7 +12,7 @@ public class DirectionalCamera : MonoBehaviour
 {
 	public float dampTime = 0.3f;
 	public Transform target;
-	public Dependency<Main> Main;
+	public UnityDependency<Main> Main;
 
 	private Vector3 velocity = Vector3.zero;
 

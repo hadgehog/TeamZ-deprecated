@@ -9,10 +9,10 @@ using UnityEngine;
 
 public class MainView : MonoBehaviour
 {
-	public readonly Dependency<Main> Main;
-	public readonly Dependency<ViewRouter> ViewRouter;
+	public readonly UnityDependency<Main> Main;
+	public readonly UnityDependency<ViewRouter> ViewRouter;
 
-	private Dependency<BlackScreen> blackScreen;
+	private UnityDependency<BlackScreen> blackScreen;
 
 	public async void PlayAsync()
 	{

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class LoadView : MonoBehaviour
 {
-	private Dependency<Main> Main;
+	private UnityDependency<Main> Main;
 
 	public GameObject LoadItemTemplate;
 

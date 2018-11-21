@@ -9,8 +9,8 @@ namespace GameSaving.MonoBehaviours
 	{
 		public string LevelName;
 
-		private Dependency<Main> Main;
-		private Dependency<MainView> MainView;
+		private UnityDependency<Main> Main;
+		private UnityDependency<MainView> MainView;
 
 		private async void Start()
 		{

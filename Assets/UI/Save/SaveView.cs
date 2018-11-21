@@ -11,8 +11,8 @@ public class SaveView : MonoBehaviour
 
 	public GameObject SaveItemTemplate;
 
-	private Dependency<Main> Main;
-	private Dependency<ViewRouter> ViewRouter;
+	private UnityDependency<Main> Main;
+	private UnityDependency<ViewRouter> ViewRouter;
 
 	private Subject<SaveItemView> clicks = new Subject<SaveItemView>();
 

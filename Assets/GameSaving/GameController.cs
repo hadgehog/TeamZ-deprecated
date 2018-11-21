@@ -23,8 +23,8 @@ namespace GameSaving
 	public class GameController<TGameState> : IGameController
 		where TGameState : GameState, new()
 	{
-		private Dependency<BlackScreen> BlackScreen;
-		private Dependency<ViewRouter> ViewRouter;
+		private UnityDependency<BlackScreen> BlackScreen;
+		private UnityDependency<ViewRouter> ViewRouter;
 
 		public GameController()
 		{
