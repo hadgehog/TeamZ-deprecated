@@ -37,6 +37,7 @@ namespace GameSaving
 			MessageBroker.Default.Receive<LoadFromSlotName>().
 				Subscribe(async o =>
 				{
+					this.ViewRouter.Value.ShowGameHUDView();
 					await this.BlackScreen.Value.ShowAsync();
 					await this.LoadAsync(o.SlotName);
 					await this.BlackScreen.Value.HideAsync();
