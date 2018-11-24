@@ -29,8 +29,6 @@ namespace Assets.UI
 
 		public void DisableAll()
 		{
-			this.GameHUDView.gameObject.SetActive(false);
-
 			foreach (Transform view in this.transform)
 			{
 				view.gameObject.SetActive(false);
