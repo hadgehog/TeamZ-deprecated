@@ -81,10 +81,7 @@ public class CharacterControllerScript : MonoBehaviour
 		this.IsGrounded = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, (this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy));
 		this.IsClimbed = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing);
 
-		this.anim.SetBool("Ground", this.IsGrounded);
-		this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
-
-		float horizontalMove = Input.GetAxis("Horizontal");
+        float horizontalMove = Input.GetAxis("Horizontal");
 		Direction horizontalDirection = this.currentHorizontalDirection;
 
 		if (horizontalMove < 0)
@@ -98,11 +95,11 @@ public class CharacterControllerScript : MonoBehaviour
 			this.Flip();
 		}
 
-		this.anim.SetFloat("Speed", Mathf.Abs(horizontalMove));
+        this.anim.SetBool("Ground", true);
+        this.anim.SetFloat("Speed", 0.0f);
+        this.anim.SetBool("Climbing", false);
 
-		this.rigidBody.velocity = new Vector2(horizontalMove * this.RunSpeed, this.rigidBody.velocity.y);
-
-		if (this.isKeyUpWasPressed && this.IsClimbed)
+        if (this.isKeyUpWasPressed && this.IsClimbed)
 		{
 			this.rigidBody.gravityScale = 0.0f;
 
@@ -119,11 +116,12 @@ public class CharacterControllerScript : MonoBehaviour
 				this.currentVerticalDirection = verticalDirection;
 			}
 
-			this.rigidBody.velocity = new Vector2(this.rigidBody.velocity.x, verticalMove * this.CreepSpeed);
-		}
+            this.anim.SetBool("Climbing", this.IsClimbed);
+            this.rigidBody.velocity = new Vector2(horizontalMove * this.CreepSpeed, verticalMove * this.CreepSpeed);
+        }
 		else
 		{
-			this.isKeyUpWasPressed = false;
+            this.isKeyUpWasPressed = false;
 
 			if (this.rigidBody.gravityScale != 1)
 			{
@@ -135,7 +133,12 @@ public class CharacterControllerScript : MonoBehaviour
 			{
 				this.currentVerticalDirection = Direction.Up;
 			}
-		}
+
+            this.anim.SetBool("Ground", this.IsGrounded);
+            this.anim.SetFloat("Speed", Mathf.Abs(horizontalMove));
+            this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
+            this.rigidBody.velocity = new Vector2(horizontalMove * this.RunSpeed, this.rigidBody.velocity.y);
+        }
 	}
 
 	// called once per frame
@@ -165,7 +168,12 @@ public class CharacterControllerScript : MonoBehaviour
 		{
 			this.isKeyUpWasPressed = true;
 		}
-	}
+
+        if (this.isKeyUpWasPressed && this.IsClimbed)
+        {
+            this.anim.SetBool("Climbing", this.IsClimbed);
+        }
+    }
 
 	protected virtual void OnTriggerEnter2D(Collider2D col)
 	{

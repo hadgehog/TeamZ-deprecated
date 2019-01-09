@@ -126,7 +126,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1270094665430320}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.2897453, y: 1.7543755, z: -1}
+  m_LocalPosition: {x: -4, y: -2.2, z: -1}
   m_LocalScale: {x: 2, y: 2, z: 1.7514803}
   m_Children:
   - {fileID: 4946839098338384}
@@ -259,7 +259,7 @@ MonoBehaviour:
     m_Bits: 1024
   WhatIsSurfaceForClimbing:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   Punch: {fileID: 4946839098338384}
   PunchRadius: 0.8
   Kick: {fileID: 4495286561585158}
