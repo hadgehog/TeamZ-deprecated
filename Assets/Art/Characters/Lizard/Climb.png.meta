@@ -93,7 +93,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 43
-        y: 0
+        y: 12
         width: 138
         height: 271
       alignment: 0
@@ -113,9 +113,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 256
-        y: 0
-        width: 140
-        height: 272
+        y: 12
+        width: 146
+        height: 285
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,9 +132,9 @@ TextureImporter:
       name: Climb_2
       rect:
         serializedVersion: 2
-        x: 460
-        y: 0
-        width: 140
+        x: 462
+        y: 12
+        width: 138
         height: 271
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -152,10 +152,10 @@ TextureImporter:
       name: Climb_3
       rect:
         serializedVersion: 2
-        x: 665
-        y: 0
-        width: 138
-        height: 271
+        x: 656
+        y: 12
+        width: 148
+        height: 281
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -172,10 +172,10 @@ TextureImporter:
       name: Climb_4
       rect:
         serializedVersion: 2
-        x: 861
-        y: 0
-        width: 139
-        height: 272
+        x: 847
+        y: 12
+        width: 148
+        height: 281
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
