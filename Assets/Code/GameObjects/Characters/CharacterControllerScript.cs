@@ -98,6 +98,7 @@ public class CharacterControllerScript : MonoBehaviour
         this.anim.SetBool("Ground", true);
         this.anim.SetFloat("Speed", 0.0f);
         this.anim.SetBool("Climbing", false);
+        this.anim.SetFloat("ClimbSpeed", 0.0f);
 
         if (this.isKeyUpWasPressed && this.IsClimbed)
 		{
@@ -117,6 +118,7 @@ public class CharacterControllerScript : MonoBehaviour
 			}
 
             this.anim.SetBool("Climbing", this.IsClimbed);
+            this.anim.SetFloat("ClimbSpeed", horizontalMove > 0.0f || horizontalMove < 0.0f ? Mathf.Abs(horizontalMove) : Mathf.Abs(verticalMove));
             this.rigidBody.velocity = new Vector2(horizontalMove * this.CreepSpeed, verticalMove * this.CreepSpeed);
         }
 		else
