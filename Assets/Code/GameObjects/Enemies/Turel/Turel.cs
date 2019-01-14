@@ -8,6 +8,7 @@ namespace TeamZ.Assets.Code.GameObjects.Enemies.Turel
 	public class Turel : MonoBehaviour
 	{
 		public ParticleSystem BulletParticleSystem;
+        public int Damage = 25;
 
 		UnityDependency<Lizard> lizard;
 		private readonly IDisposable shooting;
@@ -24,5 +25,13 @@ namespace TeamZ.Assets.Code.GameObjects.Enemies.Turel
 				AddTo(this);
 		}
 
-	}
+        private void OnParticleCollision(GameObject other)
+        {
+            if (other.GetComponent<ICharacter>() is ICharacter character)
+            {
+                character.TakeDamage(this.Damage);
+            }
+        }
+
+    }
 }
