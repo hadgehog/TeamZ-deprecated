@@ -32,6 +32,5 @@ namespace TeamZ.Assets.Code.GameObjects.Enemies.Turel
                 character.TakeDamage(this.Damage);
             }
         }
-
     }
 }

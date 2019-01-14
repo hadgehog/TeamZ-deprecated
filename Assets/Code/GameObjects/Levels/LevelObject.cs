@@ -52,8 +52,7 @@ public class LevelObject : MonoBehaviour, IDamageable
 			if (this.Strength <= 0 && GetComponent<BoxCollider2D>() != null)
 			{
 				this.Strength = 0;
-
-				Destroy(GetComponent<BoxCollider2D>());
+                this.StrengthTooLow();
 			}
 
 			this.SwitchVisualState();
@@ -64,7 +63,12 @@ public class LevelObject : MonoBehaviour, IDamageable
 		}
 	}
 
-	protected virtual void FixedUpdate()
+    public virtual void StrengthTooLow()
+    {
+        Destroy(GetComponent<BoxCollider2D>());
+    }
+
+    protected virtual void FixedUpdate()
 	{
 		if (this.Strength <= 0)
 		{

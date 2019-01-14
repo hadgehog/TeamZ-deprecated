@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4879306068795632}
   - component: {fileID: 212994100320474186}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: TurretGun2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4402190247006796}
-  m_Layer: 0
+  - component: {fileID: 7549522649547458494}
+  - component: {fileID: 503732358618405753}
+  m_Layer: 9
   m_Name: Turel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +105,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1289531564546886}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.17, y: -2.75, z: 0}
+  m_LocalPosition: {x: 7.17, y: -2.75, z: 0.125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4215191059429890}
@@ -111,6 +113,47 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7549522649547458494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289531564546886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26e62bf204532b44da70b273532ebd1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VisualStates: []
+  strength: 5
+  isDestructible: 1
+--- !u!61 &503732358618405753
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289531564546886}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.21}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2.57}
+  m_EdgeRadius: 0
 --- !u!1 &1355499673756992
 GameObject:
   m_ObjectHideFlags: 0
@@ -122,7 +165,7 @@ GameObject:
   - component: {fileID: 4284943963601262}
   - component: {fileID: 198076771583587750}
   - component: {fileID: 199854304584446492}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SubEmitter0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4878,8 +4921,8 @@ GameObject:
   - component: {fileID: 4215191059429890}
   - component: {fileID: 198033223299947190}
   - component: {fileID: 199170535342758108}
-  - component: {fileID: 114107618897354916}
-  m_Layer: 0
+  - component: {fileID: 4369120971172462917}
+  m_Layer: 9
   m_Name: TurelGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9567,7 +9610,7 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &114107618897354916
+--- !u!114 &4369120971172462917
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9580,3 +9623,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BulletParticleSystem: {fileID: 198033223299947190}
+  Damage: 25
