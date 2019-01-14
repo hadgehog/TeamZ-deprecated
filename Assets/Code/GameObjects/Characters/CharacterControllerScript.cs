@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Timers;
+using GameSaving.MonoBehaviours;
+using TeamZ.Assets.GameSaving.States;
 
-public class CharacterControllerScript : MonoBehaviour
+public class CharacterControllerScript : MonoBehaviourWithState<CharacterControllerState>
 {
 	public float RunSpeed;
 	public float CreepSpeed;
@@ -68,12 +70,12 @@ public class CharacterControllerScript : MonoBehaviour
 	// Use this for initialization
 	protected virtual void Start()
 	{
-		this.anim = GetComponent<Animator>();
-		this.rigidBody = GetComponent<Rigidbody2D>();
+		this.anim = this.GetComponent<Animator>();
+		this.rigidBody = this.GetComponent<Rigidbody2D>();
 
-		this.Character = GetComponent<Lizard>();
+		this.Character = this.GetComponent<Lizard>();
 
-		this.strikeCooldownTimer.Elapsed += new ElapsedEventHandler(OnStrikeCooldownTimerEvent);
+		this.strikeCooldownTimer.Elapsed += new ElapsedEventHandler(this.OnStrikeCooldownTimerEvent);
 	}
 
 	protected virtual void FixedUpdate()
@@ -81,15 +83,19 @@ public class CharacterControllerScript : MonoBehaviour
 		this.IsGrounded = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, (this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy));
 		this.IsClimbed = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing);
 
-        float horizontalMove = Input.GetAxis("Horizontal");
-		Direction horizontalDirection = this.currentHorizontalDirection;
+        var horizontalMove = Input.GetAxis("Horizontal");
+		var horizontalDirection = this.currentHorizontalDirection;
 
 		if (horizontalMove < 0)
-			horizontalDirection = Direction.Left;
-		else if (horizontalMove > 0)
-			horizontalDirection = Direction.Right;
+        {
+            horizontalDirection = Direction.Left;
+        }
+        else if (horizontalMove > 0)
+        {
+            horizontalDirection = Direction.Right;
+        }
 
-		if (horizontalDirection != this.currentHorizontalDirection)
+        if (horizontalDirection != this.currentHorizontalDirection)
 		{
 			this.currentHorizontalDirection = horizontalDirection;
 			this.Flip();
@@ -104,15 +110,19 @@ public class CharacterControllerScript : MonoBehaviour
 		{
 			this.rigidBody.gravityScale = 0.0f;
 
-			float verticalMove = Input.GetAxis("Vertical");
-			Direction verticalDirection = this.currentVerticalDirection;
+			var verticalMove = Input.GetAxis("Vertical");
+			var verticalDirection = this.currentVerticalDirection;
 
 			if (verticalMove < 0)
-				verticalDirection = Direction.Down;
-			else if (verticalMove > 0)
-				verticalDirection = Direction.Up;
+            {
+                verticalDirection = Direction.Down;
+            }
+            else if (verticalMove > 0)
+            {
+                verticalDirection = Direction.Up;
+            }
 
-			if (verticalDirection != this.currentVerticalDirection)
+            if (verticalDirection != this.currentVerticalDirection)
 			{
 				this.currentVerticalDirection = verticalDirection;
 			}
@@ -196,13 +206,13 @@ public class CharacterControllerScript : MonoBehaviour
 			// Something strange happening with this OnTriggerEnter
 			// It called OnTriggerEnter several times when it ought to only one
 			if (this.loadingStarted)
-				return;
+            {
+                return;
+            }
 
-			this.loadingStarted = true;
+            this.loadingStarted = true;
 
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-			GameObject.FindObjectOfType<Main>().GameController.LoadAsync("test");
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+			var loadScene = GameObject.FindObjectOfType<Main>().GameController.LoadAsync("test");
 		}
 	}
 
@@ -240,4 +250,15 @@ public class CharacterControllerScript : MonoBehaviour
 	{
 		this.strikeCooldownTimer.Stop();
 	}
+
+    public override CharacterControllerState GetState()
+        => new CharacterControllerState
+        {
+            CurrentDirection = this.currentHorizontalDirection
+        };
+
+    public override void SetState(CharacterControllerState state)
+    {
+        this.currentHorizontalDirection = state.CurrentDirection;
+    }
 }

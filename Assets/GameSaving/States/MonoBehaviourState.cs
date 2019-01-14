@@ -1,4 +1,5 @@
 ﻿using GameSaving.States.Charaters;
+using TeamZ.Assets.GameSaving.States;
 using ZeroFormatter;
 
 namespace GameSaving.States
@@ -8,12 +9,14 @@ namespace GameSaving.States
         Entity,
         Camera,
         Lizard,
+        CharacterController,
     }
 
     [ZeroFormattable]
     [Union(typeof(EntityState),
            typeof(CameraState),
-           typeof(LizardState))]
+           typeof(LizardState),
+           typeof(CharacterControllerState))]
     public abstract class MonoBehaviourState
     {
         [UnionKey]
