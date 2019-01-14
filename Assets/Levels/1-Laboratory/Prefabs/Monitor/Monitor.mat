@@ -5,7 +5,8 @@ Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Monitor
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _EMISSION _GLOSSYREFLECTIONS_OFF _SPECULARHIGHLIGHTS_OFF
@@ -230,6 +231,7 @@ Material:
     - _PPDPrimitiveWidth: 1
     - _Parallax: 0.02
     - _PreRefractionPass: 0
+    - _ReceiveShadows: 1
     - _RefractionModel: 0
     - _SSRefractionProjectionModel: 0
     - _ShiverDirectionality: 0.5
