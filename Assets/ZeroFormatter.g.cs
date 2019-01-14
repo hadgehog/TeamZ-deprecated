@@ -242,7 +242,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
 
                 offset += (8 + 4 * (5 + 1));
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Guid>(ref bytes, startOffset, offset, 0, value.Id);
-                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, string>(ref bytes, startOffset, offset, 1, value.Path);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, string>(ref bytes, startOffset, offset, 1, value.AssetGuid);
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Vector3>(ref bytes, startOffset, offset, 2, value.Scale);
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Quaternion>(ref bytes, startOffset, offset, 3, value.Rotation);
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::UnityEngine.Vector3>(ref bytes, startOffset, offset, 4, value.Position);
@@ -293,7 +293,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         }
 
         // 1
-        public override string Path
+        public override string AssetGuid
         {
             get
             {

@@ -12,6 +12,8 @@ using GameSaving.States.Charaters;
 using GameObjects.Levels;
 using Assets.Code.Helpers;
 using Assets.UI;
+using UnityEngine.AddressableAssets;
+using UniRx.Async;
 
 namespace GameSaving
 {
@@ -101,13 +103,13 @@ namespace GameSaving
 		{
 			await this.LevelManager.LoadAsync(level);
 			this.Bootstrap();
-			this.Bootstrap(this.GetState());
+			await this.BootstrapAsync(this.GetState());
 		}
 
 		public async Task LoadAsync(TGameState gameState)
 		{
 			await this.LevelManager.LoadAsync(Level.All.First(o => o.Value.Id == gameState.LevelId).Value);
-			this.Bootstrap(gameState);
+			await this.BootstrapAsync(gameState);
 		}
 
 		public async Task SaveAsync(string slotName)
@@ -153,14 +155,14 @@ namespace GameSaving
 			await this.BlackScreen.Value.HideAsync();
 		}
 
-		private void Bootstrap(TGameState gameState)
+		private async Task BootstrapAsync(TGameState gameState)
 		{
 			this.CleanupLevel();
 
 			this.EnttiesStorage.Root = new GameObject("Root");
 			this.EnttiesStorage.Root.SetActive(false);
 
-			this.RestoreGameState(gameState);
+			await this.RestoreGameStateAsync(gameState);
 
 			GC.Collect();
 
@@ -189,7 +191,7 @@ namespace GameSaving
 			return gameState;
 		}
 
-		private void RestoreGameState(TGameState gameState)
+		private async Task RestoreGameStateAsync(TGameState gameState)
 		{
 			var cache = new Dictionary<string, GameObject>();
 			var monoBehaviours = new LinkedList<IMonoBehaviourWithState>();
@@ -197,12 +199,16 @@ namespace GameSaving
 			foreach (var gameObjectState in gameState.GameObjectsStates.Where(o => o.Entity.LevelId == this.LevelManager.CurrentLevel.Id))
 			{
 				var entity = gameObjectState.Entity;
-				if (!cache.ContainsKey(entity.Path))
+				if (!cache.ContainsKey(entity.AssetGuid))
 				{
-					cache.Add(entity.Path, Resources.Load<GameObject>(entity.Path));
+                    var assetReference = new AssetReference(entity.AssetGuid);
+                    var load = assetReference.LoadAsset<GameObject>();
+                    await load.ToUniTask();
+                   
+                    cache.Add(entity.AssetGuid, load.Result);
 				}
 
-				var gameObject = GameObject.Instantiate<GameObject>(cache[entity.Path], this.EnttiesStorage.Root.transform);
+				var gameObject = GameObject.Instantiate<GameObject>(cache[entity.AssetGuid], this.EnttiesStorage.Root.transform);
 
 				var states = gameObjectState.MonoBehaviousStates.ToList();
 				states.Add(entity);

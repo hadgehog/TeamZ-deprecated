@@ -10,7 +10,7 @@ namespace GameSaving.States
 		public virtual Guid Id { get; set; }
 
 		[Index(1)]
-		public virtual string Path { get; set; }
+		public virtual string AssetGuid { get; set; }
 
 		[Index(2)]
 		public virtual UnityEngine.Vector3 Scale { get; set; }

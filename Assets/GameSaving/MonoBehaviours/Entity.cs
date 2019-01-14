@@ -1,5 +1,6 @@
 ﻿using System;
 using GameSaving.States;
+using UnityEngine.AddressableAssets;
 
 namespace GameSaving.MonoBehaviours
 {
@@ -7,7 +8,7 @@ namespace GameSaving.MonoBehaviours
     {
         public Guid Id = Guid.NewGuid();
         public Guid LevelId;
-        public string Path;
+        public AssetReference Path;
 
         public override EntityState GetState()
         {
@@ -16,7 +17,7 @@ namespace GameSaving.MonoBehaviours
             {
                 Id = this.Id,
                 LevelId = this.LevelId,
-                Path = this.Path,
+                AssetGuid = this.Path.RuntimeKey.ToString(),
                 Position = cachedTransform.localPosition,
                 Rotation = cachedTransform.localRotation,
                 Scale = cachedTransform.localScale,
@@ -26,7 +27,7 @@ namespace GameSaving.MonoBehaviours
         public override void SetState(EntityState state)
         {
             this.Id = state.Id;
-            this.Path = state.Path;
+            this.Path = new AssetReference(state.AssetGuid);
             this.LevelId = state.LevelId;
 
             var cachedTransform = this.transform;
