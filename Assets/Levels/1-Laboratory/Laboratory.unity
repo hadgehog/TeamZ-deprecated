@@ -249,6 +249,16 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 212296437125874538, guid: 98a34f0124ae6724f968b2b88e160c27,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 533657567
+      objectReference: {fileID: 0}
+    - target: {fileID: 212296437125874538, guid: 98a34f0124ae6724f968b2b88e160c27,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98a34f0124ae6724f968b2b88e160c27, type: 3}
 --- !u!4 &149517994 stripped
