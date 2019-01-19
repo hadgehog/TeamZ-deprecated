@@ -24,5 +24,12 @@ namespace GameSaving.States
             get;
             set;
         }
+
+        [Index(2)]
+        public virtual HashSet<Guid> VisitedLevels
+        {
+            get;
+            set;
+        } = new HashSet<Guid>();
     }
 }

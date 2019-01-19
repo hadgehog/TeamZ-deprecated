@@ -23,6 +23,7 @@ public class LevelManager
 		}
 
 		this.CurrentLevel = level;
+		
 		await SceneManager.LoadSceneAsync(level.Scene, LoadSceneMode.Additive);
 		var scene = SceneManager.GetSceneByName(level.Scene);
 		SceneManager.SetActiveScene(scene);
