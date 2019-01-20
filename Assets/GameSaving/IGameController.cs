@@ -4,7 +4,7 @@ namespace GameSaving
 {
     public interface IGameController
     {
-        Task LoadAsync(string slotName);
+        Task LoadSavedGameAsync(string slotName);
         Task SaveAsync(string slotName);
     }
 }

@@ -37,7 +37,7 @@ public class Main : MonoBehaviour
 		if (Input.GetKeyUp(KeyCode.F9))
 		{
 			await this.BlackScreen.Value.ShowAsync();
-			await this.GameController.LoadAsync("test");
+			await this.GameController.LoadSavedGameAsync("test");
 			await this.BlackScreen.Value.HideAsync();
 		}
 

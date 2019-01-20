@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using GameSaving.MonoBehaviours;
 using Helpers;
+using UniRx;
 using UnityEngine;
+using static GameSaving.MonoBehaviours.Entity;
 
 namespace GameSaving
 {
@@ -13,7 +15,8 @@ namespace GameSaving
     {
         public EntitiesStorage()
         {
-            this.Entities = new Dictionary<Guid, Entity>();
+            this.Entities = new ReactiveDictionary<Guid, Entity>();
+            MessageBroker.Default.Receive<EntityDestroyed>().Subscribe(o => this.Entities.Remove(o.Entity.Id));
         }
 
         public GameObject Root
@@ -22,7 +25,7 @@ namespace GameSaving
             set;
         }
 
-        public Dictionary<Guid, Entity> Entities
+        public ReactiveDictionary<Guid, Entity> Entities
         {
             get;
         }

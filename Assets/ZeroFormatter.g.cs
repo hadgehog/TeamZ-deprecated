@@ -71,6 +71,7 @@ namespace ZeroFormatter
                 ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.MonoBehaviourState>.Register(unionFormatter);
             }
             // Generics
+            ZeroFormatter.Formatters.Formatter.RegisterCollection<ZeroFormatter.Formatters.DefaultResolver, global::System.Guid, global::System.Collections.Generic.HashSet<global::System.Guid>>();
             ZeroFormatter.Formatters.Formatter.RegisterEnumerable<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.GameObjectState>();
             ZeroFormatter.Formatters.Formatter.RegisterEnumerable<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.MonoBehaviourState>();
         }
@@ -274,7 +275,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         readonly int __binaryLastIndex;
         readonly byte[] __extraFixedBytes;
 
-        CacheSegment<TTypeResolver, string> _Path;
+        CacheSegment<TTypeResolver, string> _AssetGuid;
         CacheSegment<TTypeResolver, global::UnityEngine.Vector3> _Scale;
         CacheSegment<TTypeResolver, global::UnityEngine.Quaternion> _Rotation;
         CacheSegment<TTypeResolver, global::UnityEngine.Vector3> _Position;
@@ -297,11 +298,11 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         {
             get
             {
-                return _Path.Value;
+                return _AssetGuid.Value;
             }
             set
             {
-                _Path.Value = value;
+                _AssetGuid.Value = value;
             }
         }
 
@@ -368,7 +369,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
 
             this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 5, __elementSizes);
 
-            _Path = new CacheSegment<TTypeResolver, string>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 1, __binaryLastIndex, __tracker));
+            _AssetGuid = new CacheSegment<TTypeResolver, string>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 1, __binaryLastIndex, __tracker));
             _Scale = new CacheSegment<TTypeResolver, global::UnityEngine.Vector3>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 2, __binaryLastIndex, __tracker));
             _Rotation = new CacheSegment<TTypeResolver, global::UnityEngine.Quaternion>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 3, __binaryLastIndex, __tracker));
             _Position = new CacheSegment<TTypeResolver, global::UnityEngine.Vector3>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 4, __binaryLastIndex, __tracker));
@@ -392,7 +393,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
                 offset += (8 + 4 * (5 + 1));
 
                 offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, global::System.Guid>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
-                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, string>(ref targetBytes, startOffset, offset, 1, ref _Path);
+                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, string>(ref targetBytes, startOffset, offset, 1, ref _AssetGuid);
                 offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Vector3>(ref targetBytes, startOffset, offset, 2, ref _Scale);
                 offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Quaternion>(ref targetBytes, startOffset, offset, 3, ref _Rotation);
                 offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::UnityEngine.Vector3>(ref targetBytes, startOffset, offset, 4, ref _Position);
@@ -559,11 +560,12 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             {
                 var startOffset = offset;
 
-                offset += (8 + 4 * (1 + 1));
+                offset += (8 + 4 * (2 + 1));
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Guid>(ref bytes, startOffset, offset, 0, value.LevelId);
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Collections.Generic.IEnumerable<global::GameSaving.States.GameObjectState>>(ref bytes, startOffset, offset, 1, value.GameObjectsStates);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Collections.Generic.HashSet<global::System.Guid>>(ref bytes, startOffset, offset, 2, value.VisitedLevels);
 
-                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 1);
+                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 2);
             }
         }
 
@@ -582,7 +584,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
     public class GameStateObjectSegment<TTypeResolver> : global::GameSaving.States.GameState, IZeroFormatterSegment
         where TTypeResolver : ITypeResolver, new()
     {
-        static readonly int[] __elementSizes = new int[]{ 16, 0 };
+        static readonly int[] __elementSizes = new int[]{ 16, 0, 0 };
 
         readonly ArraySegment<byte> __originalBytes;
         readonly global::ZeroFormatter.DirtyTracker __tracker;
@@ -590,6 +592,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         readonly byte[] __extraFixedBytes;
 
         CacheSegment<TTypeResolver, global::System.Collections.Generic.IEnumerable<global::GameSaving.States.GameObjectState>> _GameObjectsStates;
+        CacheSegment<TTypeResolver, global::System.Collections.Generic.HashSet<global::System.Guid>> _VisitedLevels;
 
         // 0
         public override global::System.Guid LevelId
@@ -617,6 +620,19 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             }
         }
 
+        // 2
+        public override global::System.Collections.Generic.HashSet<global::System.Guid> VisitedLevels
+        {
+            get
+            {
+                return _VisitedLevels.Value;
+            }
+            set
+            {
+                _VisitedLevels.Value = value;
+            }
+        }
+
 
         public GameStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
         {
@@ -626,9 +642,10 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             this.__tracker = dirtyTracker = dirtyTracker.CreateChild();
             this.__binaryLastIndex = BinaryUtil.ReadInt32(ref __array, originalBytes.Offset + 4);
 
-            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 1, __elementSizes);
+            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 2, __elementSizes);
 
             _GameObjectsStates = new CacheSegment<TTypeResolver, global::System.Collections.Generic.IEnumerable<global::GameSaving.States.GameObjectState>>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 1, __binaryLastIndex, __tracker));
+            _VisitedLevels = new CacheSegment<TTypeResolver, global::System.Collections.Generic.HashSet<global::System.Guid>>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 2, __binaryLastIndex, __tracker));
         }
 
         public bool CanDirectCopy()
@@ -646,12 +663,13 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             if (__extraFixedBytes != null || __tracker.IsDirty)
             {
                 var startOffset = offset;
-                offset += (8 + 4 * (1 + 1));
+                offset += (8 + 4 * (2 + 1));
 
                 offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, global::System.Guid>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
                 offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::System.Collections.Generic.IEnumerable<global::GameSaving.States.GameObjectState>>(ref targetBytes, startOffset, offset, 1, ref _GameObjectsStates);
+                offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::System.Collections.Generic.HashSet<global::System.Guid>>(ref targetBytes, startOffset, offset, 2, ref _VisitedLevels);
 
-                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 1);
+                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 2);
             }
             else
             {

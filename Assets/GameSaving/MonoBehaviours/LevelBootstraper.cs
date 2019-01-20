@@ -21,8 +21,11 @@ namespace GameSaving.MonoBehaviours
 				await SceneManager.LoadSceneAsync("Core", LoadSceneMode.Additive);
 				await Observable.NextFrame();
 
-				this.Main.Value.GameController.LevelManager.CurrentLevel = Level.All[this.LevelName];
-				this.Main.Value.GameController.Bootstrap(true);
+                var level = Level.All[this.LevelName];
+                this.Main.Value.GameController.LevelManager.CurrentLevel = level;
+                this.Main.Value.GameController.VisitedLevels.Add(level.Id);
+                this.Main.Value.GameController.BootstrapEntities(true);
+
 				this.Router.Value.ShowGameHUDView();
 			}
 		}

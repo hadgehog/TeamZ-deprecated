@@ -1,5 +1,6 @@
 ﻿using System;
 using GameSaving.States;
+using UniRx;
 using UnityEngine.AddressableAssets;
 
 namespace GameSaving.MonoBehaviours
@@ -35,5 +36,16 @@ namespace GameSaving.MonoBehaviours
             cachedTransform.localRotation = state.Rotation;
             cachedTransform.localScale = state.Scale;
         }
+
+        public class EntityDestroyed
+        {
+            public Entity Entity { get; set; }
+        }
+
+        private void OnDestroy()
+        {
+            MessageBroker.Default.Publish(new EntityDestroyed { Entity = this } );
+        }
     }
+
 }

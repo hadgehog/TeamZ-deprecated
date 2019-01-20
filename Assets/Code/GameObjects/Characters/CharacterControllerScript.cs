@@ -212,7 +212,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
             this.loadingStarted = true;
 
-			var loadScene = GameObject.FindObjectOfType<Main>().GameController.LoadAsync("test");
+			var loadScene = GameObject.FindObjectOfType<Main>().GameController.LoadSavedGameAsync("test");
 		}
 	}
 
