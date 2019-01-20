@@ -2,6 +2,7 @@
 using System.Timers;
 using GameSaving.MonoBehaviours;
 using TeamZ.Assets.GameSaving.States;
+using UniRx;
 
 public class CharacterControllerScript : MonoBehaviourWithState<CharacterControllerState>
 {
@@ -234,17 +235,34 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			{
 				case FightMode.Punch:
 					Fight2D.Action(this.Punch.position, this.PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse * this.impulseDirection);
-					break;
+                    MessageBroker.Default.Publish(new PunchHappened());
+                    break;
 				case FightMode.Kick:
 					Fight2D.Action(this.Kick.position, this.KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse * this.impulseDirection);
-					break;
+                    MessageBroker.Default.Publish(new KickHappened());
+                    break;
 				default:
 					break;
 			}
-		}
 
-		this.fightMode = FightMode.None;
-	}
+            this.fightMode = FightMode.None;
+        }
+
+        if (message.Equals("IdleAnimation"))
+        {
+            MessageBroker.Default.Publish(new IdleHappened());
+        }
+
+        if (message.Equals("RunAnimation"))
+        {
+            MessageBroker.Default.Publish(new RunHappened());
+        }
+
+        if (message.Equals("JumpAnimation"))
+        {
+            MessageBroker.Default.Publish(new JumpHappened());
+        }
+    }
 
 	private void OnStrikeCooldownTimerEvent(object sender, ElapsedEventArgs e)
 	{
@@ -260,5 +278,40 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
     public override void SetState(CharacterControllerState state)
     {
         this.currentHorizontalDirection = state.CurrentDirection;
+    }
+}
+
+public class IdleHappened
+{
+    public IdleHappened()
+    {
+    }
+}
+
+public class RunHappened
+{
+    public RunHappened()
+    {
+    }
+}
+
+public class JumpHappened
+{
+    public JumpHappened()
+    {
+    }
+}
+
+public class PunchHappened
+{
+    public PunchHappened()
+    {
+    }
+}
+
+public class KickHappened
+{
+    public KickHappened()
+    {
     }
 }
