@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cf1dab834d4ec34195b920ea7bbf9ec, type: 3}
-  m_Name: New HDRenderPipelineAsset
+  m_Name: HDRenderPipelineAsset
   m_EditorClassIdentifier: 
   m_Version: 1
-  m_RenderPipelineResources: {fileID: 11400000, guid: 00000000000000000000000000000000,
-    type: 0}
+  m_RenderPipelineResources: {fileID: 11400000, guid: 3ce144cff5783da45aa5d4fdc2da14b7,
+    type: 2}
   m_FrameSettings:
     overrides: 0
     enableShadow: 1
     enableContactShadows: 1
     enableShadowMask: 1
     enableSSR: 0
-    enableSSAO: 1
+    enableSSAO: 0
     enableSubsurfaceScattering: 1
-    enableTransmission: 1
+    enableTransmission: 0
     enableAtmosphericScattering: 1
     enableVolumetrics: 1
     enableReprojectionForVolumetrics: 1
@@ -150,22 +150,21 @@ MonoBehaviour:
   renderPipelineSettings:
     supportShadowMask: 1
     supportSSR: 0
-    supportSSAO: 1
-    supportSubsurfaceScattering: 1
+    supportSSAO: 0
+    supportSubsurfaceScattering: 0
     increaseSssSampleCount: 0
-    supportVolumetrics: 1
+    supportVolumetrics: 0
     increaseResolutionOfVolumetrics: 0
     supportLightLayers: 0
     supportDistortion: 1
-    supportTransparentBackface: 1
+    supportTransparentBackface: 0
     supportTransparentDepthPrepass: 1
     supportTransparentDepthPostpass: 1
-    supportedLitShaderMode: 3
-    supportDecals: 1
-    supportMSAA: 0
+    supportedLitShaderMode: 2
+    supportDecals: 0
     msaaSampleCount: 1
-    supportMotionVectors: 1
-    supportRuntimeDebugDisplay: 1
+    supportMotionVectors: 0
+    supportRuntimeDebugDisplay: 0
     supportDitheringCrossFade: 1
     supportRayTracing: 0
     lightLoopSettings:
@@ -194,7 +193,7 @@ MonoBehaviour:
       maxShadowRequests: 128
       shadowMapsDepthBits: 32
       useDynamicViewportRescale: 1
-      shadowQuality: 0
+      shadowQuality: 2
     decalSettings:
       drawDistance: 1000
       atlasWidth: 4096
