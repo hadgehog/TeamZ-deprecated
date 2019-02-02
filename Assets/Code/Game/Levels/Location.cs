@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
-namespace GameObjects.Activation.Core
+namespace Game.Levels
 {
-    public interface IActivable
+    public class Location : MonoBehaviour
     {
-        void Activate();
     }
 }

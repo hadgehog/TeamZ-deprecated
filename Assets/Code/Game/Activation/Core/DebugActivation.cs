@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GameObjects.Activation.Core
+namespace Game.Activation.Core
 {
     public class DebugActivation : MonoBehaviour, IActivable
     {

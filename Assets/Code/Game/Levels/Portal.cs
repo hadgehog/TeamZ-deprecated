@@ -1,10 +1,10 @@
 ﻿using System;
-using GameObjects.Activation.Core;
+using Game.Activation.Core;
 using Inspectors;
 using UniRx;
 using UnityEngine;
 
-namespace GameObjects.Levels
+namespace Game.Levels
 {
     public class Portal : MonoBehaviour, IActivable
     {

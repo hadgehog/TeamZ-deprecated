@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Assets.Code.Helpers;
 using Assets.UI;
 using Effects;
-using GameObjects.Levels;
+using Game.Levels;
 using GameSaving.Interfaces;
 using GameSaving.MonoBehaviours;
 using GameSaving.States;

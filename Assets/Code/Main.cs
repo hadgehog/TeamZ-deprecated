@@ -2,7 +2,7 @@
 using Assets.Code.Helpers;
 using Assets.UI;
 using Effects;
-using GameObjects.Activation.Core;
+using Game.Activation.Core;
 using GameSaving;
 using GameSaving.States;
 using UnityEngine;
