@@ -210,6 +210,51 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 94458731}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &94458733 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1339754169959356, guid: 700da3eb8fd87a44b9f804cf3fa7500e,
+    type: 3}
+  m_PrefabInstance: {fileID: 94458731}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &94458734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94458733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 091170059514ce945989851c23342a63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Message: Jump or kick
+--- !u!61 &94458735
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94458733}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -1.43, y: -0.32}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.51, y: 2.56}
+    newSize: {x: 2.5, y: 2.49}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 5, y: 1.98}
+  m_EdgeRadius: 0
 --- !u!1001 &149517993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1593,6 +1638,51 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1513339208}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1177818071 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1171139908730750, guid: 98a34f0124ae6724f968b2b88e160c27,
+    type: 3}
+  m_PrefabInstance: {fileID: 149517993}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1177818072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177818071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 091170059514ce945989851c23342a63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Message: Press E to go inside
+--- !u!61 &1177818073
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177818071}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 3.79, y: 5.85}
+    newSize: {x: 3.79, y: 5.85}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3.79, y: 5.85}
+  m_EdgeRadius: 0
 --- !u!1001 &1182893897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1720,7 +1810,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4622332297712214, guid: 30ff19b3ed8eaa2478c704b512f1dce8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6
+      value: -8.8
       objectReference: {fileID: 0}
     - target: {fileID: 4622332297712214, guid: 30ff19b3ed8eaa2478c704b512f1dce8, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1767,6 +1857,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30ff19b3ed8eaa2478c704b512f1dce8, type: 3}
+--- !u!1 &1354734821 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1270094665430320, guid: 30ff19b3ed8eaa2478c704b512f1dce8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1354734820}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1354734822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1354734821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 806e01798964d7c4c804e353df6b0c45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1513339208
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2107,6 +2215,51 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1820046177}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1820046179 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1471012824066914, guid: 62c44f89e3be1be4bbc78e410e1e022e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1820046177}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1820046180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820046179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 091170059514ce945989851c23342a63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Message: You can move up
+--- !u!61 &1820046181
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820046179}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -2.93}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.88, y: 11.47}
+    newSize: {x: 2.88, y: 11.47}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3, y: 2}
+  m_EdgeRadius: 0
 --- !u!1001 &1860667594
 PrefabInstance:
   m_ObjectHideFlags: 0
