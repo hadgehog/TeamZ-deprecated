@@ -8,16 +8,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Standart
-  m_Shader: {fileID: 45, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _ALPHATEST_ON _AXF_BRDF_TYPE_SVBRDF _DISABLE_DECALS
-    _DISABLE_SSR _GLOSSYREFLECTIONS_OFF _NORMALMAP_TANGENT_SPACE _SPECULARHIGHLIGHTS_OFF
+  m_Shader: {fileID: 10800, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA PIXELSNAP_ON _ALPHATEST_ON _AXF_BRDF_TYPE_SVBRDF
+    _DISABLE_DECALS _DISABLE_SSR _GLOSSYREFLECTIONS_OFF _NORMALMAP_TANGENT_SPACE _SPECULARHIGHLIGHTS_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2450
+  m_CustomRenderQueue: -1
   stringTagMap:
     MotionVector: User
-    RenderType: TransparentCutout
   disabledShaderPasses:
   - DistortionVectors
   - TransparentDepthPrepass
@@ -212,7 +211,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - PixelSnap: 0
+    - PixelSnap: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
