@@ -3993,9 +3993,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Steps: {fileID: 8300000, guid: 301e758a5b4edc94fa2e6d6180d68cdb, type: 3}
-  Jump: {fileID: 0}
-  Climb: {fileID: 0}
-  Punch: {fileID: 8300000, guid: 29320aff74646c7458df01088af06a8a, type: 3}
+  Jump: {fileID: 8300000, guid: d08a083cd88569347845d80d934ea8b4, type: 3}
+  Climb: {fileID: 8300000, guid: ac9c4cdbc9e0e3f46a9ba52a641d8cea, type: 3}
+  Punch: {fileID: 8300000, guid: dd9a03c52dc804d41b01b0ba1e8021b9, type: 3}
   Kick: {fileID: 8300000, guid: 72a6374209afac7458436e5354f7915e, type: 3}
   Hurting: {fileID: 0}
   Die: {fileID: 0}
@@ -4006,6 +4006,7 @@ MonoBehaviour:
   KillObject: {fileID: 0}
   MenuOpenClose: {fileID: 0}
   MenuClick: {fileID: 0}
+  EnemyGunShooting: {fileID: 0}
   MenuBackgroungMusic: {fileID: 0}
   Level1BackgroungMusic: {fileID: 0}
   Level2BackgroungMusic: {fileID: 0}
