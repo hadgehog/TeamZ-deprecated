@@ -25,6 +25,14 @@ MonoBehaviour:
     m_Address: Turel
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 643cea734631dbe4eb545148c97c4e11
+    m_Address: first-aid-pack
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: af2ad5d6b6e0ad8489b28659e303a9dd
+    m_Address: armor
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 86a4097a6f3bc4b4da43bec5ca0420b1, type: 2}
   m_SchemaSet:
