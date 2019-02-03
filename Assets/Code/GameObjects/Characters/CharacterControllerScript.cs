@@ -64,6 +64,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	private int impulseDirection = 1;
 
 	private Timer strikeCooldownTimer = new Timer(600);
+	private Timer jumpCooldownTimer = new Timer(600);
 
 	private bool isKeyUpWasPressed = false;
 
@@ -77,6 +78,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.Character = this.GetComponent<Lizard>();
 
 		this.strikeCooldownTimer.Elapsed += new ElapsedEventHandler(this.OnStrikeCooldownTimerEvent);
+		this.jumpCooldownTimer.Elapsed += new ElapsedEventHandler(this.OnJumpCooldownTimerEvent);
 	}
 
 	protected virtual void FixedUpdate()
@@ -128,10 +130,21 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 				this.currentVerticalDirection = verticalDirection;
 			}
 
-            this.anim.SetBool("Climbing", this.IsClimbed);
-            this.anim.SetFloat("ClimbSpeed", horizontalMove > 0.0f || horizontalMove < 0.0f ? Mathf.Abs(horizontalMove) : Mathf.Abs(verticalMove));
+			float mooving = horizontalMove > 0.0f || horizontalMove < 0.0f ? Mathf.Abs(horizontalMove) : Mathf.Abs(verticalMove);
+
+			this.anim.SetBool("Climbing", this.IsClimbed);
+            this.anim.SetFloat("ClimbSpeed", mooving);
             this.rigidBody.velocity = new Vector2(horizontalMove * this.CreepSpeed, verticalMove * this.CreepSpeed);
-        }
+
+			if (mooving > 0.0f)
+			{
+				MessageBroker.Default.Publish(new RunHappened(true));
+			}
+			else
+			{
+				MessageBroker.Default.Publish(new RunEnded(true));
+			}
+		}
 		else
 		{
             this.isKeyUpWasPressed = false;
@@ -151,6 +164,16 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             this.anim.SetFloat("Speed", Mathf.Abs(horizontalMove));
             this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
             this.rigidBody.velocity = new Vector2(horizontalMove * this.RunSpeed, this.rigidBody.velocity.y);
+
+			if (Mathf.Abs(horizontalMove) > 0.0f)
+			{
+				MessageBroker.Default.Publish(new RunHappened(false));
+			}
+			else
+			{
+				MessageBroker.Default.Publish(new RunEnded(true));
+				MessageBroker.Default.Publish(new RunEnded(false));
+			}
         }
 	}
 
@@ -171,10 +194,12 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			this.strikeCooldownTimer.Start();
 		}
 
-		if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space))
+		if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space) && !this.jumpCooldownTimer.Enabled)
 		{
 			this.anim.SetBool("Ground", false);
 			this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
+			this.jumpCooldownTimer.Start();
+			MessageBroker.Default.Publish(new JumpHappened());
 		}
 
 		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
@@ -235,11 +260,9 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			{
 				case FightMode.Punch:
 					Fight2D.Action(this.Punch.position, this.PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse * this.impulseDirection);
-                    MessageBroker.Default.Publish(new PunchHappened());
                     break;
 				case FightMode.Kick:
 					Fight2D.Action(this.Kick.position, this.KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse * this.impulseDirection);
-                    MessageBroker.Default.Publish(new KickHappened());
                     break;
 				default:
 					break;
@@ -248,19 +271,14 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             this.fightMode = FightMode.None;
         }
 
-        if (message.Equals("IdleAnimation"))
-        {
-            MessageBroker.Default.Publish(new IdleHappened());
-        }
+		if (message.Equals("PunchHappened"))
+		{
+			MessageBroker.Default.Publish(new PunchHappened());
+		}
 
-        if (message.Equals("RunAnimation"))
+		if (message.Equals("KickHappened"))
         {
-            MessageBroker.Default.Publish(new RunHappened());
-        }
-
-        if (message.Equals("JumpAnimation"))
-        {
-            MessageBroker.Default.Publish(new JumpHappened());
+            MessageBroker.Default.Publish(new KickHappened());
         }
     }
 
@@ -269,7 +287,12 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.strikeCooldownTimer.Stop();
 	}
 
-    public override CharacterControllerState GetState()
+	private void OnJumpCooldownTimerEvent(object sender, ElapsedEventArgs e)
+	{
+		this.jumpCooldownTimer.Stop();
+	}
+
+	public override CharacterControllerState GetState()
         => new CharacterControllerState
         {
             CurrentDirection = this.currentHorizontalDirection
@@ -281,18 +304,24 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
     }
 }
 
-public class IdleHappened
-{
-    public IdleHappened()
-    {
-    }
-}
-
 public class RunHappened
 {
-    public RunHappened()
+	public bool isClimbing = false;
+
+    public RunHappened(bool _isClimbing)
     {
-    }
+		isClimbing = _isClimbing;
+	}
+}
+
+public class RunEnded
+{
+	public bool isClimbing = false;
+
+	public RunEnded(bool _isClimbing)
+	{
+		isClimbing = _isClimbing;
+	}
 }
 
 public class JumpHappened

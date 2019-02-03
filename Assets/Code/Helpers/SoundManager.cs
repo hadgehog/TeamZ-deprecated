@@ -19,8 +19,9 @@ public class SoundManager : MonoBehaviour
     public AudioClip KillObject;
     public AudioClip MenuOpenClose;
     public AudioClip MenuClick;
-    // game music
-    public AudioClip MenuBackgroungMusic;
+	public AudioClip EnemyGunShooting;
+	// game music
+	public AudioClip MenuBackgroungMusic;
     public AudioClip Level1BackgroungMusic;
     public AudioClip Level2BackgroungMusic;
 
@@ -30,10 +31,13 @@ public class SoundManager : MonoBehaviour
     void Start ()
     {
         this.audioSource = GetComponent<AudioSource>();
+		this.audioSource.Stop();
+		this.audioSource.volume = 0.3f;
+		this.audioSource.loop = false;
 
-        MessageBroker.Default.Receive<IdleHappened>().Subscribe(this.StopSound);
-        MessageBroker.Default.Receive<RunHappened>().Subscribe(this.PlayStepsSound);
-        MessageBroker.Default.Receive<JumpHappened>().Subscribe(this.PlayJumpSound);
+		MessageBroker.Default.Receive<RunHappened>().Subscribe(this.PlayStepsSound);
+		MessageBroker.Default.Receive<RunEnded>().Subscribe(this.StopStepsSound);
+		MessageBroker.Default.Receive<JumpHappened>().Subscribe(this.PlayJumpSound);
         MessageBroker.Default.Receive<PunchHappened>().Subscribe(this.PlayPunchSound);
         MessageBroker.Default.Receive<KickHappened>().Subscribe(this.PlayKickSound);
     }
@@ -44,40 +48,73 @@ public class SoundManager : MonoBehaviour
 		
 	}
 
-    private void StopSound(IdleHappened sound)
-    {
-        this.audioSource.Stop();
-    }
-
     private void PlayStepsSound(RunHappened sound)
     {
-        if (this.Steps != null && !this.audioSource.isPlaying)
-        {
-            this.audioSource.PlayOneShot(this.Steps);
-        }
+		if (sound.isClimbing)
+		{
+			if (this.Climb != null && this.audioSource.clip != this.Climb)
+			{
+				this.audioSource.volume = 0.1f;
+				this.audioSource.loop = true;
+				this.audioSource.clip = this.Climb;
+				this.audioSource.Play();
+			}
+		}
+		else
+		{
+			if (this.Steps != null && this.audioSource.clip != this.Steps)
+			{
+				this.audioSource.loop = true;
+				this.audioSource.clip = this.Steps;
+				this.audioSource.Play();
+			}
+		}
     }
 
-    private void PlayJumpSound(JumpHappened sound)
+	private void StopStepsSound(RunEnded sound)
+	{
+		if (sound.isClimbing)
+		{
+			if (this.Climb != null && this.audioSource.clip == this.Climb && this.audioSource.isPlaying)
+			{
+				this.audioSource.volume = 0.3f;
+				this.audioSource.loop = false;
+				this.audioSource.Stop();
+				this.audioSource.clip = null;
+			}
+		}
+		else
+		{
+			if (this.Steps != null && this.audioSource.clip == this.Steps && this.audioSource.isPlaying)
+			{
+				this.audioSource.loop = false;
+				this.audioSource.Stop();
+				this.audioSource.clip = null;
+			}
+		}
+	}
+
+	private void PlayJumpSound(JumpHappened sound)
     {
-        if (this.Jump != null && !this.audioSource.isPlaying)
+        if (this.Jump != null)
         {
-            this.audioSource.PlayOneShot(this.Jump);
-        }
+			this.audioSource.PlayOneShot(this.Jump);
+		}
     }
 
     private void PlayPunchSound(PunchHappened sound)
     {
-        if (this.Punch != null && !this.audioSource.isPlaying)
+        if (this.Punch != null)
         {
-            this.audioSource.PlayOneShot(this.Punch);
-        }
+			this.audioSource.PlayOneShot(this.Punch);
+		}
     }
 
     private void PlayKickSound(KickHappened sound)
     {
-        if (this.Kick != null && !this.audioSource.isPlaying)
+        if (this.Kick != null)
         {
-            this.audioSource.PlayOneShot(this.Kick);
-        }
+			this.audioSource.PlayOneShot(this.Kick);
+		}
     }
 }
