@@ -18,11 +18,11 @@ MonoBehaviour:
   m_GUID: 3c5952e7b22d371498272421189d4149
   m_SerializeEntries:
   - m_GUID: 30ff19b3ed8eaa2478c704b512f1dce8
-    m_Address: Lizard
+    m_Address: lizard
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 50872c9cd4a620e44b5a080596530710
-    m_Address: Turel
+    m_Address: turel
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 643cea734631dbe4eb545148c97c4e11

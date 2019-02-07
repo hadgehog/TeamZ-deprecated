@@ -20,11 +20,11 @@ public class Rotator : MonoBehaviour
 
 		if (this.useRandomBoost)
 		{
-			this.update = () => this.currentTransform.Rotate(this.xAxis, Math.Max(this.rotationSpeed, this.rotationSpeed + Mathf.Sin(Time.time) * this.randomBoostValue));
+			this.update = () => this.currentTransform.Rotate(this.xAxis, Math.Max(this.rotationSpeed, this.rotationSpeed + Mathf.Sin(Time.time) * this.randomBoostValue) * Time.deltaTime);
 		}
 		else
 		{
-			this.update = () => this.currentTransform.Rotate(this.xAxis, this.rotationSpeed);
+			this.update = () => this.currentTransform.Rotate(this.xAxis, this.rotationSpeed * Time.deltaTime);
 		}
 
 		this.random = new System.Random(this.randomBoostSeed);

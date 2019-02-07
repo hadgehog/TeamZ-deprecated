@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Duplicate Asset Isolation
+  m_EditorClassIdentifier: 
+  m_GroupName: Duplicate Asset Isolation
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 7481646c660f1ed49a510d3f9635615f
+  m_SerializeEntries:
+  - m_GUID: 00a9556d0b713d8419c6a98dd6e8e178
+    m_Address: Assets/Art/Levels/Common/TurretGun2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 097662d0a8e181c4d89fd6f017d8952f
+    m_Address: Assets/Art/Characters/Lizard/ClimbIdle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2f992806db77d5b48bb622617ec8b6be
+    m_Address: Assets/Art/Characters/Lizard/Jump.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 34fe87e776c5b6847b0116f4ba3cb1c9
+    m_Address: Assets/Art/Characters/Lizard/Run.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 47e33057b615bb140981872838f5c3b7
+    m_Address: Assets/Art/Characters/Lizard/Punch.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7d23576e3d3dc884c96107f06ab17fed
+    m_Address: Assets/Art/Levels/1-Laboratory/Level_1_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: aac3dacd026774d4eab5b8d54e8e19b2
+    m_Address: Assets/Art/Characters/Lizard/Idle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c42d3ff3d5d80d34d9e32432dedc7119
+    m_Address: Assets/Art/Characters/Lizard/Kick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d956633d8acb18241a1a5813709d378b
+    m_Address: Assets/Art/Characters/Lizard/Climb.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: fe87974743cc7b0468d6745225ae4c59
+    m_Address: Assets/Art/Levels/1-Laboratory/Level_1_first_aid_pack.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 86a4097a6f3bc4b4da43bec5ca0420b1, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c62ce5074dbf1ff4eb148bfa4045ffc4, type: 2}

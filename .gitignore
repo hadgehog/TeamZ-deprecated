@@ -7,3 +7,4 @@
 *.sln
 /Logs
 /UIElementsSchema
+/Assets/StreamingAssets/com.unity.addressables

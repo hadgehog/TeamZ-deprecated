@@ -6,16 +6,14 @@ using UnityEngine;
 
 namespace Game.Levels
 {
+    [ExecuteInEditMode]
     public class Portal : MonoBehaviour, IActivable
     {
 #if UNITY_EDITOR
-        public SceneReactiveProperty Scene;
+        public SceneReactiveProperty Scene = new SceneReactiveProperty();
 
         public void OnEnable()
         {
-            if (this.Scene == null)
-                this.Scene = new SceneReactiveProperty();
-
             this.Scene.Subscribe(scene => this.sceneName = scene?.name);
         }
 
