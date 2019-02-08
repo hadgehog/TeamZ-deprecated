@@ -37,7 +37,15 @@ namespace Game.Levels
                 throw new InvalidOperationException($"Level with name {this.sceneName} does not exist.");
             }
 
-            FindObjectOfType<Main>().GameController.SwitchLevelAsync(Level.All[this.sceneName], this.Location);
+			MessageBroker.Default.Publish(new PortalToNextLevelHappened());
+			FindObjectOfType<Main>().GameController.SwitchLevelAsync(Level.All[this.sceneName], this.Location);
         }
     }
+
+	public class PortalToNextLevelHappened
+	{
+		public PortalToNextLevelHappened()
+		{
+		}
+	}
 }

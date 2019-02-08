@@ -86,30 +86,30 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.IsGrounded = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, (this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy));
 		this.IsClimbed = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing);
 
-        var horizontalMove = Input.GetAxis("Horizontal");
+		var horizontalMove = Input.GetAxis("Horizontal");
 		var horizontalDirection = this.currentHorizontalDirection;
 
 		if (horizontalMove < 0)
-        {
-            horizontalDirection = Direction.Left;
-        }
-        else if (horizontalMove > 0)
-        {
-            horizontalDirection = Direction.Right;
-        }
+		{
+			horizontalDirection = Direction.Left;
+		}
+		else if (horizontalMove > 0)
+		{
+			horizontalDirection = Direction.Right;
+		}
 
-        if (horizontalDirection != this.currentHorizontalDirection)
+		if (horizontalDirection != this.currentHorizontalDirection)
 		{
 			this.currentHorizontalDirection = horizontalDirection;
 			this.Flip();
 		}
 
-        this.anim.SetBool("Ground", true);
-        this.anim.SetFloat("Speed", 0.0f);
-        this.anim.SetBool("Climbing", false);
-        this.anim.SetFloat("ClimbSpeed", 0.0f);
+		this.anim.SetBool("Ground", true);
+		this.anim.SetFloat("Speed", 0.0f);
+		this.anim.SetBool("Climbing", false);
+		this.anim.SetFloat("ClimbSpeed", 0.0f);
 
-        if (this.isKeyUpWasPressed && this.IsClimbed)
+		if (this.isKeyUpWasPressed && this.IsClimbed)
 		{
 			this.rigidBody.gravityScale = 0.0f;
 
@@ -117,15 +117,15 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			var verticalDirection = this.currentVerticalDirection;
 
 			if (verticalMove < 0)
-            {
-                verticalDirection = Direction.Down;
-            }
-            else if (verticalMove > 0)
-            {
-                verticalDirection = Direction.Up;
-            }
+			{
+				verticalDirection = Direction.Down;
+			}
+			else if (verticalMove > 0)
+			{
+				verticalDirection = Direction.Up;
+			}
 
-            if (verticalDirection != this.currentVerticalDirection)
+			if (verticalDirection != this.currentVerticalDirection)
 			{
 				this.currentVerticalDirection = verticalDirection;
 			}
@@ -133,8 +133,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			float mooving = horizontalMove > 0.0f || horizontalMove < 0.0f ? Mathf.Abs(horizontalMove) : Mathf.Abs(verticalMove);
 
 			this.anim.SetBool("Climbing", this.IsClimbed);
-            this.anim.SetFloat("ClimbSpeed", mooving);
-            this.rigidBody.velocity = new Vector2(horizontalMove * this.CreepSpeed, verticalMove * this.CreepSpeed);
+			this.anim.SetFloat("ClimbSpeed", mooving);
+			this.rigidBody.velocity = new Vector2(horizontalMove * this.CreepSpeed, verticalMove * this.CreepSpeed);
 
 			if (mooving > 0.0f)
 			{
@@ -147,7 +147,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		}
 		else
 		{
-            this.isKeyUpWasPressed = false;
+			this.isKeyUpWasPressed = false;
 
 			if (this.rigidBody.gravityScale != 1)
 			{
@@ -160,10 +160,10 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 				this.currentVerticalDirection = Direction.Up;
 			}
 
-            this.anim.SetBool("Ground", this.IsGrounded);
-            this.anim.SetFloat("Speed", Mathf.Abs(horizontalMove));
-            this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
-            this.rigidBody.velocity = new Vector2(horizontalMove * this.RunSpeed, this.rigidBody.velocity.y);
+			this.anim.SetBool("Ground", this.IsGrounded);
+			this.anim.SetFloat("Speed", Mathf.Abs(horizontalMove));
+			this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
+			this.rigidBody.velocity = new Vector2(horizontalMove * this.RunSpeed, this.rigidBody.velocity.y);
 
 			if (Mathf.Abs(horizontalMove) > 0.0f)
 			{
@@ -174,7 +174,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 				MessageBroker.Default.Publish(new RunEnded(true));
 				MessageBroker.Default.Publish(new RunEnded(false));
 			}
-        }
+		}
 	}
 
 	// called once per frame
@@ -196,7 +196,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 		if (this.IsGrounded && Input.GetKeyDown(KeyCode.Space) && !this.jumpCooldownTimer.Enabled)
 		{
-			this.anim.SetBool("Ground", false);
+			this.IsGrounded = false;
+			this.anim.SetBool("Ground", this.IsGrounded);
 			this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
 			this.jumpCooldownTimer.Start();
 			MessageBroker.Default.Publish(new JumpHappened());
@@ -207,22 +208,24 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			this.isKeyUpWasPressed = true;
 		}
 
-        if (this.isKeyUpWasPressed && this.IsClimbed)
-        {
-            this.anim.SetBool("Climbing", this.IsClimbed);
-        }
-    }
+		if (this.isKeyUpWasPressed && this.IsClimbed)
+		{
+			this.anim.SetBool("Climbing", this.IsClimbed);
+		}
+	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D col)
 	{
 		if (col.gameObject.GetComponent<FirstAidKit>() != null)
 		{
+			MessageBroker.Default.Publish(new TakeObjectHappened());
 			// TODO: add effect of flying aid kit to health bar on HUD
 			Destroy(col.gameObject);
 		}
 
 		if (col.gameObject.GetComponent<ArmorKit>() != null)
 		{
+			MessageBroker.Default.Publish(new TakeObjectHappened());
 			// TODO: add effect of flying armor kit to armor bar on HUD
 			Destroy(col.gameObject);
 		}
@@ -232,11 +235,11 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			// Something strange happening with this OnTriggerEnter
 			// It called OnTriggerEnter several times when it ought to only one
 			if (this.loadingStarted)
-            {
-                return;
-            }
+			{
+				return;
+			}
 
-            this.loadingStarted = true;
+			this.loadingStarted = true;
 
 			var loadScene = GameObject.FindObjectOfType<Main>().GameController.LoadSavedGameAsync("test");
 		}
@@ -260,16 +263,16 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			{
 				case FightMode.Punch:
 					Fight2D.Action(this.Punch.position, this.PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse * this.impulseDirection);
-                    break;
+					break;
 				case FightMode.Kick:
 					Fight2D.Action(this.Kick.position, this.KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse * this.impulseDirection);
-                    break;
+					break;
 				default:
 					break;
 			}
 
-            this.fightMode = FightMode.None;
-        }
+			this.fightMode = FightMode.None;
+		}
 
 		if (message.Equals("PunchHappened"))
 		{
@@ -277,10 +280,10 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		}
 
 		if (message.Equals("KickHappened"))
-        {
-            MessageBroker.Default.Publish(new KickHappened());
-        }
-    }
+		{
+			MessageBroker.Default.Publish(new KickHappened());
+		}
+	}
 
 	private void OnStrikeCooldownTimerEvent(object sender, ElapsedEventArgs e)
 	{
@@ -293,23 +296,23 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	}
 
 	public override CharacterControllerState GetState()
-        => new CharacterControllerState
-        {
-            CurrentDirection = this.currentHorizontalDirection
-        };
+		=> new CharacterControllerState
+		{
+			CurrentDirection = this.currentHorizontalDirection
+		};
 
-    public override void SetState(CharacterControllerState state)
-    {
-        this.currentHorizontalDirection = state.CurrentDirection;
-    }
+	public override void SetState(CharacterControllerState state)
+	{
+		this.currentHorizontalDirection = state.CurrentDirection;
+	}
 }
 
 public class RunHappened
 {
 	public bool isClimbing = false;
 
-    public RunHappened(bool _isClimbing)
-    {
+	public RunHappened(bool _isClimbing)
+	{
 		isClimbing = _isClimbing;
 	}
 }
@@ -326,21 +329,28 @@ public class RunEnded
 
 public class JumpHappened
 {
-    public JumpHappened()
-    {
-    }
+	public JumpHappened()
+	{
+	}
 }
 
 public class PunchHappened
 {
-    public PunchHappened()
-    {
-    }
+	public PunchHappened()
+	{
+	}
 }
 
 public class KickHappened
 {
-    public KickHappened()
-    {
-    }
+	public KickHappened()
+	{
+	}
+}
+
+public class TakeObjectHappened
+{
+	public TakeObjectHappened()
+	{
+	}
 }

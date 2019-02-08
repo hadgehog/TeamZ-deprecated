@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
+using TeamZ.Assets.Code.Game.Tips;
 
 public class LevelObject : MonoBehaviour, IDamageable
 {
@@ -65,7 +65,12 @@ public class LevelObject : MonoBehaviour, IDamageable
 
     public virtual void StrengthTooLow()
     {
-        Destroy(GetComponent<BoxCollider2D>());
+		if (GetComponent<ConstantMessageTip>() != null)
+		{
+			Destroy(GetComponent<ConstantMessageTip>());
+		}
+
+		Destroy(GetComponent<BoxCollider2D>());
     }
 
     protected virtual void FixedUpdate()

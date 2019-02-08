@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UniRx;
+using Game.Levels;
 
 public class SoundManager : MonoBehaviour
 {
@@ -40,7 +41,9 @@ public class SoundManager : MonoBehaviour
 		MessageBroker.Default.Receive<JumpHappened>().Subscribe(this.PlayJumpSound);
         MessageBroker.Default.Receive<PunchHappened>().Subscribe(this.PlayPunchSound);
         MessageBroker.Default.Receive<KickHappened>().Subscribe(this.PlayKickSound);
-    }
+		MessageBroker.Default.Receive<TakeObjectHappened>().Subscribe(this.PlayTakeObjectSound);
+		MessageBroker.Default.Receive<PortalToNextLevelHappened>().Subscribe(this.PlayPortalToNextLevelSound);
+	}
 	
 	// Update is called once per frame
 	void Update ()
@@ -48,9 +51,9 @@ public class SoundManager : MonoBehaviour
 		
 	}
 
-    private void PlayStepsSound(RunHappened sound)
+    private void PlayStepsSound(RunHappened soundObj)
     {
-		if (sound.isClimbing)
+		if (soundObj.isClimbing)
 		{
 			if (this.Climb != null && this.audioSource.clip != this.Climb)
 			{
@@ -71,9 +74,9 @@ public class SoundManager : MonoBehaviour
 		}
     }
 
-	private void StopStepsSound(RunEnded sound)
+	private void StopStepsSound(RunEnded soundObj)
 	{
-		if (sound.isClimbing)
+		if (soundObj.isClimbing)
 		{
 			if (this.Climb != null && this.audioSource.clip == this.Climb && this.audioSource.isPlaying)
 			{
@@ -94,7 +97,7 @@ public class SoundManager : MonoBehaviour
 		}
 	}
 
-	private void PlayJumpSound(JumpHappened sound)
+	private void PlayJumpSound(JumpHappened soundObj)
     {
         if (this.Jump != null)
         {
@@ -102,7 +105,7 @@ public class SoundManager : MonoBehaviour
 		}
     }
 
-    private void PlayPunchSound(PunchHappened sound)
+    private void PlayPunchSound(PunchHappened soundObj)
     {
         if (this.Punch != null)
         {
@@ -110,11 +113,27 @@ public class SoundManager : MonoBehaviour
 		}
     }
 
-    private void PlayKickSound(KickHappened sound)
+    private void PlayKickSound(KickHappened soundObj)
     {
         if (this.Kick != null)
         {
 			this.audioSource.PlayOneShot(this.Kick);
 		}
     }
+
+	private void PlayTakeObjectSound(TakeObjectHappened soundObj)
+	{
+		if (this.TakeObject != null)
+		{
+			this.audioSource.PlayOneShot(this.TakeObject);
+		}
+	}
+
+	private void PlayPortalToNextLevelSound(PortalToNextLevelHappened soundObj)
+	{
+		if (this.Portal != null)
+		{
+			this.audioSource.PlayOneShot(this.Portal);
+		}
+	}
 }

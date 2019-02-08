@@ -43,13 +43,16 @@ public class Main : MonoBehaviour
 
 		if (Input.GetKeyUp(KeyCode.Escape))
 		{
-			if (this.ViewRouter.Value.MainView.isActiveAndEnabled)
+			if (this.ViewRouter.Value.MainView.IsGameStarted)
 			{
-				this.ViewRouter.Value.ShowGameHUDView();
-				return;
-			}
+				if (this.ViewRouter.Value.MainView.isActiveAndEnabled)
+				{
+					this.ViewRouter.Value.ShowGameHUDView();
+					return;
+				}
 
-			this.ViewRouter.Value.ShowMainView();
+				this.ViewRouter.Value.ShowMainView();
+			}
 		}
 	}
 
