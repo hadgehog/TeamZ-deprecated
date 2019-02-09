@@ -100,8 +100,10 @@ namespace GameSaving
 
         public async Task LoadSavedGameAsync(string slotName)
         {
+            await this.BlackScreen.Value.ShowAsync();
             var gameState = await this.Storage.LoadAsync(slotName);
             await this.LoadGameStateAsync(gameState);
+            await this.BlackScreen.Value.HideAsync();
         }
 
         public async Task LoadAsync(Level level)

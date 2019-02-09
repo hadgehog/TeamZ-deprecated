@@ -23,7 +23,7 @@ public class LoadView : MonoBehaviour
 		foreach (var slot in this.Main.Value.GameController.Storage.Slots)
 		{
 			var loadItem = GameObject.Instantiate<GameObject>(this.LoadItemTemplate, this.transform);
-			loadItem.GetComponent<LoadItemView>().SlotName = slot;
+			loadItem.GetComponent<LoadItemView>().SlotName = slot.Name;
 		}
 	}
 }

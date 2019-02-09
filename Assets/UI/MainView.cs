@@ -1,4 +1,5 @@
-﻿using Assets.Code.Helpers;
+﻿using System;
+using Assets.Code.Helpers;
 using Assets.UI;
 using Effects;
 using UnityEngine;
@@ -20,6 +21,7 @@ public class MainView : MonoBehaviour
 		this.Deactivate();
 		this.ViewRouter.Value.GameHUDView.Activate();
 		await gameController.LoadAsync(Level.Laboratory);
+        await gameController.SaveAsync($"new game {DateTime.Now.ToString().Replace(":", ".")}");
 		await this.blackScreen.Value.HideAsync();
 		this.IsGameStarted = true;
 	}

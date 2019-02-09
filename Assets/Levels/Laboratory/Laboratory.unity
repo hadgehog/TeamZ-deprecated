@@ -1150,11 +1150,6 @@ PrefabInstance:
       propertyPath: m_LightShadowCasterMode
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114814978415478398, guid: ff60f699153f8f14ebe4726a5645086d,
-        type: 3}
-      propertyPath: randomBoostValue
-      value: 0.1
-      objectReference: {fileID: 0}
     - target: {fileID: 4600369327299088, guid: ff60f699153f8f14ebe4726a5645086d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1162,6 +1157,11 @@ PrefabInstance:
     - target: {fileID: 4600369327299088, guid: ff60f699153f8f14ebe4726a5645086d, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114814978415478398, guid: ff60f699153f8f14ebe4726a5645086d,
+        type: 3}
+      propertyPath: randomBoostValue
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff60f699153f8f14ebe4726a5645086d, type: 3}
@@ -1809,24 +1809,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30ff19b3ed8eaa2478c704b512f1dce8, type: 3}
---- !u!1 &1354734821 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1270094665430320, guid: 30ff19b3ed8eaa2478c704b512f1dce8,
-    type: 3}
-  m_PrefabInstance: {fileID: 1354734820}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1354734822
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1354734821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 806e01798964d7c4c804e353df6b0c45, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1513339208
 PrefabInstance:
   m_ObjectHideFlags: 0

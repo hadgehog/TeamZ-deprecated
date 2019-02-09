@@ -24,7 +24,6 @@ public class ArmorKit : MonoBehaviour
 
         if (character == null)
         {
-            Debug.Log("Character not founded!!!");
             return;
         }
 

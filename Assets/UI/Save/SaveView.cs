@@ -32,7 +32,7 @@ public class SaveView : MonoBehaviour
 
 		foreach (var slot in this.Main.Value.GameController.Storage.Slots)
 		{
-			AddSlot(slot);
+			AddSlot(slot.Name);
 		}
 	}
 

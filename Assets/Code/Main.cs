@@ -9,7 +9,6 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {
-	private readonly UnityDependency<BlackScreen> BlackScreen;
 	private readonly UnityDependency<ViewRouter> ViewRouter;
 
 	public GameController<GameState> GameController
@@ -36,9 +35,7 @@ public class Main : MonoBehaviour
 
 		if (Input.GetKeyUp(KeyCode.F9))
 		{
-			await this.BlackScreen.Value.ShowAsync();
 			await this.GameController.LoadSavedGameAsync("test");
-			await this.BlackScreen.Value.HideAsync();
 		}
 
 		if (Input.GetKeyUp(KeyCode.Escape))

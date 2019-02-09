@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,64 +8,84 @@ using ZeroFormatter;
 
 namespace GameSaving
 {
-	public class GameStorage<TGameState>
-	{
-		private const string SaveDirectory = "Saves";
+    public class GameSlot
+    {
+        public DateTime Modified { get; set; }
 
-		private readonly string path;
-		private readonly HashSet<string> slots;
+        public string Name { get; set; }
 
-		public IEnumerable<string> Slots
-		{
-			get
-			{
-				return this.slots;
-			}
-		}
+    }
 
-		public GameStorage()
-		{
-			this.path = Path.Combine(Application.persistentDataPath, SaveDirectory);
 
-			if (!Directory.Exists(this.path))
-				Directory.CreateDirectory(this.path);
+    public class GameStorage<TGameState>
+    {
+        private const string SaveDirectory = "Saves";
 
-			this.slots = new HashSet<string>(Directory.EnumerateFiles(this.path).Select(Path.GetFileNameWithoutExtension));
-		}
+        private readonly string path;
+        private readonly Dictionary<string, GameSlot> slots;
 
-		public async Task<TGameState> LoadAsync(string slotName)
-		{
-			using (var reader = new FileStream(this.CreateFilePath(slotName), FileMode.Open))
-			{
-				var bytes = new byte[reader.Seek(0, SeekOrigin.End)];
-				reader.Seek(0, SeekOrigin.Begin);
+        public IEnumerable<GameSlot> Slots
+        {
+            get
+            {
+                return this.slots.Values;
+            }
+        }
 
-				await reader.ReadAsync(bytes, 0, bytes.Length);
+        public GameStorage()
+        {
+            this.path = Path.Combine(Application.persistentDataPath, SaveDirectory);
 
-				var gameState = ZeroFormatterSerializer.Deserialize<TGameState>(bytes);
+            if (!Directory.Exists(this.path))
+                Directory.CreateDirectory(this.path);
 
-				return gameState;
-			}
-		}
+            this.slots = Directory.EnumerateFiles(this.path).Select(o =>
+            {
+                var fileInfo = new FileInfo(o);
+                var name = Path.GetFileNameWithoutExtension(o);
 
-		public async Task SaveAsync(TGameState game, string slotName)
-		{
-			var bytes = ZeroFormatterSerializer.Serialize(game);
-			var path = this.CreateFilePath(slotName);
-			using (var writer = new FileStream(path, FileMode.Create))
-			{
-				await writer.WriteAsync(bytes, 0, bytes.Length);
-			}
+                return new GameSlot
+                {
+                    Modified = fileInfo.LastWriteTimeUtc,
+                    Name = name
+                };
+            }).ToDictionary(o => o.Name);
+        }
 
-			if (!this.slots.Contains(slotName))
-			{
-				this.slots.Add(slotName);
-			}
-		}
+        public async Task<TGameState> LoadAsync(string slotName)
+        {
+            using (var reader = new FileStream(this.CreateFilePath(slotName), FileMode.Open))
+            {
+                var bytes = new byte[reader.Seek(0, SeekOrigin.End)];
+                reader.Seek(0, SeekOrigin.Begin);
 
-		private string CreateFilePath(string slotName)
-		{
-			return Path.Combine(this.path, slotName + ".save");
-		}
-	}
+                await reader.ReadAsync(bytes, 0, bytes.Length);
+
+                var gameState = ZeroFormatterSerializer.Deserialize<TGameState>(bytes);
+
+                return gameState;
+            }
+        }
+
+        public async Task SaveAsync(TGameState game, string slotName)
+        {
+            var bytes = ZeroFormatterSerializer.Serialize(game);
+            var path = this.CreateFilePath(slotName);
+            using (var writer = new FileStream(path, FileMode.Create))
+            {
+                await writer.WriteAsync(bytes, 0, bytes.Length);
+            }
+
+            this.slots[slotName] = new GameSlot
+            {
+                Modified = DateTime.UtcNow,
+                Name = slotName
+            };
+        }
+
+        private string CreateFilePath(string slotName)
+        {
+            return Path.Combine(this.path, slotName + ".save");
+        }
+    }
 }
