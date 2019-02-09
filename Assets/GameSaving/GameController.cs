@@ -39,7 +39,8 @@ namespace GameSaving
             this.EnttiesStorage.Root = null;
             this.EnttiesStorage.Entities.Clear();
 
-            MessageBroker.Default.Receive<GameSaved>().Subscribe(_ => this.Notifications.Value.ShowShortMessage("Game saved"));
+            MessageBroker.Default.Receive<GameSaved>().
+                Subscribe(_ => this.Notifications.Value.ShowShortMessage("Game saved"));
 
             MessageBroker.Default.Receive<LoadGameRequest>().
                 Subscribe(async o =>
