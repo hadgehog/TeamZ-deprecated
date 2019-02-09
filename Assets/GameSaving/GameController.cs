@@ -10,6 +10,8 @@ using GameSaving.Interfaces;
 using GameSaving.MonoBehaviours;
 using GameSaving.States;
 using GameSaving.States.Charaters;
+using TeamZ.Assets.Code.Game.Messages.GameSaving;
+using TeamZ.Assets.Code.Game.Notifications;
 using UniRx;
 using UniRx.Async;
 using UnityEngine;
@@ -17,16 +19,13 @@ using UnityEngine.AddressableAssets;
 
 namespace GameSaving
 {
-    public class LoadFromSlotName
-    {
-        public string SlotName { get; set; }
-    }
 
     public class GameController<TGameState> : IGameController
         where TGameState : GameState, new()
     {
         private UnityDependency<BlackScreen> BlackScreen;
         private UnityDependency<ViewRouter> ViewRouter;
+        private UnityDependency<NotificationService> Notifications;
 
         public HashSet<Guid> VisitedLevels { get; private set; }
 
@@ -40,12 +39,15 @@ namespace GameSaving
             this.EnttiesStorage.Root = null;
             this.EnttiesStorage.Entities.Clear();
 
-            MessageBroker.Default.Receive<LoadFromSlotName>().
+            MessageBroker.Default.Receive<GameSaved>().Subscribe(_ => this.Notifications.Value.ShowShortMessage("Game saved"));
+
+            MessageBroker.Default.Receive<LoadGameRequest>().
                 Subscribe(async o =>
                 {
                     this.ViewRouter.Value.ShowGameHUDView();
                     await this.BlackScreen.Value.ShowAsync();
                     await this.LoadSavedGameAsync(o.SlotName);
+                    MessageBroker.Default.Publish(new GameLoaded());
                     await this.BlackScreen.Value.HideAsync();
                 });
         }
@@ -126,6 +128,7 @@ namespace GameSaving
         public async Task SaveAsync(string slotName)
         {
             await this.SaveAsync(this.GetState(), slotName);
+            MessageBroker.Default.Publish(new GameSaved());
         }
 
         public async Task SaveAsync(TGameState gameState, string slotName)

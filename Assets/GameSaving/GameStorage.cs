@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TeamZ.Assets.Code.Game.Messages.GameSaving;
+using UniRx;
 using UnityEngine;
 using ZeroFormatter;
 
@@ -13,9 +15,7 @@ namespace GameSaving
         public DateTime Modified { get; set; }
 
         public string Name { get; set; }
-
     }
-
 
     public class GameStorage<TGameState>
     {
@@ -76,11 +76,13 @@ namespace GameSaving
                 await writer.WriteAsync(bytes, 0, bytes.Length);
             }
 
-            this.slots[slotName] = new GameSlot
+            var gameSlot = new GameSlot
             {
                 Modified = DateTime.UtcNow,
                 Name = slotName
             };
+
+            this.slots[slotName] = gameSlot;
         }
 
         private string CreateFilePath(string slotName)
