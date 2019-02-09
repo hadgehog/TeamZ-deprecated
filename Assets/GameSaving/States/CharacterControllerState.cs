@@ -15,6 +15,12 @@ namespace TeamZ.Assets.GameSaving.States
         [Index(0)]
         public virtual CharacterControllerScript.Direction CurrentDirection { get; set; }
 
+        [Index(1)]
+        public virtual bool IsClimbed { get; set; }
+
+        [Index(2)]
+        public virtual bool IsKeyUpWasPressed { get; set; }
+
         public override MonoBehaviourStateKind Type { get; } = MonoBehaviourStateKind.CharacterController;
     }
 }

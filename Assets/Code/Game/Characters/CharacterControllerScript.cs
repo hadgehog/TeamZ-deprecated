@@ -301,12 +301,16 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	public override CharacterControllerState GetState()
 		=> new CharacterControllerState
 		{
-			CurrentDirection = this.currentHorizontalDirection
+			CurrentDirection = this.currentHorizontalDirection,
+            IsClimbed = this.IsClimbed,
+            IsKeyUpWasPressed = this.isKeyUpWasPressed
 		};
 
 	public override void SetState(CharacterControllerState state)
 	{
 		this.currentHorizontalDirection = state.CurrentDirection;
+        this.IsClimbed = state.IsClimbed;
+        this.isKeyUpWasPressed = state.IsKeyUpWasPressed;
 	}
 }
 
