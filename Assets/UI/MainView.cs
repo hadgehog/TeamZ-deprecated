@@ -21,7 +21,7 @@ public class MainView : MonoBehaviour
 		this.Deactivate();
 		this.ViewRouter.Value.GameHUDView.Activate();
 		await gameController.LoadAsync(Level.Laboratory);
-        await gameController.SaveAsync($"new game {DateTime.Now.ToString().Replace(":", ".")}");
+		await gameController.SaveAsync($"new game {this.FormDateTimeString()}");
 		await this.blackScreen.Value.HideAsync();
 		this.IsGameStarted = true;
 	}
@@ -47,5 +47,11 @@ public class MainView : MonoBehaviour
 	public void Settings()
 	{
 
+	}
+
+	private string FormDateTimeString()
+	{
+		var dateTimeString = DateTime.Now.Day.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Year.ToString();
+		return dateTimeString;
 	}
 }
