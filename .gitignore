@@ -5,6 +5,9 @@
 /.vscode
 *.csproj
 *.sln
+*.zip
+
 /Logs
 /UIElementsSchema
 /Assets/StreamingAssets/com.unity.addressables
+/BuildArtifacts
