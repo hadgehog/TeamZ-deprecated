@@ -1,3 +1,18 @@
+if(-Not (Test-Path -Path token.json))
+{
+    echo "token.json is missing"
+    exit 1
+}
+
+if (-Not (Get-Command unity -errorAction SilentlyContinue))
+{
+    echo "unity command is missing"
+    echo "Add unity folder to global path enviroment variable"
+    exit 1
+}
+
+$token = ((Get-Content -Path token.json) | ConvertFrom-Json).token
+
 echo "Build Unity project"
 
 cmd /c unity  -batchmode -nographics -projectpath . -executeMethod Build.AppBuilder.BuildGame -quit
@@ -15,12 +30,12 @@ $archiveName = "game_$($tag).zip"
 echo "Compressing"
 Compress-Archive -Path BuildArtifacts/* -DestinationPath $archiveName -Force
 
- $headers = 
- @{ 
-    "Content-Type"="application/json";
-    "Accept" = "application/vnd.github.v3+json";
-    "Authorization" = "token 240e93d26bcf5e4a30c892ee09a4fc6c78defc92";
- }
+$headers = 
+@{ 
+   "Content-Type"="application/json";
+   "Accept" = "application/vnd.github.v3+json";
+   "Authorization" = "token $($token)";
+}
 
 $createRelease = @"
 {
