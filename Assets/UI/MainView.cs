@@ -51,7 +51,9 @@ public class MainView : MonoBehaviour
 
 	private string FormDateTimeString()
 	{
-		var dateTimeString = DateTime.Now.Day.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Year.ToString();
+		var dateTimeString = 
+			DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + "_" + 
+			DateTime.Now.Day.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Year.ToString();
 		return dateTimeString;
 	}
 }
