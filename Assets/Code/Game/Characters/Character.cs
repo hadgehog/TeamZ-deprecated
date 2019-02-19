@@ -94,6 +94,11 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
 
 	public void TakeDamage(int value)
     {
+		if (this.Health == 0)
+		{
+			return;
+		}
+
         int blockedDamage = this.Armor - value;
 
         if (blockedDamage >= 0)

@@ -13,18 +13,16 @@ namespace TeamZ.Handlers
 
 		public async void Handle(CharacterDead characterDead)
 		{
-			Debug.Log("handler works");
+			var effect = this.BlackScreen.Value;
+			var delay = effect.Delay;
 
-			//var effect = this.BlackScreen.Value;
-			//var delay = effect.Delay;
+			effect.Delay = 4;
+			await effect.ShowAsync();
+			effect.Delay = delay;
 
-			//effect.Delay = 9;
-			//await effect.ShowAsync();
-			//effect.Delay = delay;
-
-			//var gameController = this.Main.Value.GameController;
-			//var lastSave = gameController.Storage.Slots.OrderByDescending(o => o.Modified).First();
-			//var loading = gameController.LoadSavedGameAsync(lastSave.Name);
+			var gameController = this.Main.Value.GameController;
+			var lastSave = gameController.Storage.Slots.OrderByDescending(o => o.Modified).First();
+			var loading = gameController.LoadSavedGameAsync(lastSave.Name);
 		}
 	}
 }

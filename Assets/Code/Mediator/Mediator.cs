@@ -32,16 +32,15 @@ namespace TeamZ.Mediator
 		public Mediator()
 		{
 			this.handlers = new Dictionary<Type, IHandler>();
-
-			MessageBroker.Default.Receive<ICommand>().
-				ObserveOnMainThread().
-				Subscribe(command => this.Handle(command));
 		}
 
-		public void Add<THandler>(THandler handler)
-			where THandler : IHandler
+		public void Add<TCommand>(IHandler<TCommand> handler)
+			where TCommand : ICommand
 		{
-			this.handlers.Add(typeof(THandler), handler);
+			this.handlers.Add(typeof(TCommand), handler);
+			MessageBroker.Default.Receive<TCommand>().
+				ObserveOnMainThread().
+				Subscribe(command => this.Handle(command));
 		}
 
 		public void Handle<TCommand>(TCommand command)
