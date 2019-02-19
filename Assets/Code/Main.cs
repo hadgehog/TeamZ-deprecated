@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using Assets.Code.Helpers;
 using Assets.UI;
-using Effects;
 using Game.Activation.Core;
 using GameSaving;
 using GameSaving.States;
 using TeamZ.Handlers;
 using TeamZ.Mediator;
+using UniRx;
 using UnityEngine;
 
 public class Main : MonoBehaviour
@@ -47,10 +47,13 @@ public class Main : MonoBehaviour
 				if (this.ViewRouter.Value.MainView.isActiveAndEnabled)
 				{
 					this.ViewRouter.Value.ShowGameHUDView();
+					Time.timeScale = 1;
 					return;
 				}
 
+				MessageBroker.Default.Publish(new GamePaused());
 				this.ViewRouter.Value.ShowMainView();
+				Time.timeScale = 0;
 			}
 		}
 	}
@@ -60,5 +63,12 @@ public class Main : MonoBehaviour
 		this.GameController = new GameController<GameState>();
 
 		Mediator.Instance.Add(new DeathHandler());
+	}
+}
+
+public class GamePaused
+{
+	public GamePaused()
+	{
 	}
 }

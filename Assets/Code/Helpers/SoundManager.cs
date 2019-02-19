@@ -2,7 +2,6 @@
 using UniRx;
 using Game.Levels;
 using System;
-using System.Threading.Tasks;
 using UniRx.Async;
 using System.Collections.Generic;
 
@@ -50,6 +49,7 @@ public class SoundManager : MonoBehaviour
 		MessageBroker.Default.Receive<TakeObjectHappened>().Subscribe(this.PlayTakeObjectSound);
 		MessageBroker.Default.Receive<PortalToNextLevelHappened>().Subscribe(this.PlayPortalToNextLevelSound);
 		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.PlayOnce(this.Die, "Death"));
+		MessageBroker.Default.Receive<GamePaused>().Subscribe(this.StopAllSounds);
 	}
 	
 	public AudioSource Lend(string name)
@@ -102,6 +102,13 @@ public class SoundManager : MonoBehaviour
 
 		await UniTask.Delay(TimeSpan.FromSeconds(audio.length + 0.5));
 		this.Release(name);
+	}
+
+	private void StopAllSounds(GamePaused soundObj)
+	{
+		this.audioSource.loop = false;
+		this.audioSource.Stop();
+		this.audioSource.clip = null;
 	}
 
 	private void PlayStepsSound(RunHappened soundObj)
