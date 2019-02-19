@@ -16,9 +16,11 @@ namespace TeamZ.Handlers
 			var effect = this.BlackScreen.Value;
 			var delay = effect.Delay;
 
-			effect.Delay = 4;
+			Time.timeScale = 0.5f;
+			effect.Delay = 2;
 			await effect.ShowAsync();
 			effect.Delay = delay;
+			Time.timeScale = 1;
 
 			var gameController = this.Main.Value.GameController;
 			var lastSave = gameController.Storage.Slots.OrderByDescending(o => o.Modified).First();
