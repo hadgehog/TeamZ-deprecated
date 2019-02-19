@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using UniRx;
 using Game.Levels;
+using System;
+using System.Threading.Tasks;
+using UniRx.Async;
+using System.Collections.Generic;
 
 public class SoundManager : MonoBehaviour
 {
@@ -27,9 +31,11 @@ public class SoundManager : MonoBehaviour
     public AudioClip Level2BackgroungMusic;
 
     private AudioSource audioSource;
+	private Queue<AudioSource> freeAudioSources = new Queue<AudioSource>();
+	private Dictionary<string, AudioSource> audioSourceCache = new Dictionary<string, AudioSource>();
 
-    // Use this for initialization
-    void Start ()
+	// Use this for initialization
+	void Start ()
     {
         this.audioSource = GetComponent<AudioSource>();
 		this.audioSource.Stop();
@@ -43,15 +49,62 @@ public class SoundManager : MonoBehaviour
         MessageBroker.Default.Receive<KickHappened>().Subscribe(this.PlayKickSound);
 		MessageBroker.Default.Receive<TakeObjectHappened>().Subscribe(this.PlayTakeObjectSound);
 		MessageBroker.Default.Receive<PortalToNextLevelHappened>().Subscribe(this.PlayPortalToNextLevelSound);
+		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.PlayOnce(this.Die, "Death"));
 	}
 	
-	// Update is called once per frame
-	void Update ()
-    {
-		
+	public AudioSource Lend(string name)
+	{
+		if (this.audioSourceCache.TryGetValue(name, out var audioSource))
+		{
+			return audioSource;
+		}
+
+		if(this.freeAudioSources.Count <= 0)
+		{
+			this.freeAudioSources.Enqueue(this.gameObject.AddComponent<AudioSource>());
+		}
+
+		audioSource = this.freeAudioSources.Dequeue();
+		audioSource.Stop();
+		audioSource.volume = 0.3f;
+		audioSource.loop = false;
+
+		this.audioSourceCache.Add(name, audioSource);
+
+		return audioSource;
 	}
 
-    private void PlayStepsSound(RunHappened soundObj)
+	public void Release(string name)
+	{
+		if(!this.audioSourceCache.TryGetValue(name, out var audioSource))
+		{
+			throw new InvalidOperationException($"Audio source {name} is missing");
+		}
+
+		this.audioSourceCache.Remove(name);
+		this.freeAudioSources.Enqueue(audioSource);
+	}
+
+	public async UniTask Play(AudioClip audio)
+	{
+		await PlayOnce(audio, Guid.NewGuid().ToString());
+	}
+
+	public async UniTask PlayOnce(AudioClip audio, string name)
+	{
+		var audioSource = this.Lend(name);
+		if (audioSource.isPlaying)
+		{
+			return;
+		}
+
+		audioSource.PlayOneShot(audio);
+
+		await UniTask.Delay(TimeSpan.FromSeconds(audio.length + 0.5));
+		this.Release(name);
+	}
+
+	private void PlayStepsSound(RunHappened soundObj)
     {
 		if (soundObj.isClimbing)
 		{
@@ -101,7 +154,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Jump != null)
         {
-			this.audioSource.PlayOneShot(this.Jump);
+			this.Play(this.Jump);
 		}
     }
 
@@ -109,7 +162,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Punch != null)
         {
-			this.audioSource.PlayOneShot(this.Punch);
+			this.Play(this.Punch);
 		}
     }
 
@@ -117,7 +170,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Kick != null)
         {
-			this.audioSource.PlayOneShot(this.Kick);
+			this.Play(this.Kick);
 		}
     }
 
@@ -125,7 +178,7 @@ public class SoundManager : MonoBehaviour
 	{
 		if (this.TakeObject != null)
 		{
-			this.audioSource.PlayOneShot(this.TakeObject);
+			this.Play(this.TakeObject);
 		}
 	}
 
@@ -133,7 +186,7 @@ public class SoundManager : MonoBehaviour
 	{
 		if (this.Portal != null)
 		{
-			this.audioSource.PlayOneShot(this.Portal);
+			this.Play(this.Portal);
 		}
 	}
 }

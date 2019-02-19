@@ -3999,7 +3999,7 @@ MonoBehaviour:
   Punch: {fileID: 8300000, guid: dd9a03c52dc804d41b01b0ba1e8021b9, type: 3}
   Kick: {fileID: 8300000, guid: 72a6374209afac7458436e5354f7915e, type: 3}
   Hurting: {fileID: 0}
-  Die: {fileID: 0}
+  Die: {fileID: 8300000, guid: 7b18b5cbe815f054a9365864b8f4aeb0, type: 3}
   Portal: {fileID: 8300000, guid: b75f041ffd3e6c148acce2696e170999, type: 3}
   TakeObject: {fileID: 8300000, guid: 344fda6698cee3f47a95c171f4023424, type: 3}
   MoveObject: {fileID: 0}

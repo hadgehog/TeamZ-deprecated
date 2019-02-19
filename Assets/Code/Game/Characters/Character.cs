@@ -1,5 +1,7 @@
 ﻿using GameSaving.MonoBehaviours;
 using GameSaving.States.Charaters;
+using TeamZ.Mediator;
+using UniRx;
 using UnityEngine;
 using static CharacterControllerScript;
 
@@ -108,6 +110,7 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
         {
             this.Health = 0;
 
+			MessageBroker.Default.Publish(new CharacterDead(this));
             Debug.Log("You are die!");
         }
     }
@@ -134,4 +137,14 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
     {
         this.Armor += value;
     }
+}
+
+public class CharacterDead : ICommand
+{
+	private ICharacter character;
+
+	public CharacterDead(ICharacter character)
+	{
+		this.character = character;
+	}
 }

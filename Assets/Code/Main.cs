@@ -5,6 +5,8 @@ using Effects;
 using Game.Activation.Core;
 using GameSaving;
 using GameSaving.States;
+using TeamZ.Handlers;
+using TeamZ.Mediator;
 using UnityEngine;
 
 public class Main : MonoBehaviour
@@ -56,5 +58,7 @@ public class Main : MonoBehaviour
 	private void Start()
 	{
 		this.GameController = new GameController<GameState>();
+
+		Mediator.Instance.Add(new DeathHandler());
 	}
 }
