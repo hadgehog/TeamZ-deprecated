@@ -110,7 +110,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.anim.SetBool("Climbing", false);
 		this.anim.SetFloat("ClimbSpeed", 0.0f);
 
-		if (this.isKeyUpWasPressed && this.IsClimbed)
+		if (this.IsClimbed && this.isKeyUpWasPressed)
 		{
 			this.rigidBody.gravityScale = 0.0f;
 
@@ -166,7 +166,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
 			this.rigidBody.velocity = new Vector2(horizontalMove * this.RunSpeed, this.rigidBody.velocity.y);
 
-			if (Mathf.Abs(horizontalMove) > 0.0f)
+			if (this.IsGrounded && Mathf.Abs(horizontalMove) > 0.0f)
 			{
 				MessageBroker.Default.Publish(new RunHappened(false));
 			}
