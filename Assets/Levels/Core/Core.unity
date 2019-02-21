@@ -3999,8 +3999,8 @@ MonoBehaviour:
   Punch: {fileID: 8300000, guid: dd9a03c52dc804d41b01b0ba1e8021b9, type: 3}
   Kick: {fileID: 8300000, guid: 72a6374209afac7458436e5354f7915e, type: 3}
   Hurting: {fileID: 0}
-  Die: {fileID: 8300000, guid: 7b18b5cbe815f054a9365864b8f4aeb0, type: 3}
-  Portal: {fileID: 8300000, guid: b75f041ffd3e6c148acce2696e170999, type: 3}
+  Die: {fileID: 8300000, guid: e091890b1ca8f104680659021c4c1156, type: 3}
+  Portal: {fileID: 8300000, guid: 3a4eca2a2e483674693b8366b1f317be, type: 3}
   TakeObject: {fileID: 8300000, guid: 344fda6698cee3f47a95c171f4023424, type: 3}
   MoveObject: {fileID: 0}
   DropObject: {fileID: 0}
@@ -4009,8 +4009,10 @@ MonoBehaviour:
   MenuClick: {fileID: 0}
   EnemyGunShooting: {fileID: 0}
   MenuBackgroungMusic: {fileID: 8300000, guid: 87d01d0e49ab1fd44a9236de00b0212f, type: 3}
-  Level1BackgroungMusic: {fileID: 0}
-  Level2BackgroungMusic: {fileID: 0}
+  Level1BackgroungMusic: {fileID: 8300000, guid: f733e379b1b033a41a1354d8e918e777,
+    type: 3}
+  Level2BackgroungMusic: {fileID: 8300000, guid: 19929bf8602b4224cb3b354e6fd6e6e1,
+    type: 3}
 --- !u!82 &2010018885
 AudioSource:
   m_ObjectHideFlags: 0

@@ -19,6 +19,13 @@ public class Main : MonoBehaviour
 		private set;
 	}
 
+	private void Start()
+	{
+		this.GameController = new GameController<GameState>();
+
+		Mediator.Instance.Add(new DeathHandler());
+	}
+
 	public async void Update()
 	{
 		if (Input.GetKeyUp(KeyCode.F5))
@@ -48,6 +55,7 @@ public class Main : MonoBehaviour
 				{
 					this.ViewRouter.Value.ShowGameHUDView();
 					Time.timeScale = 1;
+					MessageBroker.Default.Publish(new GameResumed(this.GameController.LevelManager.CurrentLevel.Name));
 					return;
 				}
 
@@ -57,18 +65,21 @@ public class Main : MonoBehaviour
 			}
 		}
 	}
-
-	private void Start()
-	{
-		this.GameController = new GameController<GameState>();
-
-		Mediator.Instance.Add(new DeathHandler());
-	}
 }
 
 public class GamePaused
 {
 	public GamePaused()
 	{
+	}
+}
+
+public class GameResumed
+{
+	public string Level;
+
+	public GameResumed(string level)
+	{
+		this.Level = level;
 	}
 }

@@ -33,6 +33,8 @@ public class SoundManager : MonoBehaviour
 	private Queue<AudioSource> freeAudioSources = new Queue<AudioSource>();
 	private Dictionary<string, AudioSource> audioSourceCache = new Dictionary<string, AudioSource>();
 
+	private string currentLevelName = "Level_Laboratory";
+
 	// Use this for initialization
 	void Start ()
     {
@@ -48,8 +50,9 @@ public class SoundManager : MonoBehaviour
         MessageBroker.Default.Receive<KickHappened>().Subscribe(this.PlayKickSound);
 		MessageBroker.Default.Receive<TakeObjectHappened>().Subscribe(this.PlayTakeObjectSound);
 		MessageBroker.Default.Receive<PortalToNextLevelHappened>().Subscribe(this.PlayPortalToNextLevelSound);
-		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.PlayOnce(this.Die, "Death"));
-		MessageBroker.Default.Receive<GamePaused>().Subscribe(this.StopAllSounds);
+		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.PlayOnce(this.Die, "Death", 0.3f));
+		MessageBroker.Default.Receive<GamePaused>().Subscribe(this.OnGamePaused);
+		MessageBroker.Default.Receive<GameResumed>().Subscribe(this.OnGameResumed);
 	}
 	
 	public AudioSource Lend(string name)
@@ -81,34 +84,61 @@ public class SoundManager : MonoBehaviour
 			throw new InvalidOperationException($"Audio source {name} is missing");
 		}
 
+		audioSource.Stop();
 		this.audioSourceCache.Remove(name);
 		this.freeAudioSources.Enqueue(audioSource);
 	}
 
-	public async UniTask Play(AudioClip audio)
+	public async UniTask Play(AudioClip audio, float volume = 0.3f)
 	{
-		await PlayOnce(audio, Guid.NewGuid().ToString());
+		await PlayOnce(audio, Guid.NewGuid().ToString(), volume);
 	}
 
-	public async UniTask PlayOnce(AudioClip audio, string name)
+	public async UniTask PlayOnce(AudioClip audio, string name, float volume)
 	{
 		var audioSource = this.Lend(name);
+
 		if (audioSource.isPlaying)
 		{
 			return;
 		}
 
-		audioSource.PlayOneShot(audio);
+		audioSource.PlayOneShot(audio, volume);
 
 		await UniTask.Delay(TimeSpan.FromSeconds(audio.length + 0.5));
 		this.Release(name);
 	}
 
-	private void StopAllSounds(GamePaused soundObj)
+	private void OnGamePaused(GamePaused soundObj)
 	{
 		this.audioSource.loop = false;
 		this.audioSource.Stop();
 		this.audioSource.clip = null;
+
+		//this.Release(this.currentLevelName);
+		this.PlayOnce(this.MenuBackgroungMusic, "Menu", 0.15f);
+	}
+
+	private void OnGameResumed(GameResumed soundObj)
+	{
+		this.audioSource.loop = false;
+		this.audioSource.Stop();
+		this.audioSource.clip = null;
+
+		this.Release("Menu");
+
+		string levelName = "Level_" + soundObj.Level;
+		this.currentLevelName = levelName;
+
+		//switch (soundObj.Level)
+		//{
+		//	case "Laboratory":
+		//		this.PlayOnce(this.Level1BackgroungMusic, levelName, 0.11f);
+		//		break;
+		//	case "Laboratory2":
+		//		this.PlayOnce(this.Level2BackgroungMusic, levelName, 0.11f);
+		//		break;
+		//}
 	}
 
 	private void PlayStepsSound(RunHappened soundObj)
@@ -117,7 +147,7 @@ public class SoundManager : MonoBehaviour
 		{
 			if (this.Climb != null && this.audioSource.clip != this.Climb)
 			{
-				this.audioSource.volume = 0.1f;
+				this.audioSource.volume = 0.08f;
 				this.audioSource.loop = true;
 				this.audioSource.clip = this.Climb;
 				this.audioSource.Play();
@@ -161,7 +191,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Jump != null)
         {
-			this.Play(this.Jump);
+			this.Play(this.Jump, 0.5f);
 		}
     }
 
@@ -169,7 +199,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Punch != null)
         {
-			this.Play(this.Punch);
+			this.Play(this.Punch, 0.2f);
 		}
     }
 
@@ -177,7 +207,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Kick != null)
         {
-			this.Play(this.Kick);
+			this.Play(this.Kick, 0.15f);
 		}
     }
 
@@ -193,7 +223,7 @@ public class SoundManager : MonoBehaviour
 	{
 		if (this.Portal != null)
 		{
-			this.Play(this.Portal);
+			this.Play(this.Portal, 1.0f);
 		}
 	}
 }
