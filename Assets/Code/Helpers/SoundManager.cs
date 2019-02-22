@@ -50,7 +50,7 @@ public class SoundManager : MonoBehaviour
         MessageBroker.Default.Receive<KickHappened>().Subscribe(this.PlayKickSound);
 		MessageBroker.Default.Receive<TakeObjectHappened>().Subscribe(this.PlayTakeObjectSound);
 		MessageBroker.Default.Receive<PortalToNextLevelHappened>().Subscribe(this.PlayPortalToNextLevelSound);
-		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.PlayOnce(this.Die, "Death", 0.3f));
+		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.PlayOnce(this.Die, "Death", 1.0f));
 		MessageBroker.Default.Receive<GamePaused>().Subscribe(this.OnGamePaused);
 		MessageBroker.Default.Receive<GameResumed>().Subscribe(this.OnGameResumed);
 	}
@@ -109,6 +109,22 @@ public class SoundManager : MonoBehaviour
 		this.Release(name);
 	}
 
+	public void PlayLooped(AudioClip audio, string name, float volume)
+	{
+		var audioSource = this.Lend(name);
+
+		if (audioSource.isPlaying)
+		{
+			return;
+		}
+
+		audioSource.loop = true;
+		audioSource.clip = audio;
+		audioSource.volume = volume;
+
+		audioSource.Play();
+	}
+
 	private void OnGamePaused(GamePaused soundObj)
 	{
 		this.audioSource.loop = false;
@@ -116,7 +132,7 @@ public class SoundManager : MonoBehaviour
 		this.audioSource.clip = null;
 
 		//this.Release(this.currentLevelName);
-		this.PlayOnce(this.MenuBackgroungMusic, "Menu", 0.15f);
+		this.PlayLooped(this.MenuBackgroungMusic, "Menu", 0.15f);
 	}
 
 	private void OnGameResumed(GameResumed soundObj)
