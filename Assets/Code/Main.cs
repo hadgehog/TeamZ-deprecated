@@ -23,6 +23,8 @@ public class Main : MonoBehaviour
 
 	private async void Start()
 	{
+		Application.targetFrameRate = 60;
+
 		this.RegisterHandlers();
 
 		this.GameController = new GameController<GameState>();
