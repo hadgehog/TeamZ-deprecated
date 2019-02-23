@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Assets.Code.Helpers;
 using Assets.UI;
 using Game.Activation.Core;
@@ -7,6 +8,7 @@ using GameSaving.States;
 using TeamZ.Handlers;
 using TeamZ.Mediator;
 using UniRx;
+using UniRx.Async;
 using UnityEngine;
 
 public class Main : MonoBehaviour
@@ -19,11 +21,22 @@ public class Main : MonoBehaviour
 		private set;
 	}
 
-	private void Start()
+	private async void Start()
 	{
 		this.GameController = new GameController<GameState>();
 
 		Mediator.Instance.Add(new DeathHandler());
+
+		this.GameController.Loaded.Subscribe(_ => this.Loaded());
+
+		await UniTask.DelayFrame(10);
+
+		MessageBroker.Default.Publish(new GamePaused());
+	}
+
+	private void Loaded()
+	{
+		MessageBroker.Default.Publish(new GameResumed(this.GameController.LevelManager.CurrentLevel.Name));
 	}
 
 	public async void Update()

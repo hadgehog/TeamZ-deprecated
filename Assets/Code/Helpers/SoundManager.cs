@@ -15,15 +15,20 @@ public class SoundManager : MonoBehaviour
     public AudioClip Kick;
     public AudioClip Hurting;
     public AudioClip Die;
-    // ambient effects
+    // world effects
     public AudioClip Portal;
     public AudioClip TakeObject;
     public AudioClip MoveObject;
     public AudioClip DropObject;
     public AudioClip KillObject;
-    public AudioClip MenuOpenClose;
-    public AudioClip MenuClick;
 	public AudioClip EnemyGunShooting;
+	// ambient sounds
+	public AudioClip AmbientNoize1;
+	public AudioClip AmbientNoize2;
+	public AudioClip AmbientNoize3;
+	// game effects
+	public AudioClip MenuOpenClose;
+    public AudioClip MenuClick;
 	// game music
 	public AudioClip MenuBackgroungMusic;
     public AudioClip Level1BackgroungMusic;
@@ -81,7 +86,8 @@ public class SoundManager : MonoBehaviour
 	{
 		if(!this.audioSourceCache.TryGetValue(name, out var audioSource))
 		{
-			throw new InvalidOperationException($"Audio source {name} is missing");
+			Debug.Log($"Audio source { name } is missing");
+			return;
 		}
 
 		audioSource.Stop();
@@ -127,34 +133,43 @@ public class SoundManager : MonoBehaviour
 
 	private void OnGamePaused(GamePaused soundObj)
 	{
+		Debug.Log($"Game paused");
+
 		this.audioSource.loop = false;
 		this.audioSource.Stop();
 		this.audioSource.clip = null;
 
-		//this.Release(this.currentLevelName);
-		this.PlayLooped(this.MenuBackgroungMusic, "Menu", 0.15f);
+		this.Release("Noize");
+		this.Release(this.currentLevelName);
+		this.PlayLooped(this.MenuBackgroungMusic, "Menu", 0.11f);
 	}
 
 	private void OnGameResumed(GameResumed soundObj)
 	{
+		Debug.Log($"Game resumed");
+
 		this.audioSource.loop = false;
 		this.audioSource.Stop();
 		this.audioSource.clip = null;
 
 		this.Release("Menu");
+		this.Release(this.currentLevelName);
+
+		this.PlayLooped(this.AmbientNoize2, "Noize", 0.05f);
 
 		string levelName = "Level_" + soundObj.Level;
-		this.currentLevelName = levelName;
 
-		//switch (soundObj.Level)
-		//{
-		//	case "Laboratory":
-		//		this.PlayOnce(this.Level1BackgroungMusic, levelName, 0.11f);
-		//		break;
-		//	case "Laboratory2":
-		//		this.PlayOnce(this.Level2BackgroungMusic, levelName, 0.11f);
-		//		break;
-		//}
+		switch (soundObj.Level)
+		{
+			case "Laboratory":
+				this.PlayLooped(this.Level1BackgroungMusic, levelName, 0.09f);
+				break;
+			case "Laboratory2":
+				this.PlayLooped(this.Level2BackgroungMusic, levelName, 0.09f);
+				break;
+		}
+
+		this.currentLevelName = levelName;
 	}
 
 	private void PlayStepsSound(RunHappened soundObj)

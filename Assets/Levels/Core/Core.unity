@@ -4005,9 +4005,12 @@ MonoBehaviour:
   MoveObject: {fileID: 0}
   DropObject: {fileID: 0}
   KillObject: {fileID: 0}
+  EnemyGunShooting: {fileID: 0}
+  AmbientNoize1: {fileID: 8300000, guid: a19600ae2d9329e42b8dce38b54a188c, type: 3}
+  AmbientNoize2: {fileID: 8300000, guid: 6f6f60e1a0ce3ea43a0c0ee84cd65318, type: 3}
+  AmbientNoize3: {fileID: 8300000, guid: df65b9b6e7640d14d9f551f580f2a651, type: 3}
   MenuOpenClose: {fileID: 0}
   MenuClick: {fileID: 0}
-  EnemyGunShooting: {fileID: 0}
   MenuBackgroungMusic: {fileID: 8300000, guid: 87d01d0e49ab1fd44a9236de00b0212f, type: 3}
   Level1BackgroungMusic: {fileID: 8300000, guid: f733e379b1b033a41a1354d8e918e777,
     type: 3}
