@@ -29,7 +29,7 @@ public class Main : MonoBehaviour
 
 		this.GameController.Loaded.Subscribe(_ => this.Loaded());
 
-		await UniTask.DelayFrame(10);
+		await UniTask.DelayFrame(1);
 
 		MessageBroker.Default.Publish(new GamePaused());
 	}
