@@ -8,6 +8,7 @@ using UnityEngine;
 public class LoadView : MonoBehaviour
 {
 	private UnityDependency<Main> Main;
+	private UnityDependency<ViewRouter> Router;
 
 	public GameObject Root;
 	public GameObject LoadItemTemplate;
@@ -26,5 +27,18 @@ public class LoadView : MonoBehaviour
 			var loadItem = GameObject.Instantiate<GameObject>(this.LoadItemTemplate, this.Root.transform);
 			loadItem.GetComponent<LoadItemView>().SlotName = slot.Name;
 		}
+	}
+
+	private void Update()
+	{
+		if (Input.GetKeyUp(KeyCode.Escape))
+		{
+			this.Cancel();
+		}
+	}
+
+	public void Cancel()
+	{
+		this.Router.Value.ShowMainView();
 	}
 }
