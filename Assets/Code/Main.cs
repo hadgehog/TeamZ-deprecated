@@ -23,15 +23,20 @@ public class Main : MonoBehaviour
 
 	private async void Start()
 	{
+		this.RegisterHandlers();
+
 		this.GameController = new GameController<GameState>();
-
-		Mediator.Instance.Add(new DeathHandler());
-
 		this.GameController.Loaded.Subscribe(_ => this.Loaded());
 
 		await UniTask.DelayFrame(1);
-
 		MessageBroker.Default.Publish(new GamePaused());
+	}
+
+	private void RegisterHandlers()
+	{
+		Mediator.Instance.Add(new DeathHandler());
+		Mediator.Instance.Add<GamePaused>(o => Time.timeScale = 0);
+		Mediator.Instance.Add<GameResumed>(o => Time.timeScale = 1);
 	}
 
 	private void Loaded()
@@ -62,32 +67,27 @@ public class Main : MonoBehaviour
 
 		if (Input.GetKeyUp(KeyCode.Escape))
 		{
-			if (this.ViewRouter.Value.MainView.IsGameStarted)
+			if (this.ViewRouter.Value.MainView.isActiveAndEnabled)
 			{
-				if (this.ViewRouter.Value.MainView.isActiveAndEnabled)
-				{
-					this.ViewRouter.Value.ShowGameHUDView();
-					Time.timeScale = 1;
-					MessageBroker.Default.Publish(new GameResumed(this.GameController.LevelManager.CurrentLevel.Name));
-					return;
-				}
-
-				MessageBroker.Default.Publish(new GamePaused());
-				this.ViewRouter.Value.ShowMainView();
-				Time.timeScale = 0;
+				this.ViewRouter.Value.ShowGameHUDView();
+				MessageBroker.Default.Publish(new GameResumed(this.GameController.LevelManager.CurrentLevel.Name));
+				return;
 			}
+
+			MessageBroker.Default.Publish(new GamePaused());
+			this.ViewRouter.Value.ShowMainView();
 		}
 	}
 }
 
-public class GamePaused
+public class GamePaused : ICommand
 {
 	public GamePaused()
 	{
 	}
 }
 
-public class GameResumed
+public class GameResumed : ICommand
 {
 	public string Level;
 

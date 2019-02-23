@@ -22,7 +22,7 @@ namespace TeamZ.Mediator
 	public interface IHandler<TCommand> : IHandler
 		where TCommand : ICommand
 	{
-		void Handle(TCommand characterDead);
+		void Handle(TCommand command);
 	}
 
 	public class Mediator : Singletone<Mediator>
@@ -41,6 +41,14 @@ namespace TeamZ.Mediator
 			MessageBroker.Default.Receive<TCommand>().
 				ObserveOnMainThread().
 				Subscribe(command => this.Handle(command));
+		}
+
+		public void Add<TCommand>(Action<TCommand> handler)
+			where TCommand : ICommand
+		{
+			MessageBroker.Default.Receive<TCommand>().
+				ObserveOnMainThread().
+				Subscribe(command => handler(command));
 		}
 
 		public void Handle<TCommand>(TCommand command)

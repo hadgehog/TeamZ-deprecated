@@ -2,12 +2,11 @@
 using Assets.Code.Helpers;
 using Assets.UI;
 using Effects;
+using UniRx;
 using UnityEngine;
 
 public class MainView : MonoBehaviour
 {
-	public bool IsGameStarted = false;
-
 	public readonly UnityDependency<Main> Main;
 	public readonly UnityDependency<ViewRouter> ViewRouter;
 
@@ -16,6 +15,7 @@ public class MainView : MonoBehaviour
 	public async void PlayAsync()
 	{
 		var gameController = this.Main.Value.GameController;
+		MessageBroker.Default.Publish(new GameResumed(string.Empty));
 
 		await this.blackScreen.Value.ShowAsync();
 		this.Deactivate();
@@ -23,7 +23,6 @@ public class MainView : MonoBehaviour
 		await gameController.LoadAsync(Level.Laboratory);
 		await gameController.SaveAsync($"new game {this.FormDateTimeString()}");
 		await this.blackScreen.Value.HideAsync();
-		this.IsGameStarted = true;
 	}
 
 	public void Load()
@@ -40,7 +39,6 @@ public class MainView : MonoBehaviour
 
 	public void Quit()
 	{
-		this.IsGameStarted = false;
 		Application.Quit();
 	}
 

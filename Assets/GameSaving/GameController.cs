@@ -45,7 +45,8 @@ namespace GameSaving
             MessageBroker.Default.Receive<LoadGameRequest>().
                 Subscribe(async o =>
                 {
-                    this.ViewRouter.Value.ShowGameHUDView();
+					MessageBroker.Default.Publish(new GameResumed(string.Empty));
+					this.ViewRouter.Value.ShowGameHUDView();
                     await this.BlackScreen.Value.ShowAsync();
                     await this.LoadSavedGameAsync(o.SlotName);
                     MessageBroker.Default.Publish(new GameLoaded());
