@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class MainView : MonoBehaviour
 {
-	public bool IsGameStarted = false;
-	
 	public readonly UnityDependency<Main> Main;
 	public readonly UnityDependency<ViewRouter> ViewRouter;
 
@@ -25,8 +23,6 @@ public class MainView : MonoBehaviour
 		await gameController.LoadAsync(Level.Laboratory);
 		await gameController.SaveAsync($"new game {this.FormDateTimeString()}");
 		await this.blackScreen.Value.HideAsync();
-
-		this.IsGameStarted = true;
 	}
 
 	public void Load()
@@ -43,7 +39,6 @@ public class MainView : MonoBehaviour
 
 	public void Quit()
 	{
-		this.IsGameStarted = false;
 		Application.Quit();
 	}
 
