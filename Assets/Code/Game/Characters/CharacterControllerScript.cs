@@ -68,6 +68,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	private Timer jumpCooldownTimer = new Timer(600);
 
 	private bool isKeyUpWasPressed = false;
+	private bool onTheStairway = false;
+	private Vector2 stairwayPosition;
 
 
 	// Use this for initialization
@@ -133,6 +135,12 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 			float mooving = horizontalMove > 0.0f || horizontalMove < 0.0f ? Mathf.Abs(horizontalMove) : Mathf.Abs(verticalMove);
 
+			if (this.onTheStairway)
+			{
+				this.rigidBody.position = new Vector2(this.stairwayPosition.x, this.rigidBody.position.y);
+				this.onTheStairway = false;
+			}
+
 			this.anim.SetBool("Climbing", this.IsClimbed);
 			this.anim.SetFloat("ClimbSpeed", mooving);
 			this.rigidBody.velocity = new Vector2(horizontalMove * this.CreepSpeed, verticalMove * this.CreepSpeed);
@@ -152,7 +160,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 			if (this.rigidBody.gravityScale != 1)
 			{
-				Debug.Log("gravity reset to 1");
 				this.rigidBody.gravityScale = 1.0f;
 			}
 
@@ -245,6 +252,21 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             var gameController = FindObjectOfType<Main>().GameController;
             var lastSave = gameController.Storage.Slots.OrderByDescending(o => o.Modified).First();
             var loading = gameController.LoadSavedGameAsync(lastSave.Name);
+		}
+
+		if (col.gameObject.GetComponent<Stairway>() != null)
+		{
+			this.onTheStairway = true;
+			var stairway = GameObject.FindGameObjectWithTag("Stairway");
+			this.stairwayPosition = stairway.transform.position;
+		}
+	}
+
+	protected virtual void OnTriggerExit2D(Collider2D col)
+	{
+		if (col.gameObject.GetComponent<Stairway>() != null)
+		{
+			this.onTheStairway = false;
 		}
 	}
 

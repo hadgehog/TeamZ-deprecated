@@ -1808,6 +1808,11 @@ PrefabInstance:
       propertyPath: m_FlipY
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 212507208232534086, guid: 30ff19b3ed8eaa2478c704b512f1dce8,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4533504897417380, guid: 30ff19b3ed8eaa2478c704b512f1dce8, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.8
@@ -2118,6 +2123,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1987800259}
     m_Modifications:
+    - target: {fileID: 1471012824066914, guid: 62c44f89e3be1be4bbc78e410e1e022e, type: 3}
+      propertyPath: m_TagString
+      value: Stairway
+      objectReference: {fileID: 0}
     - target: {fileID: 4001776656840730, guid: 62c44f89e3be1be4bbc78e410e1e022e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.94
@@ -2149,6 +2158,16 @@ PrefabInstance:
     - target: {fileID: 4001776656840730, guid: 62c44f89e3be1be4bbc78e410e1e022e, type: 3}
       propertyPath: m_RootOrder
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 61216827983683746, guid: 62c44f89e3be1be4bbc78e410e1e022e,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 10.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 61216827983683746, guid: 62c44f89e3be1be4bbc78e410e1e022e,
+        type: 3}
+      propertyPath: m_Offset.y
+      value: 0.17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 62c44f89e3be1be4bbc78e410e1e022e, type: 3}
@@ -2203,6 +2222,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3, y: 3}
   m_EdgeRadius: 0
+--- !u!114 &1820046182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820046179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19d764ddcbfd0ef4599efba131d2d680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1860667594
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2678,6 +2709,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_UseColorTemperature
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212857857256602200, guid: 93c1249a056c6d24d94ce5e7b3a3d31a,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3431668679994190862, guid: 93c1249a056c6d24d94ce5e7b3a3d31a, type: 3}

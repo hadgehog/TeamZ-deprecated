@@ -9,6 +9,7 @@ TagManager:
   - Foreground
   - Character
   - UI
+  - Stairway
   layers:
   - Default
   - TransparentFX
