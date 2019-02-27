@@ -29,6 +29,10 @@ MonoBehaviour:
     m_Address: first-aid-pack
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 700da3eb8fd87a44b9f804cf3fa7500e
+    m_Address: wooden-box
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   - m_GUID: af2ad5d6b6e0ad8489b28659e303a9dd
     m_Address: armor
     m_ReadOnly: 0
