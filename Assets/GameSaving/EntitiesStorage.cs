@@ -11,7 +11,7 @@ using static GameSaving.MonoBehaviours.Entity;
 
 namespace GameSaving
 {
-    public class EntitiesStorage : Singletone<EntitiesStorage>
+    public class EntitiesStorage
     {
         public EntitiesStorage()
         {

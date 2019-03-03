@@ -1,5 +1,7 @@
 ﻿using Assets.Code.Helpers;
 using Assets.UI;
+using GameSaving.States;
+using TeamZ.Assets.Code.DependencyInjection;
 using UniRx;
 using UniRx.Async;
 using UnityEngine;
@@ -13,6 +15,8 @@ namespace GameSaving.MonoBehaviours
 
 		private UnityDependency<Main> Main;
 		private UnityDependency<ViewRouter> Router;
+		private Dependency<GameController> GameController;
+		private Dependency<LevelManager> LevelManager;
 
 		private async void Start()
 		{
@@ -22,9 +26,9 @@ namespace GameSaving.MonoBehaviours
 				await Observable.NextFrame();
 
                 var level = Level.All[this.LevelName];
-                this.Main.Value.GameController.LevelManager.CurrentLevel = level;
-                this.Main.Value.GameController.VisitedLevels.Add(level.Id);
-                this.Main.Value.GameController.BootstrapEntities(true);
+                this.LevelManager.Value.CurrentLevel = level;
+                this.GameController.Value.VisitedLevels.Add(level.Id);
+                this.GameController.Value.BootstrapEntities(true);
 
 				this.Router.Value.ShowGameHUDView();
 			}
