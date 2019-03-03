@@ -2,26 +2,27 @@
 using Assets.Code.Helpers;
 using Assets.UI;
 using Effects;
+using GameSaving;
+using TeamZ.Assets.Code.DependencyInjection;
 using UniRx;
 using UnityEngine;
 
 public class MainView : MonoBehaviour
 {
-	public readonly UnityDependency<Main> Main;
+	public readonly Dependency<GameController> GameController;
 	public readonly UnityDependency<ViewRouter> ViewRouter;
 
 	private UnityDependency<BlackScreen> blackScreen;
 
 	public async void PlayAsync()
 	{
-		var gameController = this.Main.Value.GameController;
 		MessageBroker.Default.Publish(new GameResumed(string.Empty));
 
 		await this.blackScreen.Value.ShowAsync();
 		this.Deactivate();
 		this.ViewRouter.Value.GameHUDView.Activate();
-		await gameController.LoadAsync(Level.Laboratory);
-		await gameController.SaveAsync($"new game {this.FormDateTimeString()}");
+		await this.GameController.Value.LoadAsync(Level.Laboratory);
+		await this.GameController.Value.SaveAsync($"new game {this.FormDateTimeString()}");
 		await this.blackScreen.Value.HideAsync();
 	}
 

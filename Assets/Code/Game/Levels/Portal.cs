@@ -1,6 +1,9 @@
 ﻿using System;
 using Game.Activation.Core;
+using GameSaving;
+using GameSaving.States;
 using Inspectors;
+using TeamZ.Assets.Code.DependencyInjection;
 using UniRx;
 using UnityEngine;
 
@@ -9,6 +12,8 @@ namespace Game.Levels
     [ExecuteInEditMode]
     public class Portal : MonoBehaviour, IActivable
     {
+		Dependency<GameController> gameController;
+
 #if UNITY_EDITOR
         public SceneReactiveProperty Scene = new SceneReactiveProperty();
 
@@ -38,7 +43,7 @@ namespace Game.Levels
             }
 
 			MessageBroker.Default.Publish(new PortalToNextLevelHappened());
-			FindObjectOfType<Main>().GameController.SwitchLevelAsync(Level.All[this.sceneName], this.Location);
+			gameController.Value.SwitchLevelAsync(Level.All[this.sceneName], this.Location);
         }
     }
 

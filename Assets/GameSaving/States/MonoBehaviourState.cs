@@ -10,13 +10,15 @@ namespace GameSaving.States
         Camera,
         Lizard,
         CharacterController,
-    }
+        LevelObject,
+	}
 
     [ZeroFormattable]
     [Union(typeof(EntityState),
            typeof(CameraState),
            typeof(LizardState),
-           typeof(CharacterControllerState))]
+           typeof(CharacterControllerState),
+		   typeof(LevelObjectState))]
     public abstract class MonoBehaviourState
     {
         [UnionKey]

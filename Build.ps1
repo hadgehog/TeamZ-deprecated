@@ -1,10 +1,10 @@
-if(-Not (Test-Path -Path token.json))
+if(-not (Test-Path -Path token.json))
 {
     echo "token.json is missing"
     exit 1
 }
 
-if (-Not (Get-Command unity -errorAction SilentlyContinue))
+if (-not (Get-Command unity -errorAction SilentlyContinue))
 {
     echo "unity command is missing"
     echo "Add unity folder to global path enviroment variable"
@@ -16,6 +16,12 @@ $token = ((Get-Content -Path token.json) | ConvertFrom-Json).token
 echo "Build Unity project"
 
 cmd /c unity  -batchmode -nographics -projectpath . -executeMethod Build.AppBuilder.BuildGame -quit
+
+if (-not $args.Contains("--upload"))
+{
+    echo "Done"
+    exit 0
+}
 
 $branch = (git rev-parse --abbrev-ref HEAD) -replace "/", "-"
 $commit = git rev-parse --short HEAD

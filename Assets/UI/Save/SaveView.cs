@@ -1,5 +1,7 @@
 using Assets.Code.Helpers;
 using Assets.UI;
+using GameSaving;
+using TeamZ.Assets.Code.DependencyInjection;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,8 +13,9 @@ public class SaveView : MonoBehaviour
 
 	public GameObject SaveItemTemplate;
 
-	private UnityDependency<Main> Main;
 	private UnityDependency<ViewRouter> ViewRouter;
+	private Dependency<GameStorage> Storage;
+	private Dependency<GameController> GameController;
 
 	private Subject<SaveItemView> clicks = new Subject<SaveItemView>();
 
@@ -30,7 +33,7 @@ public class SaveView : MonoBehaviour
 			GameObject.Destroy(saveItem.gameObject);
 		}
 
-		foreach (var slot in this.Main.Value.GameController.Storage.Slots)
+		foreach (var slot in this.Storage.Value.Slots)
 		{
 			AddSlot(slot.Name);
 		}
@@ -56,7 +59,7 @@ public class SaveView : MonoBehaviour
 			return;
 		}
 
-		await this.Main.Value.GameController.SaveAsync(this.SlotName.text);
+		await this.GameController.Value.SaveAsync(this.SlotName.text);
 		this.AddSlot(this.SlotName.text);
 	}
 }

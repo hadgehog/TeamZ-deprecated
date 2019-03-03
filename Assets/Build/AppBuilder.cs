@@ -1,13 +1,39 @@
-﻿using UnityEditor;
+﻿using System;
+using System.IO;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Build
 {
 #if UNITY_EDITOR
-    public class AppBuilder
+	using UnityEditor;
+	using UnityEditor.AddressableAssets;
+
+	public class AppBuilder
     {
         public static void BuildGame()
         {
-            var report = BuildPipeline.BuildPlayer(new[]
+			var settings = AddressableAssetSettingsDefaultObject.Settings;
+			if (Directory.Exists(Addressables.BuildPath))
+			{
+				try
+				{
+					Directory.Delete(Addressables.BuildPath, true);
+				}
+				catch (Exception e)
+				{
+					Debug.Log(e);
+				}
+			}
+
+			var buildContext = new AddressablesBuildDataBuilderContext(settings,
+				BuildPipeline.GetBuildTargetGroup(BuildTarget.StandaloneWindows64),
+				BuildTarget.StandaloneWindows64, EditorUserBuildSettings.development,
+				false, "1");
+
+			settings.ActivePlayerDataBuilder.BuildData<AddressablesPlayerBuildResult>(buildContext);
+
+			var report = BuildPipeline.BuildPlayer(new[]
                 {
                     "Assets/Levels/Core/Core.unity",
                     "Assets/Levels/Laboratory/Laboratory.unity",

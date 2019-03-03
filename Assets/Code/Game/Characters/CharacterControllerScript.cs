@@ -4,6 +4,8 @@ using GameSaving.MonoBehaviours;
 using TeamZ.Assets.GameSaving.States;
 using UniRx;
 using System.Linq;
+using TeamZ.Assets.Code.DependencyInjection;
+using GameSaving;
 
 public class CharacterControllerScript : MonoBehaviourWithState<CharacterControllerState>
 {
@@ -249,9 +251,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 			this.loadingStarted = true;
 
-            var gameController = FindObjectOfType<Main>().GameController;
-            var lastSave = gameController.Storage.Slots.OrderByDescending(o => o.Modified).First();
-            var loading = gameController.LoadSavedGameAsync(lastSave.Name);
+			var lastSave = DependencyContainer.Instance.Resolve<GameController>().LoadLastSavedGameAsync();
 		}
 
 		if (col.gameObject.GetComponent<Stairway>() != null)

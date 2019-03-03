@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Assets.Code.Helpers;
 using GameSaving;
+using GameSaving.States;
+using TeamZ.Assets.Code.DependencyInjection;
 using UniRx;
 using UnityEngine;
 
@@ -8,18 +10,19 @@ public class DirectionalCamera : MonoBehaviour
 {
 	public float dampTime = 0.3f;
 	public Transform target;
-	public UnityDependency<Main> Main;
 
 	private Vector3 velocity = Vector3.zero;
+	private Dependency<GameController> gameController;
+	private Dependency<EntitiesStorage> entitiesStorage;
 
 	private void Start()
 	{
-		this.Main.Value.GameController.Loaded.Subscribe(_ => this.Loaded());
+		this.gameController.Value.Loaded.Subscribe(_ => this.Loaded());
 	}
 
 	private void Loaded()
 	{
-		this.target = EntitiesStorage.Instance.Entities.Values.
+		this.target = this.entitiesStorage.Value.Entities.Values.
 			Where(o => o.GetComponent<Lizard>()).FirstOrDefault()?.transform;
 	}
 

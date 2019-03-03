@@ -1,8 +1,11 @@
 ﻿using System;
-using UnityEngine;
+using GameSaving.MonoBehaviours;
 using TeamZ.Assets.Code.Game.Tips;
+using TeamZ.Assets.GameSaving.States;
+using UniRx;
+using UnityEngine;
 
-public class LevelObject : MonoBehaviour, IDamageable
+public class LevelObject : MonoBehaviourWithState<LevelObjectState>, IDamageable
 {
 	[Serializable]
 	public struct VisualState
@@ -11,11 +14,7 @@ public class LevelObject : MonoBehaviour, IDamageable
 		public Sprite texture;
 	}
 
-	public int Strength
-	{
-		get { return this.strength; }
-		set { this.strength = value; }
-	}
+	public IntReactiveProperty Strength = new IntReactiveProperty(100);
 
 	public bool IsDestructible
 	{
@@ -27,35 +26,34 @@ public class LevelObject : MonoBehaviour, IDamageable
 
 	protected SpriteRenderer Renderer2D;
 
-	[SerializeField]
-	private int strength = 100;
 
 	[SerializeField]
 	private bool isDestructible = false;
 
 	protected virtual void Start()
 	{
-		this.Renderer2D = GetComponent<SpriteRenderer>();
+		this.Renderer2D = this.GetComponent<SpriteRenderer>();
 
 		if (this.Renderer2D != null && this.VisualStates.Length > 0)
 		{
 			this.Renderer2D.sprite = this.VisualStates[0].texture;
 		}
+
+		this.Strength.Subscribe(value =>
+		{
+			this.SwitchVisualState();
+			if (value <= 0)
+			{
+				this.StrengthTooLow();
+			}
+		});
 	}
 
 	public void TakeDamage(int damage, int impulse)
 	{
 		if (this.IsDestructible)
 		{
-			this.Strength -= damage;
-
-			if (this.Strength <= 0 && GetComponent<BoxCollider2D>() != null)
-			{
-				this.Strength = 0;
-                this.StrengthTooLow();
-			}
-
-			this.SwitchVisualState();
+			this.Strength.Value = Mathf.Max(this.Strength.Value - damage, 0);
 		}
 		else
 		{
@@ -63,29 +61,19 @@ public class LevelObject : MonoBehaviour, IDamageable
 		}
 	}
 
-    public virtual void StrengthTooLow()
-    {
-		if (GetComponent<ConstantMessageTip>() != null)
-		{
-			Destroy(GetComponent<ConstantMessageTip>());
-		}
-
-		Destroy(GetComponent<BoxCollider2D>());
-    }
-
-    protected virtual void FixedUpdate()
+	public virtual void StrengthTooLow()
 	{
-		if (this.Strength <= 0)
+		if (this.GetComponent<ConstantMessageTip>() != null)
 		{
-			return;
+			Destroy(this.GetComponent<ConstantMessageTip>());
 		}
 
-		this.SwitchVisualState();
+		Destroy(this.GetComponent<BoxCollider2D>());
 	}
 
 	private void TakeImpuls(float impulse)
 	{
-		var rigidBody = GetComponent<Rigidbody2D>();
+		var rigidBody = this.GetComponent<Rigidbody2D>();
 
 		if (rigidBody != null)
 		{
@@ -97,11 +85,26 @@ public class LevelObject : MonoBehaviour, IDamageable
 	{
 		foreach (var state in this.VisualStates)
 		{
-			if (this.Strength >= state.hp)
+			if (this.Strength.Value >= state.hp)
 			{
 				this.Renderer2D.sprite = state.texture;
 				return;
 			}
 		}
+	}
+
+	public override LevelObjectState GetState()
+	{
+		return new LevelObjectState
+		{
+			IsDestructible = this.IsDestructible,
+			Strength = this.Strength.Value
+		};
+	}
+
+	public override void SetState(LevelObjectState state)
+	{
+		this.IsDestructible = state.IsDestructible;
+		this.Strength.Value = state.Strength;
 	}
 }

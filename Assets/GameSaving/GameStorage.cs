@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GameSaving.States;
 using TeamZ.Assets.Code.Game.Messages.GameSaving;
 using UniRx;
 using UnityEngine;
@@ -17,8 +18,8 @@ namespace GameSaving
         public string Name { get; set; }
     }
 
-    public class GameStorage<TGameState>
-    {
+    public class GameStorage
+	{
         private const string SaveDirectory = "Saves";
 
         private readonly string path;
@@ -52,7 +53,7 @@ namespace GameSaving
             }).ToDictionary(o => o.Name);
         }
 
-        public async Task<TGameState> LoadAsync(string slotName)
+        public async Task<GameState> LoadAsync(string slotName)
         {
             using (var reader = new FileStream(this.CreateFilePath(slotName), FileMode.Open))
             {
@@ -61,13 +62,13 @@ namespace GameSaving
 
                 await reader.ReadAsync(bytes, 0, bytes.Length);
 
-                var gameState = ZeroFormatterSerializer.Deserialize<TGameState>(bytes);
+                var gameState = ZeroFormatterSerializer.Deserialize<GameState>(bytes);
 
                 return gameState;
             }
         }
 
-        public async Task SaveAsync(TGameState game, string slotName)
+        public async Task SaveAsync(GameState game, string slotName)
         {
             var bytes = ZeroFormatterSerializer.Serialize(game);
             var path = this.CreateFilePath(slotName);
