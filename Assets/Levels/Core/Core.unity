@@ -4483,7 +4483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46de80a13be2ca9469c046288b05453f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsGameStarted: 0
+  BackgroundImage: {fileID: 0}
 --- !u!222 &1806227580
 CanvasRenderer:
   m_ObjectHideFlags: 0
