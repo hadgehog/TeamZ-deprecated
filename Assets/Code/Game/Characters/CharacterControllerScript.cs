@@ -251,7 +251,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 			this.loadingStarted = true;
 
-			var lastSave = DependencyContainer.Instance.Resolve<GameController>().LoadLastSavedGameAsync();
+			var lastSave = Dependency<GameController>.Resolve().LoadLastSavedGameAsync();
 		}
 
 		if (col.gameObject.GetComponent<Stairway>() != null)

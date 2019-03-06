@@ -17,11 +17,16 @@ namespace TeamZ.Assets.Code.DependencyInjection
 			{
 				if (this.value is null)
 				{
-					this.value = DependencyContainer.Instance.Resolve<TValue>();
+					this.value = Resolve();
 				}
 
 				return this.value;
 			}
+		}
+
+		public static TValue Resolve()
+		{
+			return DependencyContainer.Instance.Resolve<TValue>();
 		}
 
 		public static implicit operator TValue(Dependency<TValue> dependency)

@@ -30,9 +30,9 @@ namespace GameSaving
 
 		public GameController()
 		{
-			this.Storage = DependencyContainer.Instance.Resolve<GameStorage>();
-			this.LevelManager = DependencyContainer.Instance.Resolve<LevelManager>();
-			this.EnttiesStorage = DependencyContainer.Instance.Resolve<EntitiesStorage>();
+			this.Storage = Dependency<GameStorage>.Resolve();
+			this.LevelManager = Dependency<LevelManager>.Resolve();
+			this.EnttiesStorage = Dependency<EntitiesStorage>.Resolve();
 
 			this.Loaded = new Subject<Unit>();
 			this.VisitedLevels = new HashSet<Guid>();
