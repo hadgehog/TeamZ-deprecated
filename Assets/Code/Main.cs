@@ -75,7 +75,7 @@ public class Main : MonoBehaviour
 		if (Input.GetKeyUp(KeyCode.Escape))
 		{
 			if (this.ViewRouter.Value.MainView.isActiveAndEnabled && 
-				this.GameController.LevelManager.CurrentLevel != null)
+				this.gameController.Value.LevelManager.CurrentLevel != null)
 			{
 				this.ViewRouter.Value.ShowGameHUDView();
 				MessageBroker.Default.Publish(new GameResumed(this.gameController.Value.LevelManager.CurrentLevel.Name));
