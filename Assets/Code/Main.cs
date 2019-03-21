@@ -2,6 +2,7 @@
 using System.Linq;
 using Assets.Code.Helpers;
 using Assets.UI;
+using Effects;
 using Game.Activation.Core;
 using GameSaving;
 using GameSaving.States;
@@ -15,6 +16,7 @@ using UnityEngine;
 public class Main : MonoBehaviour
 {
 	private readonly UnityDependency<ViewRouter> ViewRouter;
+	private UnityDependency<BackgroundImage> BackgroundImage;
 	private readonly Dependency<GameController> gameController;
 
 
@@ -77,12 +79,14 @@ public class Main : MonoBehaviour
 			if (this.ViewRouter.Value.MainView.isActiveAndEnabled && 
 				this.gameController.Value.LevelManager.CurrentLevel != null)
 			{
+				this.BackgroundImage.Value.Hide();
 				this.ViewRouter.Value.ShowGameHUDView();
 				MessageBroker.Default.Publish(new GameResumed(this.gameController.Value.LevelManager.CurrentLevel.Name));
 				return;
 			}
 
 			MessageBroker.Default.Publish(new GamePaused());
+			this.BackgroundImage.Value.Show();
 			this.ViewRouter.Value.ShowMainView();
 		}
 	}

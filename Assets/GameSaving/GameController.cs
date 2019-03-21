@@ -25,6 +25,7 @@ namespace GameSaving
 		private UnityDependency<BlackScreen> BlackScreen;
 		private UnityDependency<ViewRouter> ViewRouter;
 		private UnityDependency<NotificationService> Notifications;
+		private UnityDependency<BackgroundImage> BackgroundImage;
 
 		public HashSet<Guid> VisitedLevels { get; private set; }
 
@@ -48,6 +49,7 @@ namespace GameSaving
 				{
 					MessageBroker.Default.Publish(new GameResumed(string.Empty));
 					this.ViewRouter.Value.ShowGameHUDView();
+					this.BackgroundImage.Value.Hide();
 					await this.BlackScreen.Value.ShowAsync();
 					await this.LoadSavedGameAsync(o.SlotName);
 					MessageBroker.Default.Publish(new GameLoaded());
@@ -101,6 +103,7 @@ namespace GameSaving
 
 		public async Task LoadSavedGameAsync(string slotName)
 		{
+			this.BackgroundImage.Value.Hide();
 			await this.BlackScreen.Value.ShowAsync();
 			var gameState = await this.Storage.LoadAsync(slotName);
 			await this.LoadGameStateAsync(gameState);

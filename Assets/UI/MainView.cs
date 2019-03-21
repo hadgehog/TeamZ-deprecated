@@ -13,12 +13,19 @@ public class MainView : MonoBehaviour
 	public readonly UnityDependency<ViewRouter> ViewRouter;
 
 	private UnityDependency<BlackScreen> blackScreen;
+	private UnityDependency<BackgroundImage> backgroundImage;
+
+	public void Start()
+	{
+		this.backgroundImage.Value.Show();
+	}
 
 	public async void PlayAsync()
 	{
 		MessageBroker.Default.Publish(new GameResumed(string.Empty));
 
 		await this.blackScreen.Value.ShowAsync();
+		this.backgroundImage.Value.Hide();
 		this.Deactivate();
 		this.ViewRouter.Value.GameHUDView.Activate();
 		await this.GameController.Value.LoadAsync(Level.Laboratory);
