@@ -7,19 +7,22 @@ using UnityEngine;
 
 public class Level
 {
-    static Level()
+	public const string LABORATORY = "Laboratory";
+	public const string LABORATORY2 = "Laboratory2";
+
+	static Level()
     {
         Laboratory = new Level
         {
-            Name = "Laboratory",
-            Scene = "Laboratory",
+            Name = LABORATORY,
+            Scene = LABORATORY,
             Id = Guid.Parse("F2B428DA-4C1E-4761-83F8-A6998F08B72F")
         };
 
         Laboratory2 = new Level
         {
-            Name = "Laboratory2",
-            Scene = "Laboratory2",
+            Name = LABORATORY2,
+            Scene = LABORATORY2,
             Id = Guid.Parse("F19EE6AB-A9D2-4AF1-98EA-BD1D09CDE6E2")
         };
 

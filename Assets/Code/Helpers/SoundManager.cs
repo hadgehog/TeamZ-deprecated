@@ -4,11 +4,21 @@ using Game.Levels;
 using System;
 using UniRx.Async;
 using System.Collections.Generic;
+using System.Collections;
+using TeamZ.Assets.Code.Helpers;
+using System.Linq;
 
 public class SoundManager : MonoBehaviour
 {
-    // characters effects
-    public AudioClip Steps;
+	private const float MUSIC_CHANGE_RATE = 0.4f;
+	private const float MUSIC_CHANGE_RATEx4 = MUSIC_CHANGE_RATE * 4;
+	private const float MUSIC_VOLUME = .3f;
+
+	private const string NOISE = "NOISE";
+	private const string MENU = "MENU";
+
+	// characters effects
+	public AudioClip Steps;
     public AudioClip Jump;
     public AudioClip Climb;
     public AudioClip Punch;
@@ -34,19 +44,19 @@ public class SoundManager : MonoBehaviour
     public AudioClip Level1BackgroungMusic;
     public AudioClip Level2BackgroungMusic;
 
-    private AudioSource audioSource;
-	private Queue<AudioSource> freeAudioSources = new Queue<AudioSource>();
-	private Dictionary<string, AudioSource> audioSourceCache = new Dictionary<string, AudioSource>();
+    private AudioSource defaultAudioSource;
 
-	private string currentLevelName = "Level_Laboratory";
+	private string currentLevelMusic = "Level_Laboratory";
+	private AudioSourcePull sounds;
 
 	// Use this for initialization
 	void Start ()
     {
-        this.audioSource = GetComponent<AudioSource>();
-		this.audioSource.Stop();
-		this.audioSource.volume = 0.3f;
-		this.audioSource.loop = false;
+        this.defaultAudioSource = GetComponent<AudioSource>();
+		this.defaultAudioSource.Stop();
+		this.defaultAudioSource.volume = 0.3f;
+		this.defaultAudioSource.loop = false;
+		this.sounds = new AudioSourcePull();
 
 		MessageBroker.Default.Receive<RunHappened>().Subscribe(this.PlayStepsSound);
 		MessageBroker.Default.Receive<RunEnded>().Subscribe(this.StopStepsSound);
@@ -55,142 +65,79 @@ public class SoundManager : MonoBehaviour
         MessageBroker.Default.Receive<KickHappened>().Subscribe(this.PlayKickSound);
 		MessageBroker.Default.Receive<TakeObjectHappened>().Subscribe(this.PlayTakeObjectSound);
 		MessageBroker.Default.Receive<PortalToNextLevelHappened>().Subscribe(this.PlayPortalToNextLevelSound);
-		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.PlayOnce(this.Die, "Death", 1.0f));
-		MessageBroker.Default.Receive<GamePaused>().Subscribe(this.OnGamePaused);
-		MessageBroker.Default.Receive<GameResumed>().Subscribe(this.OnGameResumed);
+		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.sounds.PlayOnce(this.Die, "Death", 1.0f));
+
+		MessageBroker.Default.Receive<GamePaused>().Subscribe(this.OnGamePausedAsync);
+		MessageBroker.Default.Receive<GameResumed>().Subscribe(this.OnGameResumedAsync);
 	}
 	
-	public AudioSource Lend(string name)
-	{
-		if (this.audioSourceCache.TryGetValue(name, out var audioSource))
-		{
-			return audioSource;
-		}
-
-		if(this.freeAudioSources.Count <= 0)
-		{
-			this.freeAudioSources.Enqueue(this.gameObject.AddComponent<AudioSource>());
-		}
-
-		audioSource = this.freeAudioSources.Dequeue();
-		audioSource.Stop();
-		audioSource.volume = 0.3f;
-		audioSource.loop = false;
-
-		this.audioSourceCache.Add(name, audioSource);
-
-		return audioSource;
-	}
-
-	public void Release(string name)
-	{
-		if(!this.audioSourceCache.TryGetValue(name, out var audioSource))
-		{
-			Debug.Log($"Audio source { name } is missing");
-			return;
-		}
-
-		audioSource.Stop();
-		this.audioSourceCache.Remove(name);
-		this.freeAudioSources.Enqueue(audioSource);
-	}
-
-	public async UniTask Play(AudioClip audio, float volume = 0.3f)
-	{
-		await PlayOnce(audio, Guid.NewGuid().ToString(), volume);
-	}
-
-	public async UniTask PlayOnce(AudioClip audio, string name, float volume)
-	{
-		var audioSource = this.Lend(name);
-
-		if (audioSource.isPlaying)
-		{
-			return;
-		}
-
-		audioSource.PlayOneShot(audio, volume);
-
-		await UniTask.Delay(TimeSpan.FromSeconds(audio.length + 0.5));
-		this.Release(name);
-	}
-
-	public void PlayLooped(AudioClip audio, string name, float volume)
-	{
-		var audioSource = this.Lend(name);
-
-		if (audioSource.isPlaying)
-		{
-			return;
-		}
-
-		audioSource.loop = true;
-		audioSource.clip = audio;
-		audioSource.volume = volume;
-
-		audioSource.Play();
-	}
-
-	private void OnGamePaused(GamePaused soundObj)
+	private async void OnGamePausedAsync(GamePaused soundObj)
 	{
 		Debug.Log($"Game paused");
 
-		this.audioSource.loop = false;
-		this.audioSource.Stop();
-		this.audioSource.clip = null;
+		this.defaultAudioSource.loop = false;
+		this.defaultAudioSource.Stop();
+		this.defaultAudioSource.clip = null;
 
-		this.Release("Noize");
-		this.Release(this.currentLevelName);
-		this.PlayLooped(this.MenuBackgroungMusic, "Menu", 0.11f);
+		var fadingNoise = this.sounds.SoftPause(NOISE, MUSIC_CHANGE_RATEx4);
+		var fadingMusic = this.sounds.SoftPause(this.currentLevelMusic, MUSIC_CHANGE_RATEx4);
+
+		this.sounds.PlayLooped(this.MenuBackgroungMusic, MENU, MUSIC_VOLUME);
 	}
 
-	private void OnGameResumed(GameResumed soundObj)
+	private async void OnGameResumedAsync(GameResumed message)
 	{
+		if (string.IsNullOrWhiteSpace(message.Level))
+		{
+			return;
+		}
+
 		Debug.Log($"Game resumed");
 
-		this.audioSource.loop = false;
-		this.audioSource.Stop();
-		this.audioSource.clip = null;
+		this.defaultAudioSource.loop = false;
+		this.defaultAudioSource.Stop();
+		this.defaultAudioSource.clip = null;
 
-		this.Release("Menu");
-		this.Release(this.currentLevelName);
+		var fadingMenu = this.sounds.SoftRelease(MENU, MUSIC_CHANGE_RATEx4);
+		this.sounds.PlayLooped(this.AmbientNoize2, NOISE, MUSIC_VOLUME / 4, MUSIC_CHANGE_RATE);
 
-		this.PlayLooped(this.AmbientNoize2, "Noize", 0.05f);
-
-		string levelName = "Level_" + soundObj.Level;
-
-		switch (soundObj.Level)
+		string levelName = "Level_" + message.Level;
+		switch (message.Level)
 		{
-			case "Laboratory":
-				this.PlayLooped(this.Level1BackgroungMusic, levelName, 0.09f);
+			case Level.LABORATORY:
+				this.sounds.PlayLooped(this.Level1BackgroungMusic, levelName, MUSIC_VOLUME, MUSIC_CHANGE_RATE);
 				break;
-			case "Laboratory2":
-				this.PlayLooped(this.Level2BackgroungMusic, levelName, 0.09f);
+			case Level.LABORATORY2:
+				this.sounds.PlayLooped(this.Level2BackgroungMusic, levelName, MUSIC_VOLUME, MUSIC_CHANGE_RATE);
 				break;
 		}
 
-		this.currentLevelName = levelName;
+		if (this.currentLevelMusic != levelName)
+		{
+			var releasingPrevLevelMusic = this.sounds.SoftRelease(this.currentLevelMusic);
+		}
+		this.currentLevelMusic = levelName;
 	}
 
 	private void PlayStepsSound(RunHappened soundObj)
     {
 		if (soundObj.isClimbing)
 		{
-			if (this.Climb != null && this.audioSource.clip != this.Climb)
+			if (this.Climb != null && this.defaultAudioSource.clip != this.Climb)
 			{
-				this.audioSource.volume = 0.08f;
-				this.audioSource.loop = true;
-				this.audioSource.clip = this.Climb;
-				this.audioSource.Play();
+				this.defaultAudioSource.volume = .8f;
+				this.defaultAudioSource.loop = true;
+				this.defaultAudioSource.clip = this.Climb;
+				this.defaultAudioSource.Play();
 			}
 		}
 		else
 		{
-			if (this.Steps != null && this.audioSource.clip != this.Steps)
+			if (this.Steps != null && this.defaultAudioSource.clip != this.Steps)
 			{
-				this.audioSource.loop = true;
-				this.audioSource.clip = this.Steps;
-				this.audioSource.Play();
+				this.defaultAudioSource.loop = true;
+				this.defaultAudioSource.clip = this.Steps;
+				this.defaultAudioSource.Play();
 			}
 		}
     }
@@ -199,21 +146,21 @@ public class SoundManager : MonoBehaviour
 	{
 		if (soundObj.isClimbing)
 		{
-			if (this.Climb != null && this.audioSource.clip == this.Climb && this.audioSource.isPlaying)
+			if (this.Climb != null && this.defaultAudioSource.clip == this.Climb && this.defaultAudioSource.isPlaying)
 			{
-				this.audioSource.volume = 0.3f;
-				this.audioSource.loop = false;
-				this.audioSource.Stop();
-				this.audioSource.clip = null;
+				this.defaultAudioSource.volume = 1f;
+				this.defaultAudioSource.loop = false;
+				this.defaultAudioSource.Stop();
+				this.defaultAudioSource.clip = null;
 			}
 		}
 		else
 		{
-			if (this.Steps != null && this.audioSource.clip == this.Steps && this.audioSource.isPlaying)
+			if (this.Steps != null && this.defaultAudioSource.clip == this.Steps && this.defaultAudioSource.isPlaying)
 			{
-				this.audioSource.loop = false;
-				this.audioSource.Stop();
-				this.audioSource.clip = null;
+				this.defaultAudioSource.loop = false;
+				this.defaultAudioSource.Stop();
+				this.defaultAudioSource.clip = null;
 			}
 		}
 	}
@@ -222,7 +169,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Jump != null)
         {
-			this.Play(this.Jump, 0.5f);
+			this.sounds.Play(this.Jump, 1f);
 		}
     }
 
@@ -230,7 +177,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Punch != null)
         {
-			this.Play(this.Punch, 0.2f);
+			this.sounds.Play(this.Punch, 1f);
 		}
     }
 
@@ -238,7 +185,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Kick != null)
         {
-			this.Play(this.Kick, 0.15f);
+			this.sounds.Play(this.Kick, 0.15f);
 		}
     }
 
@@ -246,7 +193,7 @@ public class SoundManager : MonoBehaviour
 	{
 		if (this.TakeObject != null)
 		{
-			this.Play(this.TakeObject);
+			this.sounds.Play(this.TakeObject);
 		}
 	}
 
@@ -254,7 +201,7 @@ public class SoundManager : MonoBehaviour
 	{
 		if (this.Portal != null)
 		{
-			this.Play(this.Portal, 1.0f);
+			this.sounds.Play(this.Portal, 1.0f);
 		}
 	}
 }
