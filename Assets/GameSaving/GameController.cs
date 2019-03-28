@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Assets.Code.Helpers;
 using Assets.UI;
+using Assets.UI.Texts;
 using Effects;
 using Game.Levels;
 using GameSaving.Interfaces;
@@ -26,6 +27,7 @@ namespace GameSaving
 		private UnityDependency<ViewRouter> ViewRouter;
 		private UnityDependency<NotificationService> Notifications;
 		private UnityDependency<BackgroundImage> BackgroundImage;
+		private UnityDependency<LoadingText> LoadingText;
 
 		public HashSet<Guid> VisitedLevels { get; private set; }
 
@@ -105,8 +107,11 @@ namespace GameSaving
 		{
 			this.BackgroundImage.Value.Hide();
 			await this.BlackScreen.Value.ShowAsync();
+			this.LoadingText.Value.DisplayNewText(Texts.GetLevelText(this.LevelManager.CurrentLevel.Name));
 			var gameState = await this.Storage.LoadAsync(slotName);
 			await this.LoadGameStateAsync(gameState);
+			await Task.Delay(2000);
+			this.LoadingText.Value.HideText();
 			await this.BlackScreen.Value.HideAsync();
 		}
 
@@ -141,6 +146,8 @@ namespace GameSaving
 		public async void SwitchLevelAsync(Level level, string locationName)
 		{
 			await this.BlackScreen.Value.ShowAsync();
+			this.LoadingText.Value.DisplayNewText(Texts.GetLevelText(level.Name));
+
 			var autoSaveSlot = $"Autosave [{level.Name}-{DateTime.Now.ToString("dd_MMMM_yyyy")}]";
 
 			var gameState = this.GetState();
@@ -171,6 +178,9 @@ namespace GameSaving
 			this.VisitedLevels.Add(level.Id);
 
 			Time.timeScale = 1;
+
+			await Task.Delay(2000);
+			this.LoadingText.Value.HideText();
 			await this.BlackScreen.Value.HideAsync();
 		}
 

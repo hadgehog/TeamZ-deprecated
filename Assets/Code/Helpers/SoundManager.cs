@@ -99,7 +99,7 @@ public class SoundManager : MonoBehaviour
 		this.defaultAudioSource.clip = null;
 
 		var fadingMenu = this.sounds.SoftRelease(MENU, MUSIC_CHANGE_RATEx4);
-		this.sounds.PlayLooped(this.AmbientNoize2, NOISE, MUSIC_VOLUME / 2, MUSIC_CHANGE_RATE);
+		this.sounds.PlayLooped(this.AmbientNoize2, NOISE, MUSIC_VOLUME / 3, MUSIC_CHANGE_RATE);
 
 		string levelName = "Level_" + message.Level;
 		switch (message.Level)

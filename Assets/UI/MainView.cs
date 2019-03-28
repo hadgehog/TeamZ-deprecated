@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Assets.Code.Helpers;
 using Assets.UI;
 using Effects;
@@ -14,6 +15,7 @@ public class MainView : MonoBehaviour
 
 	private UnityDependency<BlackScreen> blackScreen;
 	private UnityDependency<BackgroundImage> backgroundImage;
+	private UnityDependency<LoadingText> loadingText;
 
 	public void Start()
 	{
@@ -26,9 +28,12 @@ public class MainView : MonoBehaviour
 
 		await this.blackScreen.Value.ShowAsync();
 		this.backgroundImage.Value.Hide();
+		this.loadingText.Value.DisplayNewText("Level 1: Laboratory \n Stage 1: Initializing system");
 		this.Deactivate();
 		this.ViewRouter.Value.GameHUDView.Activate();
 		await this.GameController.Value.LoadAsync(Level.Laboratory);
+		await Task.Delay(2000);
+		this.loadingText.Value.HideText();
 		await this.GameController.Value.SaveAsync($"new game {this.FormDateTimeString()}");
 		await this.blackScreen.Value.HideAsync();
 	}
