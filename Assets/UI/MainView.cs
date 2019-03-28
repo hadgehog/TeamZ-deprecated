@@ -15,9 +15,17 @@ public class MainView : MonoBehaviour
 	private UnityDependency<BlackScreen> blackScreen;
 	private UnityDependency<BackgroundImage> backgroundImage;
 
+	public GameObject SaveButton;
+
 	public void Start()
 	{
 		this.backgroundImage.Value.Show();
+	}
+
+	private async void OnEnable()
+	{
+		await Observable.NextFrame();
+		this.SaveButton.SetActive(this.GameController.Value.LevelManager.CurrentLevel != null);
 	}
 
 	public async void PlayAsync()
