@@ -12,7 +12,7 @@ public class SoundManager : MonoBehaviour
 {
 	private const float MUSIC_CHANGE_RATE = 0.4f;
 	private const float MUSIC_CHANGE_RATEx4 = MUSIC_CHANGE_RATE * 4;
-	private const float MUSIC_VOLUME = .3f;
+	private const float MUSIC_VOLUME = 0.4f;
 
 	private const string NOISE = "NOISE";
 	private const string MENU = "MENU";
@@ -54,7 +54,7 @@ public class SoundManager : MonoBehaviour
     {
         this.defaultAudioSource = GetComponent<AudioSource>();
 		this.defaultAudioSource.Stop();
-		this.defaultAudioSource.volume = 0.3f;
+		this.defaultAudioSource.volume = 0.4f;
 		this.defaultAudioSource.loop = false;
 		this.sounds = new AudioSourcePull();
 
@@ -65,7 +65,7 @@ public class SoundManager : MonoBehaviour
         MessageBroker.Default.Receive<KickHappened>().Subscribe(this.PlayKickSound);
 		MessageBroker.Default.Receive<TakeObjectHappened>().Subscribe(this.PlayTakeObjectSound);
 		MessageBroker.Default.Receive<PortalToNextLevelHappened>().Subscribe(this.PlayPortalToNextLevelSound);
-		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.sounds.PlayOnce(this.Die, "Death", 1.0f));
+		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.sounds.PlayOnce(this.Die, "Death", 10.0f));
 
 		MessageBroker.Default.Receive<GamePaused>().Subscribe(this.OnGamePausedAsync);
 		MessageBroker.Default.Receive<GameResumed>().Subscribe(this.OnGameResumedAsync);
@@ -99,7 +99,7 @@ public class SoundManager : MonoBehaviour
 		this.defaultAudioSource.clip = null;
 
 		var fadingMenu = this.sounds.SoftRelease(MENU, MUSIC_CHANGE_RATEx4);
-		this.sounds.PlayLooped(this.AmbientNoize2, NOISE, MUSIC_VOLUME / 4, MUSIC_CHANGE_RATE);
+		this.sounds.PlayLooped(this.AmbientNoize2, NOISE, MUSIC_VOLUME / 2, MUSIC_CHANGE_RATE);
 
 		string levelName = "Level_" + message.Level;
 		switch (message.Level)
@@ -125,7 +125,7 @@ public class SoundManager : MonoBehaviour
 		{
 			if (this.Climb != null && this.defaultAudioSource.clip != this.Climb)
 			{
-				this.defaultAudioSource.volume = .8f;
+				this.defaultAudioSource.volume = 0.6f;
 				this.defaultAudioSource.loop = true;
 				this.defaultAudioSource.clip = this.Climb;
 				this.defaultAudioSource.Play();
@@ -135,6 +135,7 @@ public class SoundManager : MonoBehaviour
 		{
 			if (this.Steps != null && this.defaultAudioSource.clip != this.Steps)
 			{
+				this.defaultAudioSource.volume = 2.5f;
 				this.defaultAudioSource.loop = true;
 				this.defaultAudioSource.clip = this.Steps;
 				this.defaultAudioSource.Play();
@@ -148,7 +149,6 @@ public class SoundManager : MonoBehaviour
 		{
 			if (this.Climb != null && this.defaultAudioSource.clip == this.Climb && this.defaultAudioSource.isPlaying)
 			{
-				this.defaultAudioSource.volume = 1f;
 				this.defaultAudioSource.loop = false;
 				this.defaultAudioSource.Stop();
 				this.defaultAudioSource.clip = null;
@@ -169,7 +169,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Jump != null)
         {
-			this.sounds.Play(this.Jump, 1f);
+			this.sounds.Play(this.Jump, 2.5f);
 		}
     }
 
@@ -177,7 +177,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Punch != null)
         {
-			this.sounds.Play(this.Punch, 1f);
+			this.sounds.Play(this.Punch, 1.0f);
 		}
     }
 
@@ -185,7 +185,7 @@ public class SoundManager : MonoBehaviour
     {
         if (this.Kick != null)
         {
-			this.sounds.Play(this.Kick, 0.15f);
+			this.sounds.Play(this.Kick, 0.6f);
 		}
     }
 
@@ -193,7 +193,7 @@ public class SoundManager : MonoBehaviour
 	{
 		if (this.TakeObject != null)
 		{
-			this.sounds.Play(this.TakeObject);
+			this.sounds.Play(this.TakeObject, 1.5f);
 		}
 	}
 
@@ -201,7 +201,7 @@ public class SoundManager : MonoBehaviour
 	{
 		if (this.Portal != null)
 		{
-			this.sounds.Play(this.Portal, 1.0f);
+			this.sounds.Play(this.Portal, 10.0f);
 		}
 	}
 }

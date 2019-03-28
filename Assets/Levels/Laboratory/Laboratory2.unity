@@ -1122,6 +1122,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turel
       objectReference: {fileID: 0}
+    - target: {fileID: 1289531564546886, guid: 50872c9cd4a620e44b5a080596530710, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4402190247006796, guid: 50872c9cd4a620e44b5a080596530710, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.04
@@ -1165,6 +1169,23 @@ PrefabInstance:
     - target: {fileID: 4402190247006796, guid: 50872c9cd4a620e44b5a080596530710, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7549522649547458494, guid: 50872c9cd4a620e44b5a080596530710,
+        type: 3}
+      propertyPath: Strength.value
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389933605624228, guid: 50872c9cd4a620e44b5a080596530710, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1234611185544966, guid: 50872c9cd4a620e44b5a080596530710, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1355499673756992, guid: 50872c9cd4a620e44b5a080596530710, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50872c9cd4a620e44b5a080596530710, type: 3}

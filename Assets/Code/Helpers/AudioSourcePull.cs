@@ -37,7 +37,7 @@ namespace TeamZ.Assets.Code.Helpers
 
 			audioSource = this.freeAudioSources.Dequeue();
 			audioSource.Stop();
-			audioSource.volume = 0.3f;
+			audioSource.volume = 0.4f;
 			audioSource.loop = false;
 
 			this.audioSourceCache.Add(id, audioSource);
@@ -93,7 +93,7 @@ namespace TeamZ.Assets.Code.Helpers
 			this.reducingVolumeAudioSources.Remove(audioSource);
 		}
 
-		public async UniTask Play(AudioClip audio, float volume = 0.3f)
+		public async UniTask Play(AudioClip audio, float volume = 0.4f)
 		{
 			await PlayOnce(audio, Guid.NewGuid(), volume);
 		}

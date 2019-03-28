@@ -26,7 +26,10 @@ namespace Assets.UI
 		{
 			foreach (Transform view in this.transform)
 			{
-				view.gameObject.SetActive(false);
+				if (view.name != "Text")
+				{
+					view.gameObject.SetActive(false);
+				}
 			}
 		}
 	}

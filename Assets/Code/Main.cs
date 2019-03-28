@@ -74,7 +74,8 @@ public class Main : MonoBehaviour
 			await this.gameController.Value.LoadSavedGameAsync("test");
 		}
 
-		if (Input.GetKeyUp(KeyCode.Escape))
+		if (Input.GetKeyUp(KeyCode.Escape) &&
+			this.gameController.Value.LevelManager.CurrentLevel != null)
 		{
 			if (this.ViewRouter.Value.MainView.isActiveAndEnabled && 
 				this.gameController.Value.LevelManager.CurrentLevel != null)
