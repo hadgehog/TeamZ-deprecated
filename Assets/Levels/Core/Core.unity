@@ -1124,7 +1124,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Play
+  m_Text: New Game
 --- !u!222 &267041855
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4491,7 +4491,7 @@ GameObject:
   - component: {fileID: 1513807972}
   - component: {fileID: 1513807971}
   m_Layer: 0
-  m_Name: Play
+  m_Name: New Game
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
