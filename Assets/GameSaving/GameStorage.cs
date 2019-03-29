@@ -4,14 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GameSaving.States;
-using TeamZ.Assets.Code.Game.Messages.GameSaving;
 using UniRx;
 using UnityEngine;
 using ZeroFormatter;
 
 namespace GameSaving
 {
-    public class GameSlot
+	public class GameSlot
     {
         public DateTime Modified { get; set; }
 

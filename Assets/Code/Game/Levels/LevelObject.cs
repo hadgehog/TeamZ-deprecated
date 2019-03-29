@@ -63,6 +63,15 @@ public class LevelObject : MonoBehaviourWithState<LevelObjectState>, IDamageable
 
 	public virtual void StrengthTooLow()
 	{
+		// CRUTCH!!! TODO: REWORK!!!
+		var tip = GameObject.Find("KickOrJump");
+
+		if (this.name == "Wooden_Box_distr (1)" && tip != null)
+		{
+			Destroy(tip);
+		}
+		// CRUTCH!!! TODO: REWORK!!!
+
 		if (this.GetComponent<ConstantMessageTip>() != null)
 		{
 			Destroy(this.GetComponent<ConstantMessageTip>());
