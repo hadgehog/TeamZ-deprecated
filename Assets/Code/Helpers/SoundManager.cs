@@ -58,17 +58,17 @@ public class SoundManager : MonoBehaviour
 		this.defaultAudioSource.loop = false;
 		this.sounds = new AudioSourcePull();
 
-		MessageBroker.Default.Receive<RunHappened>().Subscribe(this.PlayStepsSound);
-		MessageBroker.Default.Receive<RunEnded>().Subscribe(this.StopStepsSound);
-		MessageBroker.Default.Receive<JumpHappened>().Subscribe(this.PlayJumpSound);
-        MessageBroker.Default.Receive<PunchHappened>().Subscribe(this.PlayPunchSound);
-        MessageBroker.Default.Receive<KickHappened>().Subscribe(this.PlayKickSound);
-		MessageBroker.Default.Receive<TakeObjectHappened>().Subscribe(this.PlayTakeObjectSound);
-		MessageBroker.Default.Receive<PortalToNextLevelHappened>().Subscribe(this.PlayPortalToNextLevelSound);
-		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.sounds.PlayOnce(this.Die, "Death", 10.0f));
+		MessageBroker.Default.Receive<RunHappened>().Subscribe(this.PlayStepsSound).AddTo(this);
+		MessageBroker.Default.Receive<RunEnded>().Subscribe(this.StopStepsSound).AddTo(this);
+		MessageBroker.Default.Receive<JumpHappened>().Subscribe(this.PlayJumpSound).AddTo(this);
+        MessageBroker.Default.Receive<PunchHappened>().Subscribe(this.PlayPunchSound).AddTo(this);
+        MessageBroker.Default.Receive<KickHappened>().Subscribe(this.PlayKickSound).AddTo(this);
+		MessageBroker.Default.Receive<TakeObjectHappened>().Subscribe(this.PlayTakeObjectSound).AddTo(this);
+		MessageBroker.Default.Receive<PortalToNextLevelHappened>().Subscribe(this.PlayPortalToNextLevelSound).AddTo(this);
+		MessageBroker.Default.Receive<CharacterDead>().Subscribe(o => this.sounds.PlayOnce(this.Die, "Death", 10.0f)).AddTo(this);
 
-		MessageBroker.Default.Receive<GamePaused>().Subscribe(this.OnGamePausedAsync);
-		MessageBroker.Default.Receive<GameResumed>().Subscribe(this.OnGameResumedAsync);
+		MessageBroker.Default.Receive<GamePaused>().Subscribe(this.OnGamePausedAsync).AddTo(this);
+		MessageBroker.Default.Receive<GameResumed>().Subscribe(this.OnGameResumedAsync).AddTo(this);
 	}
 	
 	private async void OnGamePausedAsync(GamePaused soundObj)
