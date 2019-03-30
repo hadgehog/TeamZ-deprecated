@@ -1,0 +1,21 @@
+{
+    "name": "Game",
+    "references": [
+        "Plugins",
+        "Unity.Addressables",
+        "Unity.2D.PixelPerfect",
+        "UniRx",
+        "UniRx.Async",
+        "Unity.Postprocessing.Runtime",
+        "Unity.TextMeshPro",
+        "Unity.ResourceManager"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
