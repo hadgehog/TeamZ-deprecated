@@ -78,7 +78,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	protected virtual void Start()
 	{
 		this.anim = this.GetComponent<Animator>();
-		this.rigidBody = this.GetComponent<Rigidbody2D>();
+		this.rigidBody = this.GetComponentInChildren<Rigidbody2D>();
 
 		this.Character = this.GetComponent<Lizard>();
 
