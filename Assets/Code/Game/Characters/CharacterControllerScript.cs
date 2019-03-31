@@ -28,6 +28,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 	public enum Direction
 	{
+		Empty,
 		Left,
 		Right,
 		Up,
@@ -53,7 +54,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		= new ReactiveProperty<bool>();
 
 	protected ReactiveProperty<Direction> HorizontalDirection
-		= new ReactiveProperty<Direction>(Direction.Right);
+		= new ReactiveProperty<Direction>(Direction.Empty);
 
 	protected ReactiveProperty<Direction> VerticalDirection
 		= new ReactiveProperty<Direction>(Direction.Up);
@@ -76,10 +77,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 	private Timer strikeCooldownTimer = new Timer(600);
 	private Timer jumpCooldownTimer = new Timer(600);
-
-	private bool isKeyUpWasPressed = false;
-	private bool onTheStairway = false;
-	private Vector2 stairwayPosition;
 
 	protected ReactiveProperty<float> HorizontalValue
 		= new ReactiveProperty<float>();
@@ -225,11 +222,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			this.jumpCooldownTimer.Start();
 			MessageBroker.Default.Publish(new JumpHappened());
 		}
-
-		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
-		{
-			this.isKeyUpWasPressed = true;
-		}
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D col)
@@ -261,31 +253,19 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 			var lastSave = Dependency<GameController>.Resolve().LoadLastSavedGameAsync();
 		}
-
-		if (col.gameObject.GetComponent<Stairway>() != null)
-		{
-			this.onTheStairway = true;
-			var stairway = GameObject.FindGameObjectWithTag("Stairway");
-			this.stairwayPosition = stairway.transform.position;
-		}
-	}
-
-	protected virtual void OnTriggerExit2D(Collider2D col)
-	{
-		if (col.gameObject.GetComponent<Stairway>() != null)
-		{
-			this.onTheStairway = false;
-		}
 	}
 
 	private void Flip()
 	{
+		var sign = Mathf.Sign(this.HorizontalValue.Value);
 		Vector3 currentScale = this.transform.localScale;
 
-		currentScale.x *= -1;
-		this.impulseDirection *= -1;
-
+		currentScale.x = sign * Mathf.Abs(currentScale.x);
+		this.impulseDirection = (int)sign * Mathf.Abs(this.impulseDirection);
 		this.transform.localScale = currentScale;
+
+		Debug.Log(impulseDirection);
+		Debug.Log(currentScale);
 	}
 
 	public void AlertObservers(string message)
@@ -331,16 +311,13 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	public override CharacterControllerState GetState()
 		=> new CharacterControllerState
 		{
-			CurrentDirection = this.HorizontalDirection.Value,
 			IsClimbed = this.IsClimbed.Value,
-			IsKeyUpWasPressed = this.isKeyUpWasPressed
 		};
 
 	public override void SetState(CharacterControllerState state)
 	{
-		this.HorizontalDirection.Value = state.CurrentDirection;
+		this.HorizontalDirection.Value = Direction.Empty;
 		this.IsClimbed.Value = state.IsClimbed;
-		this.isKeyUpWasPressed = state.IsKeyUpWasPressed;
 	}
 }
 

@@ -148,7 +148,7 @@ namespace GameSaving
 			await this.BlackScreen.Value.ShowAsync();
 			this.LoadingText.Value.DisplayNewText(Texts.GetLevelText(level.Name));
 
-			var autoSaveSlot = $"Autosave [{level.Name}-{DateTime.Now.ToString("dd_MMMM_yyyy")}]";
+			var autoSaveSlot = $"Autosave [{level.Name}-{DateTime.Now.ToString("dd.MMMM.yyyy")}]";
 
 			var gameState = this.GetState();
 			await this.SaveAsync(gameState, autoSaveSlot);
