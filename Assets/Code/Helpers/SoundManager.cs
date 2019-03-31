@@ -125,7 +125,7 @@ public class SoundManager : MonoBehaviour
 		{
 			if (this.Climb != null && this.defaultAudioSource.clip != this.Climb)
 			{
-				this.defaultAudioSource.volume = 0.6f;
+				this.defaultAudioSource.volume = 1.2f;
 				this.defaultAudioSource.loop = true;
 				this.defaultAudioSource.clip = this.Climb;
 				this.defaultAudioSource.Play();
@@ -135,7 +135,7 @@ public class SoundManager : MonoBehaviour
 		{
 			if (this.Steps != null && this.defaultAudioSource.clip != this.Steps)
 			{
-				this.defaultAudioSource.volume = 2.5f;
+				this.defaultAudioSource.volume = 5f;
 				this.defaultAudioSource.loop = true;
 				this.defaultAudioSource.clip = this.Steps;
 				this.defaultAudioSource.Play();
@@ -171,7 +171,7 @@ public class SoundManager : MonoBehaviour
         {
 			this.sounds.Play(this.Jump, 2.5f);
 		}
-    }
+	}
 
     private void PlayPunchSound(PunchHappened soundObj)
     {
