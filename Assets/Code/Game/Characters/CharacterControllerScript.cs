@@ -263,9 +263,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		currentScale.x = sign * Mathf.Abs(currentScale.x);
 		this.impulseDirection = (int)sign * Mathf.Abs(this.impulseDirection);
 		this.transform.localScale = currentScale;
-
-		Debug.Log(impulseDirection);
-		Debug.Log(currentScale);
 	}
 
 	public void AlertObservers(string message)
