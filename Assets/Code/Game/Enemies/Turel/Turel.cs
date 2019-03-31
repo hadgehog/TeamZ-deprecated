@@ -27,7 +27,7 @@ namespace TeamZ.Assets.Code.GameObjects.Enemies.Turel
 
         private void OnParticleCollision(GameObject other)
         {
-            if (other.GetComponent<ICharacter>() is ICharacter character)
+            if (other.GetComponentInParent<ICharacter>() is ICharacter character)
             {
                 character.TakeDamage(this.Damage);
             }

@@ -20,7 +20,7 @@ public class AbyssCollider : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        var character = col.gameObject.GetComponent<ICharacter>();
+        var character = col.gameObject.GetComponentInParent<ICharacter>();
 
         if (character == null)
         {

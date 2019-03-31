@@ -1764,6 +1764,11 @@ PrefabInstance:
       propertyPath: KickRadius
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114378013384149246, guid: 30ff19b3ed8eaa2478c704b512f1dce8,
+        type: 3}
+      propertyPath: JumpForce
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 1752780952135111716, guid: 30ff19b3ed8eaa2478c704b512f1dce8,
         type: 3}
       propertyPath: m_Constraints

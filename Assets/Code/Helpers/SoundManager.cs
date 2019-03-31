@@ -125,7 +125,7 @@ public class SoundManager : MonoBehaviour
 		{
 			if (this.Climb != null && this.defaultAudioSource.clip != this.Climb)
 			{
-				this.defaultAudioSource.volume = 1.2f;
+				this.defaultAudioSource.volume = 0.4f;
 				this.defaultAudioSource.loop = true;
 				this.defaultAudioSource.clip = this.Climb;
 				this.defaultAudioSource.Play();
@@ -135,7 +135,7 @@ public class SoundManager : MonoBehaviour
 		{
 			if (this.Steps != null && this.defaultAudioSource.clip != this.Steps)
 			{
-				this.defaultAudioSource.volume = 5f;
+				this.defaultAudioSource.volume = 8.0f;
 				this.defaultAudioSource.loop = true;
 				this.defaultAudioSource.clip = this.Steps;
 				this.defaultAudioSource.Play();

@@ -96,6 +96,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.jumpCooldownTimer.Elapsed += new ElapsedEventHandler(this.OnJumpCooldownTimerEvent);
 
 		var prevHorizontalValue = 0f;
+
 		this.HorizontalValue
 			.Subscribe(value =>
 			{
@@ -110,6 +111,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 				}
 
 				var magnitude = Mathf.Abs(value);
+
 				if (prevHorizontalValue == 0 && magnitude > 0)
 				{
 					MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
@@ -125,14 +127,14 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			.AddTo(this);
 
 		this.VerticalValue
-			.Subscribe(o =>
+			.Subscribe(value =>
 			{
-				if (o > 0)
+				if (value > 0)
 				{
 					this.VerticalDirection.Value = Direction.Up;
 				}
 
-				if (o < 0)
+				if (value < 0)
 				{
 					this.VerticalDirection.Value = Direction.Down;
 				}
@@ -156,6 +158,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.IsClimbed.Subscribe(isClimbed =>
 		{
 			this.anim.SetBool("Climbing", isClimbed);
+
 			if (isClimbed)
 			{
 				this.rigidBody.gravityScale = 0.0f;
@@ -164,11 +167,33 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			{
 				this.rigidBody.gravityScale = 1.0f;
 			}
+
+			if (isClimbed && (this.VerticalValue.Value > 0.0f || this.HorizontalValue.Value > 0.0f))
+			{
+				MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
+			}
+			else
+			{
+				MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
+			}
 		})
 		.AddTo(this);
 
 		this.IsGrounded
-			.Subscribe(o => this.anim.SetBool("Ground", o))
+			.Subscribe(value =>
+			{
+				this.anim.SetBool("Ground", value);
+
+				if (!value)
+				{
+					MessageBroker.Default.Publish(new RunEnded(false));
+				}
+
+				if (value && Mathf.Abs(this.HorizontalValue.Value) > 0.0f)
+				{
+					MessageBroker.Default.Publish(new RunHappened(false));
+				}
+			})
 			.AddTo(this);
 	}
 
@@ -192,6 +217,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 		this.anim.SetFloat("Speed", Mathf.Abs(this.HorizontalValue.Value));
 		this.anim.SetFloat("ClimbSpeed", Mathf.Max(Mathf.Abs(this.HorizontalValue.Value), Mathf.Abs(this.VerticalValue.Value)));
+		this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
 	}
 
 	// called once per frame
@@ -217,7 +243,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			this.IsClimbed.Value = false;
 
 			this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
-			this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
 
 			this.jumpCooldownTimer.Start();
 			MessageBroker.Default.Publish(new JumpHappened());
