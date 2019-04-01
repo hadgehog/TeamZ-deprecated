@@ -1,3 +1,4 @@
+using System.Linq;
 using Assets.Code.Helpers;
 using Assets.UI;
 using GameSaving;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 public class LoadView : MonoBehaviour
 {
-	private Dependency<GameStorage> GameController;
+	private Dependency<GameStorage> GameStorage;
 	private UnityDependency<ViewRouter> Router;
 
 	public GameObject Root;
@@ -24,7 +25,7 @@ public class LoadView : MonoBehaviour
 			GameObject.Destroy(loadItem.gameObject);
 		}
 
-		foreach (var slot in this.GameController.Value.Slots)
+		foreach (var slot in this.GameStorage.Value.Slots.OrderByDescending(o => o.Modified))
 		{
 			var loadItem = GameObject.Instantiate<GameObject>(this.LoadItemTemplate, this.Root.transform);
 			loadItem.GetComponent<LoadItemView>().SlotName = slot.Name;

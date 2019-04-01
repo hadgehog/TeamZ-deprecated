@@ -14,6 +14,7 @@ using GameSaving.States.Charaters;
 using TeamZ.Assets.Code.DependencyInjection;
 using TeamZ.Assets.Code.Game.Messages.GameSaving;
 using TeamZ.Assets.Code.Game.Notifications;
+using TeamZ.Assets.Code.Helpers;
 using UniRx;
 using UniRx.Async;
 using UnityEngine;
@@ -148,10 +149,11 @@ namespace GameSaving
 			await this.BlackScreen.Value.ShowAsync();
 			this.LoadingText.Value.DisplayNewText(Texts.GetLevelText(level.Name));
 
-			var autoSaveSlot = $"Autosave [{level.Name}-{DateTime.Now.ToString("dd.MMMM.yyyy")}]";
+			var time = DateTime.Now.ToTeamZDateTime();
+			var beforeAutoSave = $"Switching to {level.Name} {time}";
 
 			var gameState = this.GetState();
-			await this.SaveAsync(gameState, autoSaveSlot);
+			await this.SaveAsync(gameState, beforeAutoSave);
 
 			gameState.LevelId = level.Id;
 			var mainCharacters = gameState.GameObjectsStates.
@@ -175,7 +177,11 @@ namespace GameSaving
 				character.transform.localPosition = locationPosition;
 			}
 
+			gameState = this.GetState();
+			var afterAutoSave = $"Switched to {level.Name} {time}";
+
 			this.VisitedLevels.Add(level.Id);
+			await this.SaveAsync(gameState, afterAutoSave);
 
 			Time.timeScale = 1;
 
