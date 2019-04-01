@@ -340,6 +340,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	{
 		this.HorizontalDirection.Value = Direction.Empty;
 		this.IsClimbed.Value = state.IsClimbed;
+		this.CanClimb.Value = state.IsClimbed;
 	}
 }
 
