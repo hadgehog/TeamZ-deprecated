@@ -1,39 +1,28 @@
-if(-not (Test-Path -Path token.json))
-{
-    echo "token.json is missing"
-    exit 1
-}
-
 if (-not (Get-Command unity -errorAction SilentlyContinue))
 {
-    echo "unity command is missing"
-    echo "Add unity folder to global path enviroment variable"
+    Write-Output "unity command is missing"
+    Write-Output "Add unity folder to global path enviroment variable"
     exit 1
 }
 
-$token = ((Get-Content -Path token.json) | ConvertFrom-Json).token
+$token = $Env:GitHubToken
 
-echo "Build Unity project"
+Write-Output "Build Unity project"
 
 cmd /c unity  -batchmode -nographics -projectpath . -executeMethod Build.AppBuilder.BuildGame -quit
 
 if (-not $args.Contains("--upload"))
 {
-    echo "Done"
+    Write-Output "Done"
     exit 0
 }
 
-$branch = (git rev-parse --abbrev-ref HEAD) -replace "/", "-"
-$commit = git rev-parse --short HEAD
-$currentDate = Get-Date
-
 $timestamp = get-date -f yyyy.MM.dd
-$stamp = "$($timestamp)_$($branch)_$($commit)"
 $tag = "v$($timestamp)"
 
 $archiveName = "game_$($tag).zip"
 
-echo "Compressing"
+Write-Output "Compressing"
 Compress-Archive -Path BuildArtifacts/* -DestinationPath $archiveName -Force
 
 $headers = 
@@ -50,7 +39,7 @@ $createRelease = @"
 }
 "@
 
-echo "Creating release"
+Write-Output "Creating release"
 
 git tag -a "$($tag)" -m "Build $($tag)"
 git push origin "$($tag)"
@@ -59,7 +48,7 @@ $rawResponse = Invoke-WebRequest -Uri https://api.github.com/repos/hadgehog/Team
 $response = $rawResponse.Content | ConvertFrom-Json
 $assets = $response.assets_url -replace "api.github.com", "uploads.github.com"
 
-echo "Uploading archive"
+Write-Output "Uploading archive"
 Invoke-WebRequest -Uri "$($assets)?name=$($archiveName)" -Headers $headers -Method POST -InFile $archiveName -UseBasicParsing
 
-echo "Done"
+Write-Output "Done"
