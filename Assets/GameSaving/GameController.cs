@@ -108,8 +108,12 @@ namespace GameSaving
 		{
 			this.BackgroundImage.Value.Hide();
 			await this.BlackScreen.Value.ShowAsync();
-			this.LoadingText.Value.DisplayNewText(Texts.GetLevelText(this.LevelManager.CurrentLevel.Name));
 			var gameState = await this.Storage.LoadAsync(slotName);
+
+            var level = Level.AllById[gameState.LevelId];
+            var levelName = Texts.GetLevelText(level.Name);
+
+            this.LoadingText.Value.DisplayNewText(levelName);
 			await this.LoadGameStateAsync(gameState);
 			await Task.Delay(2000);
 			this.LoadingText.Value.HideText();
@@ -129,7 +133,8 @@ namespace GameSaving
 
 		public async Task LoadGameStateAsync(GameState gameState)
 		{
-			await this.LevelManager.LoadAsync(Level.All.First(o => o.Value.Id == gameState.LevelId).Value);
+            var level = Level.AllById[gameState.LevelId];
+            await this.LevelManager.LoadAsync(level);
 			await this.BootstrapAsync(gameState);
 		}
 

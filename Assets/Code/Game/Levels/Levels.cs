@@ -39,6 +39,9 @@ public class Level
             Laboratory,
             Laboratory2
         }.ToDictionary(o => o.Name);
+
+        AllById = All.Values
+            .ToDictionary(o => o.Id);
     }
 
     public string Name;
@@ -49,4 +52,5 @@ public class Level
     public static Level Laboratory { get; }
     public static Level Laboratory2 { get; }
     public static Dictionary<string, Level> All { get; }
+    public static Dictionary<Guid, Level> AllById { get; }
 }
