@@ -23,7 +23,7 @@ $tag = "v$($timestamp)"
 $archiveName = "game_$($tag).zip"
 
 Write-Output "Compressing"
-Compress-Archive -Path BuildArtifacts/* -DestinationPath $archiveName -Force
+Compress-Archive -Path ./BuildArtifacts/* -DestinationPath $archiveName -Force
 
 $headers = 
 @{ 
