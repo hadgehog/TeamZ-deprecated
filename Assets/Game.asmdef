@@ -2,13 +2,11 @@
     "name": "Game",
     "references": [
         "Plugins",
-        "Unity.Addressables",
         "Unity.2D.PixelPerfect",
         "UniRx",
         "UniRx.Async",
         "Unity.Postprocessing.Runtime",
-        "Unity.TextMeshPro",
-        "Unity.ResourceManager"
+        "Unity.TextMeshPro"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

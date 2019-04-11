@@ -1,8 +1,6 @@
 {
     "name": "AppBuilder",
     "references": [
-        "Unity.Addressables",
-        "Unity.Addressables.Editor"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

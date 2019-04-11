@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47aceabe9313b945bbe74ec2f4d7bba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path: Prefabs\Levels\medkit\first-aid-pack.prefab
+  Path: Prefabs\Levels\medkit\first-aid-pack
 --- !u!114 &2528981466512254421
 MonoBehaviour:
   m_ObjectHideFlags: 0
