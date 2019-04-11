@@ -9,7 +9,7 @@ namespace GameSaving.MonoBehaviours
     {
         public Guid Id = Guid.NewGuid();
         public Guid LevelId;
-        public AssetReference Path;
+        public string Path;
 
         public override EntityState GetState()
         {
@@ -18,7 +18,7 @@ namespace GameSaving.MonoBehaviours
             {
                 Id = this.Id,
                 LevelId = this.LevelId,
-                AssetGuid = this.Path.RuntimeKey.ToString(),
+                AssetGuid = this.Path,
                 Position = cachedTransform.localPosition,
                 Rotation = cachedTransform.localRotation,
                 Scale = cachedTransform.localScale,
@@ -28,7 +28,7 @@ namespace GameSaving.MonoBehaviours
         public override void SetState(EntityState state)
         {
             this.Id = state.Id;
-            this.Path = new AssetReference(state.AssetGuid);
+            this.Path = state.AssetGuid;
             this.LevelId = state.LevelId;
 
             var cachedTransform = this.transform;

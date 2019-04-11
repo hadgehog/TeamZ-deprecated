@@ -126,8 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e62bf204532b44da70b273532ebd1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Strength:
+    value: 100
   VisualStates: []
-  strength: 5
   isDestructible: 1
 --- !u!61 &503732358618405753
 BoxCollider2D:
@@ -167,10 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47aceabe9313b945bbe74ec2f4d7bba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path:
-    m_AssetGUID: 50872c9cd4a620e44b5a080596530710
-    m_CachedAsset: {fileID: 1289531564546886, guid: 50872c9cd4a620e44b5a080596530710,
-      type: 3}
+  Path: Prefabs\Levels\armor
 --- !u!1 &1355499673756992
 GameObject:
   m_ObjectHideFlags: 0
@@ -4868,7 +4866,7 @@ ParticleSystem:
 --- !u!199 &199854304584446492
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -9568,7 +9566,7 @@ ParticleSystem:
 --- !u!199 &199170535342758108
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

@@ -134,9 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47aceabe9313b945bbe74ec2f4d7bba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path:
-    m_AssetGUID: af2ad5d6b6e0ad8489b28659e303a9dd
-    m_CachedAsset: {fileID: 0}
+  Path: Prefabs\Levels\armor
 --- !u!114 &4322297349032494726
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -202,9 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47aceabe9313b945bbe74ec2f4d7bba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path:
-    m_AssetGUID: 30ff19b3ed8eaa2478c704b512f1dce8
-    m_CachedAsset: {fileID: 0}
+  Path: Prefabs\Characters\Lizard
 --- !u!114 &1537055095049983213
 MonoBehaviour:
   m_ObjectHideFlags: 0

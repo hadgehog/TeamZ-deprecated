@@ -16,27 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 3c5952e7b22d371498272421189d4149
-  m_SerializeEntries:
-  - m_GUID: 30ff19b3ed8eaa2478c704b512f1dce8
-    m_Address: lizard
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 50872c9cd4a620e44b5a080596530710
-    m_Address: turel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 643cea734631dbe4eb545148c97c4e11
-    m_Address: first-aid-pack
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 700da3eb8fd87a44b9f804cf3fa7500e
-    m_Address: wooden-box
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: af2ad5d6b6e0ad8489b28659e303a9dd
-    m_Address: armor
-    m_ReadOnly: 0
-    m_SerializedLabels: []
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 86a4097a6f3bc4b4da43bec5ca0420b1, type: 2}
   m_SchemaSet:
