@@ -11,19 +11,23 @@ Write-Output "Build Unity project"
 
 cmd /c unity  -batchmode -nographics -projectpath . -executeMethod Build.AppBuilder.BuildGame -quit
 
-if (-not $args.Contains("--upload"))
-{
-    Write-Output "Done"
-    exit 0
-}
-
 $timestamp = get-date -f yyyy.MM.dd
 $tag = "v$($timestamp)"
 
 $archiveName = "game_$($tag).zip"
 
 Write-Output "Compressing"
+
+Remove-Item *.zip
 Compress-Archive -Path ./BuildArtifacts/* -DestinationPath $archiveName -Force
+
+
+if (-not $args.Contains("--upload"))
+{
+    Write-Output "Done"
+    exit 0
+}
+
 
 $headers = 
 @{ 
