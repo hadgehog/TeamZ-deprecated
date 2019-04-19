@@ -221,7 +221,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.anim.SetFloat("ClimbSpeed", Mathf.Max(Mathf.Abs(this.HorizontalValue.Value), Mathf.Abs(this.VerticalValue.Value)));
 		this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
 
-		if (this.climbingSurface)
+		if (this.climbingSurface && this.IsClimbed.Value)
 		{
 			this.AlignCharacter();
 		}
