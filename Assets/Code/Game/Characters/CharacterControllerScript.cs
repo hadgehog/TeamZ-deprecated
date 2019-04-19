@@ -84,6 +84,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	protected ReactiveProperty<float> VerticalValue
 		= new ReactiveProperty<float>();
 
+	protected ClimbingSurface climbingSurface = null;
+
 	// Use this for initialization
 	protected virtual void Start()
 	{
@@ -218,6 +220,11 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.anim.SetFloat("Speed", Mathf.Abs(this.HorizontalValue.Value));
 		this.anim.SetFloat("ClimbSpeed", Mathf.Max(Mathf.Abs(this.HorizontalValue.Value), Mathf.Abs(this.VerticalValue.Value)));
 		this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
+
+		if (this.climbingSurface)
+		{
+			this.AlignCharacter();
+		}
 	}
 
 	// called once per frame
@@ -277,6 +284,19 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			this.loadingStarted = true;
 
 			var lastSave = Dependency<GameController>.Resolve().LoadLastSavedGameAsync();
+		}
+
+		if (col.gameObject.GetComponent<ClimbingSurface>() != null)
+		{
+			climbingSurface = col.gameObject.GetComponent<ClimbingSurface>();
+		}
+	}
+
+	protected virtual void OnTriggerExit2D(Collider2D col)
+	{
+		if (col.gameObject.GetComponent<ClimbingSurface>() != null)
+		{
+			climbingSurface = null;
 		}
 	}
 
@@ -341,6 +361,11 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.HorizontalDirection.Value = Direction.Empty;
 		this.IsClimbed.Value = state.IsClimbed;
 		this.CanClimb.Value = state.IsClimbed;
+	}
+
+	protected virtual void AlignCharacter()
+	{
+		// TODO: add logic for aligning character on the middle of climbing surface
 	}
 }
 
