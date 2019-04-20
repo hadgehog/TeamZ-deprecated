@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Code.Helpers;
+using UnityEngine;
 
 namespace Assets.UI
 {
@@ -10,19 +11,23 @@ namespace Assets.UI
 		public SaveView SaveView;
 		public SettingsView SettingsView;
 
+        public UnityDependency<MainMenuBackgroundImage> BackgroundImage;
+
 		public void ShowGameHUDView()
 		{
 			this.DisableAll();
 			this.GameHUDView.Activate();
+            this.BackgroundImage.Value.Deactivate();
 		}
 
 		public void ShowMainView()
 		{
 			this.DisableAll();
-			this.MainView.Activate();
-		}
+            this.MainView.Activate();
+            this.BackgroundImage.Value.Activate();
+        }
 
-		public void DisableAll()
+        public void DisableAll()
 		{
 			foreach (Transform view in this.transform)
 			{

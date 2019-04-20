@@ -7,6 +7,7 @@ using Game.Activation.Core;
 using GameSaving;
 using GameSaving.States;
 using TeamZ.Assets.Code.DependencyInjection;
+using TeamZ.Assets.Code.Game.UserInput;
 using TeamZ.Handlers;
 using TeamZ.Mediator;
 using UniRx;
@@ -39,6 +40,7 @@ public class Main : MonoBehaviour
 		container.Add<GameStorage>();
 		container.Add<LevelManager>();
 		container.Add<EntitiesStorage>();
+        container.Add<UserInputMapper>();
 	}
 
 	private void RegisterHandlers()

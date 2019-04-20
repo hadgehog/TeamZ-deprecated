@@ -2,6 +2,7 @@
 using Assets.UI;
 using GameSaving.States;
 using TeamZ.Assets.Code.DependencyInjection;
+using TeamZ.Assets.Code.Game.UserInput;
 using UniRx;
 using UniRx.Async;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace GameSaving.MonoBehaviours
 		private UnityDependency<ViewRouter> Router;
 		private Dependency<GameController> GameController;
 		private Dependency<LevelManager> LevelManager;
+        private Dependency<UserInputMapper> UserInputMapper;
 
 		private async void Start()
 		{
@@ -29,6 +31,7 @@ namespace GameSaving.MonoBehaviours
                 this.LevelManager.Value.CurrentLevel = level;
                 this.GameController.Value.VisitedLevels.Add(level.Id);
                 this.GameController.Value.BootstrapEntities(true);
+                this.UserInputMapper.Value.Bootstrap();
 
 				this.Router.Value.ShowGameHUDView();
 			}

@@ -28,7 +28,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
     public Transform Kick;
     public float KickRadius;
 
-    public IUserInputProvider UserInputProvider;
+    public ReactiveProperty<IUserInputProvider> UserInputProvider
+        = new ReactiveProperty<IUserInputProvider>();
 
     public enum Direction
     {
@@ -90,50 +91,57 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
     {
         this.anim = this.GetComponent<Animator>();
         this.rigidBody = this.GetComponentInChildren<Rigidbody2D>();
-        this.UserInputProvider = new KeyboardUserInputProvider();
-        this.UserInputProvider.Activate();
-
         this.Character = this.GetComponent<Lizard>();
 
         var prevHorizontalValue = 0f;
 
-        this.UserInputProvider.Horizontal
-            .Subscribe(o => this.HorizontalValue.Value = o)
-            .AddTo(this);
-
-        this.UserInputProvider.Vertical
-            .Subscribe(o => this.VerticalValue.Value = o)
-            .AddTo(this);
-
-        this.UserInputProvider.Punch
-            .ThrottleFirst(TimeSpan.FromSeconds(0.6))
-            .Subscribe(o =>
+        this.UserInputProvider
+            .Where(o => o != null)
+            .Subscribe(userInputProvider =>
             {
-                this.fightMode = FightMode.Punch;
-                this.anim.SetTrigger("Punch");
+                userInputProvider.Horizontal
+                   .Subscribe(o => this.HorizontalValue.Value = o)
+                   .AddTo(this);
+
+                userInputProvider.Vertical
+                    .Subscribe(o => this.VerticalValue.Value = o)
+                    .AddTo(this);
+
+                userInputProvider.Punch
+                    .True()
+                    .ThrottleFirst(TimeSpan.FromSeconds(0.6))
+                    .Subscribe(o =>
+                    {
+                        this.fightMode = FightMode.Punch;
+                        this.anim.SetTrigger("Punch");
+                    })
+                    .AddTo(this);
+
+                userInputProvider.Kick
+                    .True()
+                    .ThrottleFirst(TimeSpan.FromSeconds(0.6))
+                    .Subscribe(o =>
+                    {
+                        this.fightMode = FightMode.Kick;
+                        this.anim.SetTrigger("Kick");
+                    })
+                    .AddTo(this);
+
+                userInputProvider.Jump
+                    .True()
+                    .Where(o => this.IsGrounded.Value || this.IsClimbed.Value)
+                    .Subscribe(o =>
+                    {
+                        this.IsGrounded.Value = this.IsClimbed.Value = false;
+
+                        this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
+
+                        MessageBroker.Default.Publish(new JumpHappened());
+                    })
+                    .AddTo(this);
             })
             .AddTo(this);
 
-        this.UserInputProvider.Kick
-            .ThrottleFirst(TimeSpan.FromSeconds(0.6))
-            .Subscribe(o =>
-            {
-                this.fightMode = FightMode.Kick;
-                this.anim.SetTrigger("Kick");
-            })
-            .AddTo(this);
-
-        this.UserInputProvider.Jump
-            .Where(o => this.IsGrounded.Value || this.IsClimbed.Value)
-            .Subscribe(o =>
-            {
-                this.IsGrounded.Value = this.IsClimbed.Value = false;
-
-                this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
-
-                MessageBroker.Default.Publish(new JumpHappened());
-            })
-            .AddTo(this);
 
         this.HorizontalValue
             .Subscribe(value =>
