@@ -1,4 +1,5 @@
-﻿using System.Timers;
+﻿using System;
+using System.Timers;
 using GameSaving;
 using GameSaving.MonoBehaviours;
 using TeamZ.Assets.Code.DependencyInjection;
@@ -85,6 +86,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		= new ReactiveProperty<float>();
 
 	protected ClimbingSurface climbingSurface = null;
+	protected Transform previousCharacterPosition;
 
 	// Use this for initialization
 	protected virtual void Start()
@@ -220,16 +222,16 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.anim.SetFloat("Speed", Mathf.Abs(this.HorizontalValue.Value));
 		this.anim.SetFloat("ClimbSpeed", Mathf.Max(Mathf.Abs(this.HorizontalValue.Value), Mathf.Abs(this.VerticalValue.Value)));
 		this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
-
-		if (this.climbingSurface && this.IsClimbed.Value)
-		{
-			this.AlignCharacter();
-		}
 	}
 
 	// called once per frame
 	protected virtual void Update()
 	{
+		if (this.climbingSurface && this.IsClimbed.Value && !this.IsGrounded.Value)
+		{
+			this.AlignCharacter();
+		}
+
 		if (Input.GetKeyDown(KeyCode.Z) && !this.strikeCooldownTimer.Enabled)
 		{
 			this.fightMode = FightMode.Punch;
@@ -254,6 +256,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			this.jumpCooldownTimer.Start();
 			MessageBroker.Default.Publish(new JumpHappened());
 		}
+
+		this.previousCharacterPosition = this.rigidBody.transform;
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D col)
@@ -365,7 +369,48 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 	protected virtual void AlignCharacter()
 	{
-		// TODO: add logic for aligning character on the middle of climbing surface
+		var characterSize = this.GetComponent<Transform>().localScale;
+		var characterPosition = this.rigidBody.transform.position;
+
+		if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Stairway &&
+			(characterPosition.x + (Math.Abs(characterSize.x) / 2) >= this.climbingSurface.Position.x + (this.climbingSurface.Size.x / 2)))
+		{
+			var tempPos = this.rigidBody.transform.position;
+			tempPos.x -= 0.25f;
+			this.rigidBody.transform.position = tempPos;
+			//this.rigidBody.transform.position = this.previousCharacterPosition.position;
+			return;
+		}
+
+		if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Stairway &&
+			 (characterPosition.x - (Math.Abs(characterSize.x) / 2) <= this.climbingSurface.Position.x - (this.climbingSurface.Size.x / 2)))
+		{
+			var tempPos = this.rigidBody.transform.position;
+			tempPos.x += 0.25f;
+			this.rigidBody.transform.position = tempPos;
+			//this.rigidBody.transform.position = this.previousCharacterPosition.position;
+			return;
+		}
+
+		/*
+		if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Fence &&
+			(characterPosition.y + (Math.Abs(characterSize.y) / 2) >= this.climbingSurface.Position.y + (this.climbingSurface.Size.y / 2)))
+		{
+			var tempPos = this.rigidBody.transform.position;
+			tempPos.y -= 0.25f;
+			this.rigidBody.transform.position = tempPos;
+			return;
+		}
+
+		if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Fence &&
+			(characterPosition.y - (Math.Abs(characterSize.y) / 2) <= this.climbingSurface.Position.y - (this.climbingSurface.Size.y / 2)))
+		{
+			var tempPos = this.rigidBody.transform.position;
+			tempPos.y += 0.25f;
+			this.rigidBody.transform.position = tempPos;
+			return;
+		}
+		*/
 	}
 }
 
