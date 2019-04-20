@@ -20,7 +20,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
         public static Dictionary<KeyMapping, IUserInputProvider> UserInputProviders
             = new Dictionary<KeyMapping, IUserInputProvider>()
             {
-                { KeyMapping.First,  new UserInputProvider("Horizontal1", "Vertical1", "Jump1", "Punch1", "Kick1", "Submit1", "Cancel1") },
+                { KeyMapping.First,  new UserInputProvider("HorizontalJoystic1", "VerticalJoystic1", "JumpJoystic1", "PunchJoystic1", "KickJoystic1", "SubmitJoystic1", "CancelJoystic1") },
                 { KeyMapping.Second,  new UserInputProvider("Horizontal2", "Vertical2", "Jump2", "Punch2", "Kick2", "Submit2", "Cancel2") }
             };
 
