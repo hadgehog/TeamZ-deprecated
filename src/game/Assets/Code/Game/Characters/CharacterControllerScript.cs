@@ -60,7 +60,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	protected ReactiveProperty<Direction> VerticalDirection
 		= new ReactiveProperty<Direction>(Direction.Up);
 
-	protected float GroundRadius = 0.15f;
+	protected float GroundRadius = 0.2f;
 	protected float ClimbRadius = 0.4f;
 
 	protected Animator anim;
@@ -116,12 +116,12 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 				var magnitude = Mathf.Abs(value);
 
-				if (prevHorizontalValue == 0 && magnitude > 0)
+				if ((this.IsGrounded.Value || this.IsClimbed.Value) && prevHorizontalValue == 0 && magnitude > 0)
 				{
 					MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
 				}
 
-				if (prevHorizontalValue > 0 && magnitude == 0)
+				if ((this.IsGrounded.Value || this.IsClimbed.Value) && prevHorizontalValue > 0 && magnitude == 0)
 				{
 					MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
 				}
@@ -130,7 +130,9 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			})
 			.AddTo(this);
 
-		this.VerticalValue
+        var prevVerticalValue = 0f;
+
+        this.VerticalValue
 			.Subscribe(value =>
 			{
 				if (value > 0)
@@ -142,7 +144,21 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 				{
 					this.VerticalDirection.Value = Direction.Down;
 				}
-			})
+
+                var magnitude = Mathf.Abs(value);
+
+                if (this.IsClimbed.Value && prevVerticalValue == 0 && magnitude > 0)
+                {
+                    MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
+                }
+
+                if (this.IsClimbed.Value && prevVerticalValue > 0 && magnitude == 0)
+                {
+                    MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
+                }
+
+                prevVerticalValue = magnitude;
+            })
 			.AddTo(this);
 
 		this.VerticalValue
@@ -209,7 +225,16 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.IsGrounded.Value = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy) && !this.IsClimbed.Value;
 		this.CanClimb.Value = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing);
 
-		if (this.IsClimbed.Value)
+        RaycastHit hit;
+
+        if (Physics.Raycast(this.rigidBody.transform.position, Vector3.forward, out hit, Mathf.Infinity))
+        {
+            this.climbingSurface = hit.collider.gameObject.GetComponent<ClimbingSurface>();
+        }
+
+        Debug.DrawRay(this.rigidBody.transform.position, Vector3.right * Mathf.Infinity, Color.yellow, 5.0f);
+
+        if (this.IsClimbed.Value)
 		{
 			this.rigidBody.velocity = new Vector2(this.HorizontalValue.Value * this.CreepSpeed, this.VerticalValue.Value * this.CreepSpeed);
 		}
@@ -288,19 +313,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			this.loadingStarted = true;
 
 			var lastSave = Dependency<GameController>.Resolve().LoadLastSavedGameAsync();
-		}
-
-		if (col.gameObject.GetComponent<ClimbingSurface>() != null)
-		{
-			climbingSurface = col.gameObject.GetComponent<ClimbingSurface>();
-		}
-	}
-
-	protected virtual void OnTriggerExit2D(Collider2D col)
-	{
-		if (col.gameObject.GetComponent<ClimbingSurface>() != null)
-		{
-			climbingSurface = null;
 		}
 	}
 
