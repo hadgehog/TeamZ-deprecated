@@ -85,11 +85,10 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	protected ReactiveProperty<float> VerticalValue
 		= new ReactiveProperty<float>();
 
-	protected ClimbingSurface climbingSurface = null;
-	protected Transform previousCharacterPosition;
+    protected ClimbingSurface climbingSurface = null;
 
-	// Use this for initialization
-	protected virtual void Start()
+    // Use this for initialization
+    protected virtual void Start()
 	{
 		this.anim = this.GetComponent<Animator>();
 		this.rigidBody = this.GetComponentInChildren<Rigidbody2D>();
@@ -225,14 +224,16 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.IsGrounded.Value = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy) && !this.IsClimbed.Value;
 		this.CanClimb.Value = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing);
 
-        RaycastHit hit;
+        var hit = Physics2D.Raycast(this.transform.position - Vector3.forward * 2, Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
 
-        if (Physics.Raycast(this.rigidBody.transform.position, Vector3.forward, out hit, Mathf.Infinity))
+        if (hit.collider)
         {
-            this.climbingSurface = hit.collider.gameObject.GetComponent<ClimbingSurface>();
+            this.climbingSurface = hit.collider.GetComponent<ClimbingSurface>();
         }
-
-        Debug.DrawRay(this.rigidBody.transform.position, Vector3.right * Mathf.Infinity, Color.yellow, 5.0f);
+        else
+        {
+            this.climbingSurface = null;
+        }
 
         if (this.IsClimbed.Value)
 		{
@@ -252,9 +253,24 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 	// called once per frame
 	protected virtual void Update()
 	{
-		if (this.climbingSurface && this.IsClimbed.Value && !this.IsGrounded.Value)
+		if (this.IsClimbed.Value && !this.IsGrounded.Value)
 		{
-			this.AlignCharacter();
+            // if character on the climbing surface
+            if (this.climbingSurface)
+            {
+                this.AlignCharacter();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space) && !this.jumpCooldownTimer.Enabled)
+            {
+                this.IsGrounded.Value = false;
+                this.IsClimbed.Value = false;
+
+                this.jumpCooldownTimer.Start();
+                MessageBroker.Default.Publish(new JumpHappened());
+            }
+
+            return;
 		}
 
 		if (Input.GetKeyDown(KeyCode.Z) && !this.strikeCooldownTimer.Enabled)
@@ -281,8 +297,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 			this.jumpCooldownTimer.Start();
 			MessageBroker.Default.Publish(new JumpHappened());
 		}
-
-		this.previousCharacterPosition = this.rigidBody.transform;
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D col)
@@ -381,49 +395,45 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 	protected virtual void AlignCharacter()
 	{
-		var characterSize = this.GetComponent<Transform>().localScale;
-		var characterPosition = this.rigidBody.transform.position;
+        var characterSizeX = Math.Abs(this.GetComponent<Transform>().localScale.x);
+        var characterSizeY = Math.Abs(this.GetComponent<Transform>().localScale.y);
 
-		if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Stairway &&
-			(characterPosition.x + (Math.Abs(characterSize.x) / 2) >= this.climbingSurface.Position.x + (this.climbingSurface.Size.x / 2)))
-		{
-			var tempPos = this.rigidBody.transform.position;
-			tempPos.x -= 0.25f;
-			this.rigidBody.transform.position = tempPos;
-			//this.rigidBody.transform.position = this.previousCharacterPosition.position;
-			return;
-		}
+        var hitLeft = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(characterSizeX/2, 0, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        var hitRight = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(characterSizeX / 2, 0, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY/2, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 2, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
 
-		if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Stairway &&
-			 (characterPosition.x - (Math.Abs(characterSize.x) / 2) <= this.climbingSurface.Position.x - (this.climbingSurface.Size.x / 2)))
-		{
-			var tempPos = this.rigidBody.transform.position;
-			tempPos.x += 0.25f;
-			this.rigidBody.transform.position = tempPos;
-			//this.rigidBody.transform.position = this.previousCharacterPosition.position;
-			return;
-		}
+        var horizontalMove = Input.GetAxis("Horizontal");
+        var verticalMove = Input.GetAxis("Vertical");
 
-		/*
-		if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Fence &&
-			(characterPosition.y + (Math.Abs(characterSize.y) / 2) >= this.climbingSurface.Position.y + (this.climbingSurface.Size.y / 2)))
-		{
-			var tempPos = this.rigidBody.transform.position;
-			tempPos.y -= 0.25f;
-			this.rigidBody.transform.position = tempPos;
-			return;
-		}
+        if (hitLeft.collider == null && horizontalMove < 0)
+        {
+            var tempPos = this.rigidBody.transform.position;
+            tempPos.x += 0.2f;
+            this.rigidBody.transform.position = tempPos;
+        }
 
-		if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Fence &&
-			(characterPosition.y - (Math.Abs(characterSize.y) / 2) <= this.climbingSurface.Position.y - (this.climbingSurface.Size.y / 2)))
-		{
-			var tempPos = this.rigidBody.transform.position;
-			tempPos.y += 0.25f;
-			this.rigidBody.transform.position = tempPos;
-			return;
-		}
-		*/
-	}
+        if (hitRight.collider == null && horizontalMove > 0)
+        {
+            var tempPos = this.rigidBody.transform.position;
+            tempPos.x -= 0.2f;
+            this.rigidBody.transform.position = tempPos;
+        }
+
+        if (hitTop.collider == null && verticalMove > 0)
+        {
+            var tempPos = this.rigidBody.transform.position;
+            tempPos.y -= 0.2f;
+            this.rigidBody.transform.position = tempPos;
+        }
+
+        if (hitBottom.collider == null && verticalMove < 0)
+        {
+            var tempPos = this.rigidBody.transform.position;
+            tempPos.y += 0.2f;
+            this.rigidBody.transform.position = tempPos;
+        }
+    }
 }
 
 public class RunHappened
