@@ -266,6 +266,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
                 this.IsGrounded.Value = false;
                 this.IsClimbed.Value = false;
 
+                MessageBroker.Default.Publish(new RunEnded(true));
+
                 this.jumpCooldownTimer.Start();
                 MessageBroker.Default.Publish(new JumpHappened());
             }
