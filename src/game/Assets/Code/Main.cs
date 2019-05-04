@@ -17,11 +17,12 @@ using UnityEngine;
 public class Main : MonoBehaviour
 {
 	private readonly UnityDependency<ViewRouter> ViewRouter;
-	private UnityDependency<BackgroundImage> BackgroundImage;
+	private readonly UnityDependency<BackgroundImage> BackgroundImage;
 	private readonly Dependency<GameController> gameController;
+    private readonly Dependency<UserInputMapper> UserInputMapper;
 
 
-	private async void Start()
+    private async void Start()
 	{
 		Application.targetFrameRate = 60;
 
@@ -32,9 +33,9 @@ public class Main : MonoBehaviour
 
 		await UniTask.DelayFrame(1);
 		MessageBroker.Default.Publish(new GamePaused());
-	}
+    }
 
-	private void RegisterDependencies(DependencyContainer container)
+    private void RegisterDependencies(DependencyContainer container)
 	{
 		container.Add<GameController>();
 		container.Add<GameStorage>();
@@ -53,9 +54,10 @@ public class Main : MonoBehaviour
 	private void Loaded()
 	{
 		MessageBroker.Default.Publish(new GameResumed(this.gameController.Value.LevelManager.CurrentLevel.Name));
-	}
+        this.UserInputMapper.Value.Bootstrap();
+    }
 
-	public async void Update()
+    public async void Update()
 	{
 		if (Input.GetKeyUp(KeyCode.F5))
 		{
