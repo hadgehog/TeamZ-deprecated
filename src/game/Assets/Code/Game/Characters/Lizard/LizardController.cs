@@ -16,11 +16,6 @@ public class LizardController : CharacterControllerScript
         base.FixedUpdate();
     }
 
-    protected override void Update()
-    {
-        base.Update();
-    }
-
     protected override void OnTriggerEnter2D(Collider2D col)
     {
         base.OnTriggerEnter2D(col);

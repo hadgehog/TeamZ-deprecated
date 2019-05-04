@@ -3,148 +3,195 @@ using System.Timers;
 using GameSaving;
 using GameSaving.MonoBehaviours;
 using TeamZ.Assets.Code.DependencyInjection;
+using TeamZ.Assets.Code.Game.UserInput;
 using TeamZ.Assets.GameSaving.States;
 using UniRx;
 using UnityEngine;
 
 public class CharacterControllerScript : MonoBehaviourWithState<CharacterControllerState>
 {
-	public float RunSpeed;
-	public float CreepSpeed;
-	public float JumpForce;
+    public float RunSpeed;
+    public float CreepSpeed;
+    public float JumpForce;
 
-	public Transform GroundCheck;
-	public Transform ClimbCheck;
+    public Transform GroundCheck;
+    public Transform ClimbCheck;
 
-	public LayerMask WhatIsGround;
-	public LayerMask WhatIsLevelObject;
-	public LayerMask WhatIsEnemy;
-	public LayerMask WhatIsSurfaceForClimbing;
+    public LayerMask WhatIsGround;
+    public LayerMask WhatIsLevelObject;
+    public LayerMask WhatIsEnemy;
+    public LayerMask WhatIsSurfaceForClimbing;
 
-	public Transform Punch;
-	public float PunchRadius;
+    public Transform Punch;
+    public float PunchRadius;
 
-	public Transform Kick;
-	public float KickRadius;
+    public Transform Kick;
+    public float KickRadius;
 
-	public enum Direction
-	{
-		Empty,
-		Left,
-		Right,
-		Up,
-		Down
-	}
+    public ReactiveProperty<IUserInputProvider> UserInputProvider
+        = new ReactiveProperty<IUserInputProvider>();
 
-	public enum FightMode
-	{
-		None = -1,
-		Punch = 0,
-		Kick,
-		TailHit,
-		HullHit
-	}
+    public enum Direction
+    {
+        Empty,
+        Left,
+        Right,
+        Up,
+        Down
+    }
 
-	protected ReactiveProperty<bool> IsGrounded
-		= new ReactiveProperty<bool>();
+    public enum FightMode
+    {
+        None = -1,
+        Punch = 0,
+        Kick,
+        TailHit,
+        HullHit
+    }
 
-	protected ReactiveProperty<bool> CanClimb
-		= new ReactiveProperty<bool>();
+    protected ReactiveProperty<bool> IsGrounded
+        = new ReactiveProperty<bool>();
 
-	protected ReactiveProperty<bool> IsClimbed
-		= new ReactiveProperty<bool>();
+    protected ReactiveProperty<bool> CanClimb
+        = new ReactiveProperty<bool>();
 
-	protected ReactiveProperty<Direction> HorizontalDirection
-		= new ReactiveProperty<Direction>(Direction.Empty);
+    protected ReactiveProperty<bool> IsClimbed
+        = new ReactiveProperty<bool>();
 
-	protected ReactiveProperty<Direction> VerticalDirection
-		= new ReactiveProperty<Direction>(Direction.Up);
+    protected ReactiveProperty<Direction> HorizontalDirection
+        = new ReactiveProperty<Direction>(Direction.Empty);
 
-	protected float GroundRadius = 0.2f;
-	protected float ClimbRadius = 0.4f;
+    protected ReactiveProperty<Direction> VerticalDirection
+        = new ReactiveProperty<Direction>(Direction.Up);
 
-	protected Animator anim;
-	protected Rigidbody2D rigidBody;
+    protected float GroundRadius = 0.2f;
+    protected float ClimbRadius = 0.4f;
 
-	protected ICharacter Character;
+    protected Animator anim;
+    protected Rigidbody2D rigidBody;
 
-	protected FightMode fightMode = FightMode.None;
+    protected ICharacter Character;
 
-	private bool loadingStarted;
+    protected FightMode fightMode = FightMode.None;
 
-	private int[] activeLayersToInteraction = { 8, 9, 10 };
+    private bool loadingStarted;
 
-	private int impulseDirection = 1;
+    private int[] activeLayersToInteraction = { 8, 9, 10 };
 
-	private Timer strikeCooldownTimer = new Timer(600);
-	private Timer jumpCooldownTimer = new Timer(600);
+    private int impulseDirection = 1;
 
-	protected ReactiveProperty<float> HorizontalValue
-		= new ReactiveProperty<float>();
+    protected ReactiveProperty<float> HorizontalValue
+        = new ReactiveProperty<float>();
 
-	protected ReactiveProperty<float> VerticalValue
-		= new ReactiveProperty<float>();
+    protected ReactiveProperty<float> VerticalValue
+        = new ReactiveProperty<float>();
 
     protected ClimbingSurface climbingSurface = null;
+    private IDisposable climbingMovement;
 
     private bool isFirstStepOnStairs = true;
 
     // Use this for initialization
     protected virtual void Start()
-	{
-		this.anim = this.GetComponent<Animator>();
-		this.rigidBody = this.GetComponentInChildren<Rigidbody2D>();
+    {
+        this.anim = this.GetComponent<Animator>();
+        this.rigidBody = this.GetComponentInChildren<Rigidbody2D>();
 
-		this.Character = this.GetComponent<Lizard>();
+        this.Character = this.GetComponent<Lizard>();
 
-		this.strikeCooldownTimer.Elapsed += new ElapsedEventHandler(this.OnStrikeCooldownTimerEvent);
-		this.jumpCooldownTimer.Elapsed += new ElapsedEventHandler(this.OnJumpCooldownTimerEvent);
+        var prevHorizontalValue = 0f;
 
-		var prevHorizontalValue = 0f;
+        this.UserInputProvider
+            .Where(o => o != null)
+            .Subscribe(userInputProvider =>
+            {
+                userInputProvider.Horizontal
+                   .Subscribe(o => this.HorizontalValue.Value = o)
+                   .AddTo(this);
 
-		this.HorizontalValue
-			.Subscribe(value =>
-			{
-				if (value > 0)
-				{
-					this.HorizontalDirection.Value = Direction.Left;
-				}
+                userInputProvider.Vertical
+                    .Subscribe(o => this.VerticalValue.Value = o)
+                    .AddTo(this);
 
-				if (value < 0)
-				{
-					this.HorizontalDirection.Value = Direction.Right;
-				}
+                userInputProvider.Punch
+                    .True()
+                    .ThrottleFirst(TimeSpan.FromSeconds(0.6))
+                    .Subscribe(o =>
+                    {
+                        this.fightMode = FightMode.Punch;
+                        this.anim.SetTrigger("Punch");
+                    })
+                    .AddTo(this);
 
-				var magnitude = Mathf.Abs(value);
+                userInputProvider.Kick
+                    .True()
+                    .ThrottleFirst(TimeSpan.FromSeconds(0.6))
+                    .Subscribe(o =>
+                    {
+                        this.fightMode = FightMode.Kick;
+                        this.anim.SetTrigger("Kick");
+                    })
+                    .AddTo(this);
 
-				if ((this.IsGrounded.Value || this.IsClimbed.Value) && prevHorizontalValue == 0 && magnitude > 0)
-				{
-					MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
-				}
+                userInputProvider.Jump
+                    .True()
+                    .Where(o => this.IsGrounded.Value || this.IsClimbed.Value)
+                    .Subscribe(o =>
+                    {
+                        this.IsGrounded.Value = this.IsClimbed.Value = false;
 
-				if ((this.IsGrounded.Value || this.IsClimbed.Value) && prevHorizontalValue > 0 && magnitude == 0)
-				{
-					MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
-				}
+                        this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
+                        MessageBroker.Default.Publish(new RunEnded(true));
+                        MessageBroker.Default.Publish(new JumpHappened());
+                    })
+                    .AddTo(this);
+            })
+            .AddTo(this);
 
-				prevHorizontalValue = magnitude;
-			})
-			.AddTo(this);
+
+        this.HorizontalValue
+            .Subscribe(value =>
+            {
+                if (value > 0)
+                {
+                    this.HorizontalDirection.Value = Direction.Left;
+                }
+
+                if (value < 0)
+                {
+                    this.HorizontalDirection.Value = Direction.Right;
+                }
+
+                var magnitude = Mathf.Abs(value);
+
+                if ((this.IsGrounded.Value || this.IsClimbed.Value) && prevHorizontalValue == 0 && magnitude > 0)
+                {
+                    MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
+                }
+
+                if ((this.IsGrounded.Value || this.IsClimbed.Value) && prevHorizontalValue > 0 && magnitude == 0)
+                {
+                    MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
+                }
+
+                prevHorizontalValue = magnitude;
+            })
+            .AddTo(this);
 
         var prevVerticalValue = 0f;
 
         this.VerticalValue
-			.Subscribe(value =>
-			{
-				if (value > 0)
-				{
-					this.VerticalDirection.Value = Direction.Up;
-				}
+            .Subscribe(value =>
+            {
+                if (value > 0)
+                {
+                    this.VerticalDirection.Value = Direction.Up;
+                }
 
-				if (value < 0)
-				{
-					this.VerticalDirection.Value = Direction.Down;
-				}
+                if (value < 0)
+                {
+                    this.VerticalDirection.Value = Direction.Down;
+                }
 
                 var magnitude = Mathf.Abs(value);
 
@@ -160,69 +207,84 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
                 prevVerticalValue = magnitude;
             })
-			.AddTo(this);
+            .AddTo(this);
 
-		this.VerticalValue
-			.Where(value => this.CanClimb.Value && !this.IsClimbed.Value && Mathf.Abs(value) > 0)
-			.Subscribe(_ => this.IsClimbed.Value = true)
-			.AddTo(this);
+        this.VerticalValue
+            .Where(value => this.CanClimb.Value && !this.IsClimbed.Value && Mathf.Abs(value) > 0)
+            .Subscribe(_ => this.IsClimbed.Value = true)
+            .AddTo(this);
 
-		this.HorizontalDirection
-			.Subscribe(o => this.Flip())
-			.AddTo(this);
+        this.HorizontalDirection
+            .Subscribe(o => this.Flip())
+            .AddTo(this);
 
-		this.CanClimb
-			.Where(canClimb => !canClimb)
-			.Subscribe(_ => this.IsClimbed.Value = false)
-			.AddTo(this);
+        this.CanClimb
+            .Where(canClimb => !canClimb)
+            .Subscribe(_ => this.IsClimbed.Value = false)
+            .AddTo(this);
 
-		this.IsClimbed.Subscribe(isClimbed =>
-		{
-			this.anim.SetBool("Climbing", isClimbed && this.climbingSurface);
+        this.IsClimbed.Subscribe(isClimbed =>
+        {
+            this.anim.SetBool("Climbing", isClimbed && this.climbingSurface);
 
-			if (isClimbed && this.climbingSurface)
-			{
-				this.rigidBody.gravityScale = 0.0f;
-			}
-			else
-			{
-				this.rigidBody.gravityScale = 1.0f;
-			}
+            if (isClimbed && this.climbingSurface)
+            {
+                this.rigidBody.gravityScale = 0.0f;
+                
+            }
+            else
+            {
+                this.rigidBody.gravityScale = 1.0f;
+            }
 
-			if (isClimbed && this.climbingSurface && (this.VerticalValue.Value > 0.0f || this.HorizontalValue.Value > 0.0f))
-			{
-				MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
-			}
-			else
-			{
-				MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
-			}
-		})
-		.AddTo(this);
+            if (isClimbed && this.climbingSurface && (this.VerticalValue.Value > 0.0f || this.HorizontalValue.Value > 0.0f))
+            {
+                MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
+            }
+            else
+            {
+                MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
+            }
+        })
+        .AddTo(this);
 
-		this.IsGrounded
-			.Subscribe(value =>
-			{
-				this.anim.SetBool("Ground", value);
+        this.IsClimbed.Subscribe(isClimbing =>
+        {
+            if (isClimbing)
+            {
+                if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Stairway)
+                {
+                    this.AlignCharacter();
+                }
 
-				if (!value)
-				{
-					MessageBroker.Default.Publish(new RunEnded(false));
-				}
+                this.climbingMovement = Observable.EveryUpdate().Subscribe(_ => this.LimitCharacterMovement());
+            }
+            else
+            {
+                this.climbingMovement?.Dispose();
+            }
+        })
+        .AddTo(this);
 
-				if (value && Mathf.Abs(this.HorizontalValue.Value) > 0.0f)
-				{
-					MessageBroker.Default.Publish(new RunHappened(false));
-				}
-			})
-			.AddTo(this);
-	}
+        this.IsGrounded.Subscribe(value =>
+        {
+            this.anim.SetBool("Ground", value);
 
-	protected virtual void FixedUpdate()
-	{
-		this.HorizontalValue.Value = Input.GetAxis("Horizontal");
-		this.VerticalValue.Value = Input.GetAxis("Vertical");
+            if (!value)
+            {
+                MessageBroker.Default.Publish(new RunEnded(false));
+            }
 
+            if (value && Mathf.Abs(this.HorizontalValue.Value) > 0.0f)
+            {
+                MessageBroker.Default.Publish(new RunHappened(false));
+            }
+        })
+        .AddTo(this);
+    }
+
+    protected virtual void FixedUpdate()
+    {
         var hit = Physics2D.Raycast(this.transform.position - Vector3.forward * 2, Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
 
         if (hit.collider)
@@ -235,197 +297,125 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         }
 
         this.IsGrounded.Value = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy) && !this.IsClimbed.Value;
-		this.CanClimb.Value = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing) && this.climbingSurface;
+        this.CanClimb.Value = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing) && this.climbingSurface;
 
         if (this.IsClimbed.Value && this.climbingSurface)
-		{
-			this.rigidBody.velocity = new Vector2(this.HorizontalValue.Value * this.CreepSpeed, this.VerticalValue.Value * this.CreepSpeed);
-		}
+        {
+            this.rigidBody.velocity = new Vector2(this.HorizontalValue.Value * this.CreepSpeed, this.VerticalValue.Value * this.CreepSpeed);
+        }
 
-		if (!this.IsClimbed.Value)
-		{
-			this.rigidBody.velocity = new Vector2(this.HorizontalValue.Value * this.RunSpeed, this.rigidBody.velocity.y);
-		}
+        if (!this.IsClimbed.Value)
+        {
+            this.rigidBody.velocity = new Vector2(this.HorizontalValue.Value * this.RunSpeed, this.rigidBody.velocity.y);
+        }
 
-		this.anim.SetFloat("Speed", Mathf.Abs(this.HorizontalValue.Value));
+        this.anim.SetFloat("Speed", Mathf.Abs(this.HorizontalValue.Value));
 
         if (this.IsClimbed.Value && this.climbingSurface)
         {
             this.anim.SetFloat("ClimbSpeed", Mathf.Max(Mathf.Abs(this.HorizontalValue.Value), Mathf.Abs(this.VerticalValue.Value)));
         }
 
-		this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
-	}
+        this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
+    }
 
-	// called once per frame
-	protected virtual void Update()
-	{
-		if (this.IsClimbed.Value && !this.IsGrounded.Value)
-		{
-            // if character on the climbing surface - limit character movement by the surface borders
-            if (this.climbingSurface)
-            {
-                if (this.isFirstStepOnStairs && this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Stairway)
-                {
-                    this.AlignCharacter();
-                }
-
-                this.LimitCharacterMovement();
-
-                this.isFirstStepOnStairs = false;
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space) && !this.jumpCooldownTimer.Enabled)
-            {
-                this.IsGrounded.Value = false;
-                this.IsClimbed.Value = false;
-
-                MessageBroker.Default.Publish(new RunEnded(true));
-
-                this.jumpCooldownTimer.Start();
-                MessageBroker.Default.Publish(new JumpHappened());
-
-                this.isFirstStepOnStairs = true;
-            }
-
-            return;
-		}
-
-		if (Input.GetKeyDown(KeyCode.Z) && !this.strikeCooldownTimer.Enabled)
-		{
-			this.fightMode = FightMode.Punch;
-			this.anim.SetTrigger("Punch");
-			this.strikeCooldownTimer.Start();
-		}
-
-		if (Input.GetKeyDown(KeyCode.X) && !this.strikeCooldownTimer.Enabled)
-		{
-			this.fightMode = FightMode.Kick;
-			this.anim.SetTrigger("Kick");
-			this.strikeCooldownTimer.Start();
-		}
-
-		if (this.IsGrounded.Value && Input.GetKeyDown(KeyCode.Space) && !this.jumpCooldownTimer.Enabled)
-		{
-			this.IsGrounded.Value = false;
-			this.IsClimbed.Value = false;
-
-			this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
-
-			this.jumpCooldownTimer.Start();
-			MessageBroker.Default.Publish(new JumpHappened());
-
-            this.isFirstStepOnStairs = true;
-
+    protected virtual void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.GetComponent<FirstAidKit>() != null)
+        {
+            MessageBroker.Default.Publish(new TakeObjectHappened());
+            // TODO: add effect of flying aid kit to health bar on HUD
+            Destroy(col.gameObject);
         }
-	}
 
-	protected virtual void OnTriggerEnter2D(Collider2D col)
-	{
-		if (col.gameObject.GetComponent<FirstAidKit>() != null)
-		{
-			MessageBroker.Default.Publish(new TakeObjectHappened());
-			// TODO: add effect of flying aid kit to health bar on HUD
-			Destroy(col.gameObject);
-		}
+        if (col.gameObject.GetComponent<ArmorKit>() != null)
+        {
+            MessageBroker.Default.Publish(new TakeObjectHappened());
+            // TODO: add effect of flying armor kit to armor bar on HUD
+            Destroy(col.gameObject);
+        }
 
-		if (col.gameObject.GetComponent<ArmorKit>() != null)
-		{
-			MessageBroker.Default.Publish(new TakeObjectHappened());
-			// TODO: add effect of flying armor kit to armor bar on HUD
-			Destroy(col.gameObject);
-		}
+        if (col.gameObject.GetComponent<AbyssCollider>() != null)
+        {
+            // Something strange happening with this OnTriggerEnter
+            // It called OnTriggerEnter several times when it ought to only one
+            if (this.loadingStarted)
+            {
+                return;
+            }
 
-		if (col.gameObject.GetComponent<AbyssCollider>() != null)
-		{
-			// Something strange happening with this OnTriggerEnter
-			// It called OnTriggerEnter several times when it ought to only one
-			if (this.loadingStarted)
-			{
-				return;
-			}
+            this.loadingStarted = true;
 
-			this.loadingStarted = true;
+            var lastSave = Dependency<GameController>.Resolve().LoadLastSavedGameAsync();
+        }
+    }
 
-			var lastSave = Dependency<GameController>.Resolve().LoadLastSavedGameAsync();
-		}
-	}
+    private void Flip()
+    {
+        var sign = Mathf.Sign(this.HorizontalValue.Value);
+        Vector3 currentScale = this.transform.localScale;
 
-	private void Flip()
-	{
-		var sign = Mathf.Sign(this.HorizontalValue.Value);
-		Vector3 currentScale = this.transform.localScale;
+        currentScale.x = sign * Mathf.Abs(currentScale.x);
+        this.impulseDirection = (int)sign * Mathf.Abs(this.impulseDirection);
+        this.transform.localScale = currentScale;
+    }
 
-		currentScale.x = sign * Mathf.Abs(currentScale.x);
-		this.impulseDirection = (int)sign * Mathf.Abs(this.impulseDirection);
-		this.transform.localScale = currentScale;
-	}
+    public void AlertObservers(string message)
+    {
+        if (message.Equals("AttackAnimationEnded"))
+        {
+            switch (this.fightMode)
+            {
+                case FightMode.Punch:
+                    Fight2D.Action(this.Punch.position, this.PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse * this.impulseDirection);
+                    break;
+                case FightMode.Kick:
+                    Fight2D.Action(this.Kick.position, this.KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse * this.impulseDirection);
+                    break;
+                default:
+                    break;
+            }
 
-	public void AlertObservers(string message)
-	{
-		if (message.Equals("AttackAnimationEnded"))
-		{
-			switch (this.fightMode)
-			{
-				case FightMode.Punch:
-					Fight2D.Action(this.Punch.position, this.PunchRadius, this.activeLayersToInteraction, false, this.Character.PunchDamage, this.Character.PunchImpulse * this.impulseDirection);
-					break;
-				case FightMode.Kick:
-					Fight2D.Action(this.Kick.position, this.KickRadius, this.activeLayersToInteraction, false, this.Character.KickDamage, this.Character.KickImpulse * this.impulseDirection);
-					break;
-				default:
-					break;
-			}
+            this.fightMode = FightMode.None;
+        }
 
-			this.fightMode = FightMode.None;
-		}
+        if (message.Equals("PunchHappened"))
+        {
+            MessageBroker.Default.Publish(new PunchHappened());
+        }
 
-		if (message.Equals("PunchHappened"))
-		{
-			MessageBroker.Default.Publish(new PunchHappened());
-		}
+        if (message.Equals("KickHappened"))
+        {
+            MessageBroker.Default.Publish(new KickHappened());
+        }
+    }
 
-		if (message.Equals("KickHappened"))
-		{
-			MessageBroker.Default.Publish(new KickHappened());
-		}
-	}
+    public override CharacterControllerState GetState()
+        => new CharacterControllerState
+        {
+            IsClimbed = this.IsClimbed.Value,
+        };
 
-	private void OnStrikeCooldownTimerEvent(object sender, ElapsedEventArgs e)
-	{
-		this.strikeCooldownTimer.Stop();
-	}
+    public override void SetState(CharacterControllerState state)
+    {
+        this.HorizontalDirection.Value = Direction.Empty;
+        this.IsClimbed.Value = state.IsClimbed;
+        this.CanClimb.Value = state.IsClimbed;
+    }
 
-	private void OnJumpCooldownTimerEvent(object sender, ElapsedEventArgs e)
-	{
-		this.jumpCooldownTimer.Stop();
-	}
+    protected virtual void LimitCharacterMovement()
+    {
+        var localScale = this.transform.localScale;
+        var characterSizeX = Math.Abs(localScale.x);
+        var characterSizeY = Math.Abs(localScale.y);
 
-	public override CharacterControllerState GetState()
-		=> new CharacterControllerState
-		{
-			IsClimbed = this.IsClimbed.Value,
-		};
-
-	public override void SetState(CharacterControllerState state)
-	{
-		this.HorizontalDirection.Value = Direction.Empty;
-		this.IsClimbed.Value = state.IsClimbed;
-		this.CanClimb.Value = state.IsClimbed;
-	}
-
-	protected virtual void LimitCharacterMovement()
-	{
-        var characterSizeX = Math.Abs(this.GetComponent<Transform>().localScale.x);
-        var characterSizeY = Math.Abs(this.GetComponent<Transform>().localScale.y);
-
-        var hitLeft = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(characterSizeX/2, 0, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        var hitLeft = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(characterSizeX / 2, 0, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
         var hitRight = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(characterSizeX / 2, 0, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
-        var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY/2, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 2, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
         var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 2, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
 
-        var horizontalMove = Input.GetAxis("Horizontal");
-        var verticalMove = Input.GetAxis("Vertical");
+        var horizontalMove = this.HorizontalValue.Value;
+        var verticalMove = this.VerticalValue.Value;
 
         if (hitLeft.collider == null && horizontalMove < 0)
         {
@@ -465,48 +455,48 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
 public class RunHappened
 {
-	public bool isClimbing = false;
+    public bool isClimbing = false;
 
-	public RunHappened(bool _isClimbing)
-	{
-		this.isClimbing = _isClimbing;
-	}
+    public RunHappened(bool _isClimbing)
+    {
+        this.isClimbing = _isClimbing;
+    }
 }
 
 public class RunEnded
 {
-	public bool isClimbing = false;
+    public bool isClimbing = false;
 
-	public RunEnded(bool _isClimbing)
-	{
-		this.isClimbing = _isClimbing;
-	}
+    public RunEnded(bool _isClimbing)
+    {
+        this.isClimbing = _isClimbing;
+    }
 }
 
 public class JumpHappened
 {
-	public JumpHappened()
-	{
-	}
+    public JumpHappened()
+    {
+    }
 }
 
 public class PunchHappened
 {
-	public PunchHappened()
-	{
-	}
+    public PunchHappened()
+    {
+    }
 }
 
 public class KickHappened
 {
-	public KickHappened()
-	{
-	}
+    public KickHappened()
+    {
+    }
 }
 
 public class TakeObjectHappened
 {
-	public TakeObjectHappened()
-	{
-	}
+    public TakeObjectHappened()
+    {
+    }
 }
