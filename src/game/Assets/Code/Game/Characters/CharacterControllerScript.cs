@@ -257,7 +257,10 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
                     this.AlignCharacter();
                 }
 
-                this.climbingMovement = Observable.EveryUpdate().Subscribe(_ => this.LimitCharacterMovement());
+                this.climbingMovement = Observable
+                    .EveryUpdate()
+                    .Subscribe(_ => this.LimitCharacterMovement())
+                    .AddTo(this);
             }
             else
             {
