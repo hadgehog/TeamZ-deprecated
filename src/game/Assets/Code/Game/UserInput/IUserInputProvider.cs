@@ -7,7 +7,7 @@ using UniRx;
 
 namespace TeamZ.Assets.Code.Game.UserInput
 {
-    public interface IUserInputProvider
+    public interface IUserInputProvider : IDisposable
     {
         ReactiveProperty<float> Horizontal { get; }
         ReactiveProperty<float> Vertical { get; }
@@ -18,6 +18,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
         ReactiveProperty<bool> Punch { get; }
 
         ReactiveProperty<bool> Submit { get; }
+        ReactiveProperty<bool> Cancel { get; }
 
         IDisposable Activate();
 

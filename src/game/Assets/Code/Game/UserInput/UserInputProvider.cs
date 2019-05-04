@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UniRx;
@@ -73,5 +72,32 @@ namespace TeamZ.Assets.Code.Game.UserInput
         {
             this.subcription?.Dispose();
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    this.Horizontal.Dispose();
+                    this.Vertical.Dispose();
+                    this.Punch.Dispose();
+                    this.Kick.Dispose();
+                    this.Jump.Dispose();
+                    this.Submit.Dispose();
+                    this.Cancel.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

@@ -16,10 +16,12 @@ namespace TeamZ.Assets.Code.Game.UserInput
             KeyboardFirst,
             KeyboardSecond,
             JoystickFirst,
-            JoystickSecond
+            JoystickSecond,
+            CombinedFirst,
+            CombinedSecond
         }
 
-        public static Dictionary<KeyMapping, IUserInputProvider> UserInputProviders
+        public Dictionary<KeyMapping, IUserInputProvider> UserInputProviders { get; }
             = new Dictionary<KeyMapping, IUserInputProvider>()
             {
                 { KeyMapping.KeyboardFirst,  new UserInputProvider("Horizontal1", "Vertical1", "Jump1", "Punch1", "Kick1", "Submit1", "Cancel1") },
@@ -29,6 +31,16 @@ namespace TeamZ.Assets.Code.Game.UserInput
                 { KeyMapping.JoystickSecond,  new UserInputProvider("HorizontalJoystic2", "VerticalJoystic2", "JumpJoystic2", "PunchJoystic2", "KickJoystic2", "SubmitJoystic2", "CancelJoystic2") },
             };
 
+        public UserInputMapper()
+        {
+            this.UserInputProviders[KeyMapping.CombinedFirst] = new CombinedUserInputProvider(
+                this.UserInputProviders[KeyMapping.KeyboardFirst],
+                this.UserInputProviders[KeyMapping.JoystickFirst]);
+
+            this.UserInputProviders[KeyMapping.CombinedSecond] = new CombinedUserInputProvider(
+                this.UserInputProviders[KeyMapping.KeyboardSecond],
+                this.UserInputProviders[KeyMapping.JoystickSecond]);
+        }
 
         public void Bootstrap()
         {
@@ -38,7 +50,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
                 return;
             }
 
-            var userInputProvider = UserInputProviders[KeyMapping.KeyboardFirst];
+            var userInputProvider = this.UserInputProviders[KeyMapping.CombinedFirst];
             userInputProvider.Activate();
 
             characters.First().UserInputProvider.Value = userInputProvider;
@@ -48,7 +60,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
                 return;
             }
 
-            userInputProvider = UserInputProviders[KeyMapping.JoystickFirst];
+            userInputProvider = this.UserInputProviders[KeyMapping.CombinedSecond];
             userInputProvider.Activate();
             characters.Last().UserInputProvider.Value = userInputProvider;
         }

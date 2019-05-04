@@ -16,5 +16,13 @@ namespace UniRx
 
             return disposable;
         }
+
+        public static void Dispose(this IEnumerable<IDisposable> disposables)
+        {
+            foreach (var item in disposables)
+            {
+                item.Dispose();
+            }
+        }
     }
 }
