@@ -88,6 +88,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
     protected ClimbingSurface climbingSurface = null;
 
+    private bool isFirstStepOnStairs = true;
+
     // Use this for initialization
     protected virtual void Start()
 	{
@@ -138,7 +140,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
                         this.IsGrounded.Value = this.IsClimbed.Value = false;
 
                         this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
-
+                        MessageBroker.Default.Publish(new RunEnded(true));
                         MessageBroker.Default.Publish(new JumpHappened());
                     })
                     .AddTo(this);
@@ -220,29 +222,29 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             .Subscribe(_ => this.IsClimbed.Value = false)
             .AddTo(this);
 
-        this.IsClimbed.Subscribe(isClimbed =>
-        {
-            this.anim.SetBool("Climbing", isClimbed);
+		this.IsClimbed.Subscribe(isClimbed =>
+		{
+			this.anim.SetBool("Climbing", isClimbed && this.climbingSurface);
 
-            if (isClimbed)
-            {
-                this.rigidBody.gravityScale = 0.0f;
-            }
-            else
-            {
-                this.rigidBody.gravityScale = 1.0f;
-            }
+			if (isClimbed && this.climbingSurface)
+			{
+				this.rigidBody.gravityScale = 0.0f;
+			}
+			else
+			{
+				this.rigidBody.gravityScale = 1.0f;
+			}
 
-            if (isClimbed && (this.VerticalValue.Value > 0.0f || this.HorizontalValue.Value > 0.0f))
-            {
-                MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
-            }
-            else
-            {
-                MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
-            }
-        })
-        .AddTo(this);
+			if (isClimbed && this.climbingSurface && (this.VerticalValue.Value > 0.0f || this.HorizontalValue.Value > 0.0f))
+			{
+				MessageBroker.Default.Publish(new RunHappened(this.IsClimbed.Value));
+			}
+			else
+			{
+				MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
+			}
+		})
+		.AddTo(this);
 
         this.IsGrounded
             .Subscribe(value =>
@@ -262,11 +264,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             .AddTo(this);
     }
 
-    protected virtual void FixedUpdate()
-    {
-        this.IsGrounded.Value = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy) && !this.IsClimbed.Value;
-        this.CanClimb.Value = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing);
-
+	protected virtual void FixedUpdate()
+	{
         var hit = Physics2D.Raycast(this.transform.position - Vector3.forward * 2, Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
 
         if (hit.collider)
@@ -278,7 +277,10 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             this.climbingSurface = null;
         }
 
-        if (this.IsClimbed.Value)
+        this.IsGrounded.Value = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy) && !this.IsClimbed.Value;
+		this.CanClimb.Value = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing) && this.climbingSurface;
+
+        if (this.IsClimbed.Value && this.climbingSurface)
 		{
 			this.rigidBody.velocity = new Vector2(this.HorizontalValue.Value * this.CreepSpeed, this.VerticalValue.Value * this.CreepSpeed);
 		}
@@ -289,14 +291,19 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         }
 
 		this.anim.SetFloat("Speed", Mathf.Abs(this.HorizontalValue.Value));
-		this.anim.SetFloat("ClimbSpeed", Mathf.Max(Mathf.Abs(this.HorizontalValue.Value), Mathf.Abs(this.VerticalValue.Value)));
+
+        if (this.IsClimbed.Value && this.climbingSurface)
+        {
+            this.anim.SetFloat("ClimbSpeed", Mathf.Max(Mathf.Abs(this.HorizontalValue.Value), Mathf.Abs(this.VerticalValue.Value)));
+        }
+
 		this.anim.SetFloat("JumpSpeed", this.rigidBody.velocity.y);
 
-		if (this.climbingSurface && this.IsClimbed.Value)
-		{
-			this.AlignCharacter();
-		}
-	}
+        if (this.climbingSurface && this.IsClimbed.Value)
+        {
+            this.AlignCharacter();
+        }
+    }
 
     protected virtual void OnTriggerEnter2D(Collider2D col)
     {
@@ -382,7 +389,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 		this.CanClimb.Value = state.IsClimbed;
 	}
 
-	protected virtual void AlignCharacter()
+	protected virtual void LimitCharacterMovement()
 	{
         var characterSizeX = Math.Abs(this.GetComponent<Transform>().localScale.x);
         var characterSizeY = Math.Abs(this.GetComponent<Transform>().localScale.y);
@@ -422,6 +429,12 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             tempPos.y += 0.2f;
             this.rigidBody.transform.position = tempPos;
         }
+    }
+
+    private void AlignCharacter()
+    {
+        var stairwayPos = this.climbingSurface.Position;
+        this.rigidBody.position = new Vector2(stairwayPos.x, this.rigidBody.position.y);
     }
 }
 
