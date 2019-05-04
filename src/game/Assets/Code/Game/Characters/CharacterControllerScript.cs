@@ -136,11 +136,17 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
                     .Where(o => this.IsGrounded.Value || this.IsClimbed.Value)
                     .Subscribe(o =>
                     {
-                        this.IsGrounded.Value = this.IsClimbed.Value = false;
+                        this.rigidBody.gravityScale = 1.0f;
 
-                        this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
-                        MessageBroker.Default.Publish(new RunEnded(true));
+                        if (this.IsGrounded.Value)
+                        {
+                            this.rigidBody.AddForce(new Vector2(0.0f, this.JumpForce));
+                        }
+
+                        MessageBroker.Default.Publish(new RunEnded(this.IsClimbed.Value));
                         MessageBroker.Default.Publish(new JumpHappened());
+
+                        this.IsGrounded.Value = this.IsClimbed.Value = false;
                     })
                     .AddTo(this);
             })
@@ -412,8 +418,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
         var hitLeft = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(characterSizeX / 2, 0, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
         var hitRight = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(characterSizeX / 2, 0, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
-        var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 2, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
-        var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 2, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
 
         var horizontalMove = this.HorizontalValue.Value;
         var verticalMove = this.VerticalValue.Value;
