@@ -89,8 +89,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
     protected ClimbingSurface climbingSurface = null;
     private IDisposable climbingMovement;
 
-    private bool isFirstStepOnStairs = true;
-
     // Use this for initialization
     protected virtual void Start()
     {
