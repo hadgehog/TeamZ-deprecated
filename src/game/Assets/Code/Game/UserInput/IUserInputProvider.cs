@@ -16,12 +16,12 @@ namespace TeamZ.Assets.Code.Game.UserInput
 
         ReactiveProperty<bool> Kick { get; }
         ReactiveProperty<bool> Punch { get; }
-
-        ReactiveProperty<bool> Submit { get; }
+        ReactiveProperty<bool> Activate { get; }
+        ReactiveProperty<bool> Start { get; }
         ReactiveProperty<bool> Cancel { get; }
 
-        IDisposable Activate();
+        IDisposable StartMonitoring();
 
-        void Deactivate();
+        void StopMonitoring();
     }
 }

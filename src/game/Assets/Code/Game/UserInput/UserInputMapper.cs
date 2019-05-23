@@ -24,11 +24,11 @@ namespace TeamZ.Assets.Code.Game.UserInput
         public Dictionary<KeyMapping, IUserInputProvider> UserInputProviders { get; }
             = new Dictionary<KeyMapping, IUserInputProvider>()
             {
-                { KeyMapping.KeyboardFirst,  new UserInputProvider("Horizontal1", "Vertical1", "Jump1", "Punch1", "Kick1", "Submit1", "Cancel1") },
-                { KeyMapping.KeyboardSecond,  new UserInputProvider("Horizontal2", "Vertical2", "Jump2", "Punch2", "Kick2", "Submit2", "Cancel2") },
+                { KeyMapping.KeyboardFirst,  new UserInputProvider("Horizontal1", "Vertical1", "Jump1", "Punch1", "Kick1", "Activate1", "Start1", "Cancel1") },
+                { KeyMapping.KeyboardSecond,  new UserInputProvider("Horizontal2", "Vertical2", "Jump2", "Punch2", "Kick2", "Activate2", "Start2", "Cancel2") },
 
-                { KeyMapping.JoystickFirst,  new UserInputProvider("HorizontalJoystic1", "VerticalJoystic1", "JumpJoystic1", "PunchJoystic1", "KickJoystic1", "SubmitJoystic1", "CancelJoystic1") },
-                { KeyMapping.JoystickSecond,  new UserInputProvider("HorizontalJoystic2", "VerticalJoystic2", "JumpJoystic2", "PunchJoystic2", "KickJoystic2", "SubmitJoystic2", "CancelJoystic2") },
+                { KeyMapping.JoystickFirst,  new UserInputProvider("HorizontalJoystic1", "VerticalJoystic1", "JumpJoystic1", "PunchJoystic1", "KickJoystic1", "ActivateJoystic1", "StartJoystic1", "CancelJoystic1") },
+                { KeyMapping.JoystickSecond,  new UserInputProvider("HorizontalJoystic2", "VerticalJoystic2", "JumpJoystic2", "PunchJoystic2", "KickJoystic2", "ActivateJoystic2", "StartJoystic2","CancelJoystic2") },
             };
 
         public UserInputMapper()
@@ -51,7 +51,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
             }
 
             var userInputProvider = this.UserInputProviders[KeyMapping.CombinedFirst];
-            userInputProvider.Activate();
+            userInputProvider.StartMonitoring();
 
             characters.First().UserInputProvider.Value = userInputProvider;
 
@@ -61,7 +61,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
             }
 
             userInputProvider = this.UserInputProviders[KeyMapping.CombinedSecond];
-            userInputProvider.Activate();
+            userInputProvider.StartMonitoring();
             characters.Last().UserInputProvider.Value = userInputProvider;
         }
     }

@@ -21,7 +21,10 @@ namespace TeamZ.Assets.Code.Game.UserInput
         public ReactiveProperty<bool> Punch { get; }
             = new ReactiveProperty<bool>();
 
-        public ReactiveProperty<bool> Submit { get; }
+        public ReactiveProperty<bool> Activate { get; }
+            = new ReactiveProperty<bool>();
+
+        public ReactiveProperty<bool> Start { get; }
             = new ReactiveProperty<bool>();
 
         public ReactiveProperty<bool> Cancel { get; }
@@ -39,22 +42,23 @@ namespace TeamZ.Assets.Code.Game.UserInput
                 provider.Jump.Subscribe(o => this.Jump.Value = o);
                 provider.Kick.Subscribe(o => this.Kick.Value = o);
                 provider.Punch.Subscribe(o => this.Punch.Value = o);
-                provider.Submit.Subscribe(o => this.Submit.Value = o);
+                provider.Activate.Subscribe(o => this.Activate.Value = o);
+                provider.Start.Subscribe(o => this.Start.Value = o);
                 provider.Cancel.Subscribe(o => this.Cancel.Value = o);
             }
         }
 
-        public IDisposable Activate()
+        public IDisposable StartMonitoring()
         {
-            var activations = this.Providers.Select(o => o.Activate()).ToArray();
+            var activations = this.Providers.Select(o => o.StartMonitoring()).ToArray();
             return Disposable.Create(() => activations.Dispose());
         }
 
-        public void Deactivate()
+        public void StopMonitoring()
         {
             foreach (var provider in this.Providers)
             {
-                provider.Deactivate();
+                provider.StopMonitoring();
             }
         }
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Timers;
+using Game.Activation.Core;
 using GameSaving;
 using GameSaving.MonoBehaviours;
 using TeamZ.Assets.Code.DependencyInjection;
@@ -130,6 +132,18 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
                         this.anim.SetTrigger("Kick");
                     })
                     .AddTo(this);
+
+                userInputProvider.Activate
+                    .True()
+                    .Subscribe(activate =>
+                    {
+                        var hits = Physics.RaycastAll(this.transform.position - Vector3.forward, Vector3.forward);
+                        var firstActivable = hits
+                            .Select(o => o.collider.gameObject.GetComponent<IActivable>())
+                            .Where(o => o != null).FirstOrDefault();
+
+                        firstActivable?.Activate();
+                    });
 
                 userInputProvider.Jump
                     .True()

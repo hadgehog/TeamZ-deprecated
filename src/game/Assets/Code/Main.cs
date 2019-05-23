@@ -64,15 +64,6 @@ public class Main : MonoBehaviour
 			await this.gameController.Value.SaveAsync("test");
 		}
 
-		if (Input.GetKeyUp(KeyCode.E))
-		{
-			//TODO: rework in future to support several characters
-			var currentCharacter = this.gameController.Value.EnttiesStorage.Entities.Select(o => o.Value.GetComponent<Lizard>()).First(o => o);
-			var hits = Physics.RaycastAll(currentCharacter.transform.position - Vector3.forward, Vector3.forward);
-			var firstActivable = hits.Select(o => o.collider.gameObject.GetComponent<IActivable>()).Where(o => o != null).FirstOrDefault();
-			firstActivable?.Activate();
-		}
-
 		if (Input.GetKeyUp(KeyCode.F9))
 		{
 			await this.gameController.Value.LoadSavedGameAsync("test");
