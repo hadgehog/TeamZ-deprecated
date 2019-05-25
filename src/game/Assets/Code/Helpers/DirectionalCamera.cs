@@ -14,10 +14,12 @@ public class DirectionalCamera : MonoBehaviour
     private Dependency<GameController> gameController;
     private Dependency<EntitiesStorage> entitiesStorage;
     private Transform[] targets;
+    private Camera mainCamera;
 
     private void Start()
     {
         this.gameController.Value.Loaded.Subscribe(_ => this.Loaded());
+        this.mainCamera = this.GetComponent<Camera>();
     }
 
     private void Loaded()
@@ -34,8 +36,8 @@ public class DirectionalCamera : MonoBehaviour
             for (int i = 0; i < this.targets.Length; i++)
             {
                 var target = this.targets[i];
-                var point = this.GetComponent<Camera>().WorldToViewportPoint(new Vector3(target.position.x, target.position.y + 1.5f, target.position.z));
-                var delta = new Vector3(target.position.x, target.position.y + 1.5f, target.position.z) - this.GetComponent<Camera>().ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
+                var point = this.mainCamera.WorldToViewportPoint(new Vector3(target.position.x, target.position.y + 1.5f, target.position.z));
+                var delta = new Vector3(target.position.x, target.position.y + 1.5f, target.position.z) - this.mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
                 var destination = this.transform.position + delta;
 
                 sum += destination;
