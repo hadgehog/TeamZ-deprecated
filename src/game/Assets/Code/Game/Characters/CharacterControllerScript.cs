@@ -143,7 +143,8 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
                             .Where(o => o != null).FirstOrDefault();
 
                         firstActivable?.Activate();
-                    });
+                    })
+                    .AddTo(this);
 
                 userInputProvider.Jump
                     .True()
@@ -268,7 +269,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
         this.IsClimbed.Subscribe(isClimbing =>
         {
-            if (isClimbing)
+            if (isClimbing && this.climbingSurface)
             {
                 if (this.climbingSurface.Type == ClimbingSurface.ClimbingSurfaceType.Stairway)
                 {

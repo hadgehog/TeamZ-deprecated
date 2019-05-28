@@ -36,6 +36,12 @@ public class DirectionalCamera : MonoBehaviour
             for (int i = 0; i < this.targets.Length; i++)
             {
                 var target = this.targets[i];
+                // it can be broken during level switch
+                if (!target)
+                {
+                    return;
+                }
+
                 var point = this.mainCamera.WorldToViewportPoint(new Vector3(target.position.x, target.position.y + 1.5f, target.position.z));
                 var delta = new Vector3(target.position.x, target.position.y + 1.5f, target.position.z) - this.mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
                 var destination = this.transform.position + delta;
