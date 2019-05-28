@@ -28,6 +28,7 @@ namespace GameSaving
         private UnityDependency<NotificationService> Notifications;
         private UnityDependency<BackgroundImage> BackgroundImage;
         private UnityDependency<LoadingText> LoadingText;
+        private bool loading;
 
         public HashSet<Guid> VisitedLevels { get; private set; }
 
@@ -105,6 +106,13 @@ namespace GameSaving
 
         public async Task LoadSavedGameAsync(string slotName)
         {
+            if (this.loading)
+            {
+                return;
+            }
+
+            this.loading = true;
+
             this.BackgroundImage.Value.Hide();
             await this.BlackScreen.Value.ShowAsync();
             var gameState = await this.Storage.LoadAsync(slotName);
@@ -117,6 +125,8 @@ namespace GameSaving
             await Task.Delay(2000);
             this.LoadingText.Value.HideText();
             await this.BlackScreen.Value.HideAsync();
+
+            this.loading = false;
         }
 
         public async Task LoadAsync(Level level)
