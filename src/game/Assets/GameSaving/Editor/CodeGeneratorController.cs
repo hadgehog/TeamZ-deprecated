@@ -11,8 +11,6 @@ public class CodeGeneratorController
     [MenuItem("Assets/Start Code Generation")]
     private static void StartCodeGeneration()
     {
-        var projectName = Directory.GetFiles(".", "*.csproj").Min();
-
-        Process.Start(@"Assets\GameSaving\Nugets\ZeroFormatter.Interfaces.1.6.4\tools\zfc.exe", $@"-i ""{ projectName }"" -o ""Assets\ZeroFormatter.g.cs"" ");
+        Process.Start(@"Assets\GameSaving\Nugets\ZeroFormatter.Interfaces.1.6.4\tools\zfc.exe", $@"-i ""Game.csproj"" -o ""Assets\ZeroFormatter.g.cs"" ");
     }
 }
