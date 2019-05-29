@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using GameSaving.States.Charaters;
-using UnityEngine;
+﻿using GameSaving.States.Charaters;
 
 public class Lizard : Character<LizardState>
 {
     // TODO: add specific Lizard properties and behavior
-
 
     public override LizardState GetState()
     {

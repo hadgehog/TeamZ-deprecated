@@ -25,7 +25,7 @@ public class DirectionalCamera : MonoBehaviour
     private void Loaded()
     {
         this.targets = this.entitiesStorage.Value.Entities.Values.
-            Where(o => o.GetComponent<Lizard>()).Select(o => o.transform).ToArray();
+            Where(o => o.GetComponent<Lizard>() || o.GetComponent<Hedgehog>()).Select(o => o.transform).ToArray();
     }
 
     private void Update()

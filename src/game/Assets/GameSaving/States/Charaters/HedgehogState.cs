@@ -3,13 +3,13 @@
 namespace GameSaving.States.Charaters
 {
     [ZeroFormattable]
-    public class LizardState : CharacterState
+    public class HedgehogState : CharacterState
     {
         public override MonoBehaviourStateKind Type
         {
             get
             {
-                return MonoBehaviourStateKind.Lizard;
+                return MonoBehaviourStateKind.Hedgehog;
             }
         }
     }

@@ -9,6 +9,7 @@ namespace GameSaving.States
         Entity,
         Camera,
         Lizard,
+        Hedgehog,
         CharacterController,
         LevelObject,
 	}
@@ -17,6 +18,7 @@ namespace GameSaving.States
     [Union(typeof(EntityState),
            typeof(CameraState),
            typeof(LizardState),
+           typeof(HedgehogState),
            typeof(CharacterControllerState),
 		   typeof(LevelObjectState))]
     public abstract class MonoBehaviourState

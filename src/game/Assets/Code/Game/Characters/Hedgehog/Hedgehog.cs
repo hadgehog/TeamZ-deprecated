@@ -1,16 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using GameSaving.States.Charaters;
 
-public class Hedgehog : MonoBehaviour {
+public class Hedgehog : Character<HedgehogState>
+{
+    // TODO: add specific Hedgehog property (ACCELERATION)
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public override HedgehogState GetState()
+    {
+        return new HedgehogState
+        {
+            Armor = this.Armor,
+            PunchDamage = this.PunchDamage,
+            KickDamage = this.KickDamage,
+            Health = this.Health
+        };
+    }
+
+    public override void SetState(HedgehogState state)
+    {
+        base.SetState(state);
+    }
 }

@@ -59,6 +59,7 @@ namespace ZeroFormatter
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.GameState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.GameStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.GameSaving.States.CharacterControllerState>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.States.CharacterControllerStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.GameSaving.States.LevelObjectState>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.States.LevelObjectStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.Charaters.HedgehogState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters.HedgehogStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.Charaters.LizardState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters.LizardStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             // Structs
             {
@@ -986,6 +987,159 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States.Charaters
     using global::ZeroFormatter.Internal;
     using global::ZeroFormatter.Segments;
 
+    public class HedgehogStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::GameSaving.States.Charaters.HedgehogState>
+        where TTypeResolver : ITypeResolver, new()
+    {
+        public override int? GetLength()
+        {
+            return null;
+        }
+
+        public override int Serialize(ref byte[] bytes, int offset, global::GameSaving.States.Charaters.HedgehogState value)
+        {
+            var segment = value as IZeroFormatterSegment;
+            if (segment != null)
+            {
+                return segment.Serialize(ref bytes, offset);
+            }
+            else if (value == null)
+            {
+                BinaryUtil.WriteInt32(ref bytes, offset, -1);
+                return 4;
+            }
+            else
+            {
+                var startOffset = offset;
+
+                offset += (8 + 4 * (3 + 1));
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 0, value.Health);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 1, value.Armor);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 2, value.PunchDamage);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, int>(ref bytes, startOffset, offset, 3, value.KickDamage);
+
+                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 3);
+            }
+        }
+
+        public override global::GameSaving.States.Charaters.HedgehogState Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        {
+            byteSize = BinaryUtil.ReadInt32(ref bytes, offset);
+            if (byteSize == -1)
+            {
+                byteSize = 4;
+                return null;
+            }
+            return new HedgehogStateObjectSegment<TTypeResolver>(tracker, new ArraySegment<byte>(bytes, offset, byteSize));
+        }
+    }
+
+    public class HedgehogStateObjectSegment<TTypeResolver> : global::GameSaving.States.Charaters.HedgehogState, IZeroFormatterSegment
+        where TTypeResolver : ITypeResolver, new()
+    {
+        static readonly int[] __elementSizes = new int[]{ 4, 4, 4, 4 };
+
+        readonly ArraySegment<byte> __originalBytes;
+        readonly global::ZeroFormatter.DirtyTracker __tracker;
+        readonly int __binaryLastIndex;
+        readonly byte[] __extraFixedBytes;
+
+
+        // 0
+        public override int Health
+        {
+            get
+            {
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, int>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, __tracker);
+            }
+            set
+            {
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, int>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+            }
+        }
+
+        // 1
+        public override int Armor
+        {
+            get
+            {
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, int>(__originalBytes, 1, __binaryLastIndex, __extraFixedBytes, __tracker);
+            }
+            set
+            {
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, int>(__originalBytes, 1, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+            }
+        }
+
+        // 2
+        public override int PunchDamage
+        {
+            get
+            {
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, int>(__originalBytes, 2, __binaryLastIndex, __extraFixedBytes, __tracker);
+            }
+            set
+            {
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, int>(__originalBytes, 2, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+            }
+        }
+
+        // 3
+        public override int KickDamage
+        {
+            get
+            {
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, int>(__originalBytes, 3, __binaryLastIndex, __extraFixedBytes, __tracker);
+            }
+            set
+            {
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, int>(__originalBytes, 3, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+            }
+        }
+
+
+        public HedgehogStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
+        {
+            var __array = originalBytes.Array;
+
+            this.__originalBytes = originalBytes;
+            this.__tracker = dirtyTracker = dirtyTracker.CreateChild();
+            this.__binaryLastIndex = BinaryUtil.ReadInt32(ref __array, originalBytes.Offset + 4);
+
+            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 3, __elementSizes);
+
+        }
+
+        public bool CanDirectCopy()
+        {
+            return !__tracker.IsDirty;
+        }
+
+        public ArraySegment<byte> GetBufferReference()
+        {
+            return __originalBytes;
+        }
+
+        public int Serialize(ref byte[] targetBytes, int offset)
+        {
+            if (__extraFixedBytes != null || __tracker.IsDirty)
+            {
+                var startOffset = offset;
+                offset += (8 + 4 * (3 + 1));
+
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 1, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 2, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, int>(ref targetBytes, startOffset, offset, 3, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+
+                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 3);
+            }
+            else
+            {
+                return ObjectSegmentHelper.DirectCopyAll(__originalBytes, ref targetBytes, offset);
+            }
+        }
+    }
+
     public class LizardStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::GameSaving.States.Charaters.LizardState>
         where TTypeResolver : ITypeResolver, new()
     {
@@ -1361,12 +1515,13 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
         public MonoBehaviourStateFormatter()
         {
             comparer = global::ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::GameSaving.States.MonoBehaviourStateKind>.Default;
-            unionKeys = new global::GameSaving.States.MonoBehaviourStateKind[5];
+            unionKeys = new global::GameSaving.States.MonoBehaviourStateKind[6];
             unionKeys[0] = new global::GameSaving.States.EntityState().Type;
             unionKeys[1] = new global::GameSaving.States.CameraState().Type;
             unionKeys[2] = new global::GameSaving.States.Charaters.LizardState().Type;
-            unionKeys[3] = new global::TeamZ.Assets.GameSaving.States.CharacterControllerState().Type;
-            unionKeys[4] = new global::TeamZ.Assets.GameSaving.States.LevelObjectState().Type;
+            unionKeys[3] = new global::GameSaving.States.Charaters.HedgehogState().Type;
+            unionKeys[4] = new global::TeamZ.Assets.GameSaving.States.CharacterControllerState().Type;
+            unionKeys[5] = new global::TeamZ.Assets.GameSaving.States.LevelObjectState().Type;
             
         }
 
@@ -1398,6 +1553,10 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             else if (value is global::GameSaving.States.Charaters.LizardState)
             {
                 offset += Formatter<TTypeResolver, global::GameSaving.States.Charaters.LizardState>.Default.Serialize(ref bytes, offset, (global::GameSaving.States.Charaters.LizardState)value);
+            }
+            else if (value is global::GameSaving.States.Charaters.HedgehogState)
+            {
+                offset += Formatter<TTypeResolver, global::GameSaving.States.Charaters.HedgehogState>.Default.Serialize(ref bytes, offset, (global::GameSaving.States.Charaters.HedgehogState)value);
             }
             else if (value is global::TeamZ.Assets.GameSaving.States.CharacterControllerState)
             {
@@ -1446,9 +1605,13 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             }
             else if (comparer.Equals(unionKey, unionKeys[3]))
             {
-                result = Formatter<TTypeResolver, global::TeamZ.Assets.GameSaving.States.CharacterControllerState>.Default.Deserialize(ref bytes, offset, tracker, out size);
+                result = Formatter<TTypeResolver, global::GameSaving.States.Charaters.HedgehogState>.Default.Deserialize(ref bytes, offset, tracker, out size);
             }
             else if (comparer.Equals(unionKey, unionKeys[4]))
+            {
+                result = Formatter<TTypeResolver, global::TeamZ.Assets.GameSaving.States.CharacterControllerState>.Default.Deserialize(ref bytes, offset, tracker, out size);
+            }
+            else if (comparer.Equals(unionKey, unionKeys[5]))
             {
                 result = Formatter<TTypeResolver, global::TeamZ.Assets.GameSaving.States.LevelObjectState>.Default.Deserialize(ref bytes, offset, tracker, out size);
             }
