@@ -52,7 +52,13 @@ namespace ZeroFormatter
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping?>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput.NullableUserInputMapper_KeyMappingFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping?>.Register(new NullableEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping>());
             
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.GameSaving.Interfaces.StateKind>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.Interfaces.StateKindFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::TeamZ.Assets.GameSaving.Interfaces.StateKind>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.Interfaces.StateKindEqualityComparer());
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.GameSaving.Interfaces.StateKind?>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.Interfaces.NullableStateKindFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::TeamZ.Assets.GameSaving.Interfaces.StateKind?>.Register(new NullableEqualityComparer<global::TeamZ.Assets.GameSaving.Interfaces.StateKind>());
+            
             // Objects
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput.UserInputMapperStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.CameraState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.CameraStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.EntityState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.EntityStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.GameObjectState>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.GameObjectStateFormatter<ZeroFormatter.Formatters.DefaultResolver>());
@@ -79,6 +85,10 @@ namespace ZeroFormatter
             }
             // Unions
             {
+                var unionFormatter = new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.Interfaces.StateFormatter<ZeroFormatter.Formatters.DefaultResolver>();
+                ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.GameSaving.Interfaces.State>.Register(unionFormatter);
+            }
+            {
                 var unionFormatter = new ZeroFormatter.DynamicObjectSegments.GameSaving.States.MonoBehaviourStateFormatter<ZeroFormatter.Formatters.DefaultResolver>();
                 ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.MonoBehaviourState>.Register(unionFormatter);
             }
@@ -89,6 +99,147 @@ namespace ZeroFormatter
         }
     }
 }
+#pragma warning restore 168
+#pragma warning restore 414
+#pragma warning restore 618
+#pragma warning restore 612
+#pragma warning disable 618
+#pragma warning disable 612
+#pragma warning disable 414
+#pragma warning disable 168
+namespace ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput
+{
+    using global::System;
+    using global::ZeroFormatter.Formatters;
+    using global::ZeroFormatter.Internal;
+    using global::ZeroFormatter.Segments;
+
+    public class UserInputMapperStateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState>
+        where TTypeResolver : ITypeResolver, new()
+    {
+        public override int? GetLength()
+        {
+            return null;
+        }
+
+        public override int Serialize(ref byte[] bytes, int offset, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState value)
+        {
+            var segment = value as IZeroFormatterSegment;
+            if (segment != null)
+            {
+                return segment.Serialize(ref bytes, offset);
+            }
+            else if (value == null)
+            {
+                BinaryUtil.WriteInt32(ref bytes, offset, -1);
+                return 4;
+            }
+            else
+            {
+                var startOffset = offset;
+
+                offset += (8 + 4 * (1 + 1));
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Guid>(ref bytes, startOffset, offset, 0, value.FirstPlayer);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Guid>(ref bytes, startOffset, offset, 1, value.SecondPlayer);
+
+                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 1);
+            }
+        }
+
+        public override global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        {
+            byteSize = BinaryUtil.ReadInt32(ref bytes, offset);
+            if (byteSize == -1)
+            {
+                byteSize = 4;
+                return null;
+            }
+            return new UserInputMapperStateObjectSegment<TTypeResolver>(tracker, new ArraySegment<byte>(bytes, offset, byteSize));
+        }
+    }
+
+    public class UserInputMapperStateObjectSegment<TTypeResolver> : global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState, IZeroFormatterSegment
+        where TTypeResolver : ITypeResolver, new()
+    {
+        static readonly int[] __elementSizes = new int[]{ 16, 16 };
+
+        readonly ArraySegment<byte> __originalBytes;
+        readonly global::ZeroFormatter.DirtyTracker __tracker;
+        readonly int __binaryLastIndex;
+        readonly byte[] __extraFixedBytes;
+
+
+        // 0
+        public override global::System.Guid FirstPlayer
+        {
+            get
+            {
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, __tracker);
+            }
+            set
+            {
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 0, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+            }
+        }
+
+        // 1
+        public override global::System.Guid SecondPlayer
+        {
+            get
+            {
+                return ObjectSegmentHelper.GetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 1, __binaryLastIndex, __extraFixedBytes, __tracker);
+            }
+            set
+            {
+                ObjectSegmentHelper.SetFixedProperty<TTypeResolver, global::System.Guid>(__originalBytes, 1, __binaryLastIndex, __extraFixedBytes, value, __tracker);
+            }
+        }
+
+
+        public UserInputMapperStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
+        {
+            var __array = originalBytes.Array;
+
+            this.__originalBytes = originalBytes;
+            this.__tracker = dirtyTracker = dirtyTracker.CreateChild();
+            this.__binaryLastIndex = BinaryUtil.ReadInt32(ref __array, originalBytes.Offset + 4);
+
+            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 1, __elementSizes);
+
+        }
+
+        public bool CanDirectCopy()
+        {
+            return !__tracker.IsDirty;
+        }
+
+        public ArraySegment<byte> GetBufferReference()
+        {
+            return __originalBytes;
+        }
+
+        public int Serialize(ref byte[] targetBytes, int offset)
+        {
+            if (__extraFixedBytes != null || __tracker.IsDirty)
+            {
+                var startOffset = offset;
+                offset += (8 + 4 * (1 + 1));
+
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, global::System.Guid>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+                offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, global::System.Guid>(ref targetBytes, startOffset, offset, 1, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
+
+                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 1);
+            }
+            else
+            {
+                return ObjectSegmentHelper.DirectCopyAll(__originalBytes, ref targetBytes, offset);
+            }
+        }
+    }
+
+
+}
+
 #pragma warning restore 168
 #pragma warning restore 414
 #pragma warning restore 618
@@ -572,12 +723,13 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             {
                 var startOffset = offset;
 
-                offset += (8 + 4 * (2 + 1));
+                offset += (8 + 4 * (3 + 1));
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Guid>(ref bytes, startOffset, offset, 0, value.LevelId);
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Collections.Generic.IEnumerable<global::GameSaving.States.GameObjectState>>(ref bytes, startOffset, offset, 1, value.GameObjectsStates);
                 offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::System.Collections.Generic.HashSet<global::System.Guid>>(ref bytes, startOffset, offset, 2, value.VisitedLevels);
+                offset += ObjectSegmentHelper.SerializeFromFormatter<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState>(ref bytes, startOffset, offset, 3, value.UserInputMapper);
 
-                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 2);
+                return ObjectSegmentHelper.WriteSize(ref bytes, startOffset, offset, 3);
             }
         }
 
@@ -596,7 +748,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
     public class GameStateObjectSegment<TTypeResolver> : global::GameSaving.States.GameState, IZeroFormatterSegment
         where TTypeResolver : ITypeResolver, new()
     {
-        static readonly int[] __elementSizes = new int[]{ 16, 0, 0 };
+        static readonly int[] __elementSizes = new int[]{ 16, 0, 0, 0 };
 
         readonly ArraySegment<byte> __originalBytes;
         readonly global::ZeroFormatter.DirtyTracker __tracker;
@@ -605,6 +757,7 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
 
         CacheSegment<TTypeResolver, global::System.Collections.Generic.IEnumerable<global::GameSaving.States.GameObjectState>> _GameObjectsStates;
         CacheSegment<TTypeResolver, global::System.Collections.Generic.HashSet<global::System.Guid>> _VisitedLevels;
+        global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState _UserInputMapper;
 
         // 0
         public override global::System.Guid LevelId
@@ -645,6 +798,20 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             }
         }
 
+        // 3
+        public override global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState UserInputMapper
+        {
+            get
+            {
+                return _UserInputMapper;
+            }
+            set
+            {
+                __tracker.Dirty();
+                _UserInputMapper = value;
+            }
+        }
+
 
         public GameStateObjectSegment(global::ZeroFormatter.DirtyTracker dirtyTracker, ArraySegment<byte> originalBytes)
         {
@@ -654,10 +821,11 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             this.__tracker = dirtyTracker = dirtyTracker.CreateChild();
             this.__binaryLastIndex = BinaryUtil.ReadInt32(ref __array, originalBytes.Offset + 4);
 
-            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 2, __elementSizes);
+            this.__extraFixedBytes = ObjectSegmentHelper.CreateExtraFixedBytes(this.__binaryLastIndex, 3, __elementSizes);
 
             _GameObjectsStates = new CacheSegment<TTypeResolver, global::System.Collections.Generic.IEnumerable<global::GameSaving.States.GameObjectState>>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 1, __binaryLastIndex, __tracker));
             _VisitedLevels = new CacheSegment<TTypeResolver, global::System.Collections.Generic.HashSet<global::System.Guid>>(__tracker, ObjectSegmentHelper.GetSegment(originalBytes, 2, __binaryLastIndex, __tracker));
+            _UserInputMapper = ObjectSegmentHelper.DeserializeSegment<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState>(originalBytes, 3, __binaryLastIndex, __tracker);
         }
 
         public bool CanDirectCopy()
@@ -675,13 +843,14 @@ namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
             if (__extraFixedBytes != null || __tracker.IsDirty)
             {
                 var startOffset = offset;
-                offset += (8 + 4 * (2 + 1));
+                offset += (8 + 4 * (3 + 1));
 
                 offset += ObjectSegmentHelper.SerializeFixedLength<TTypeResolver, global::System.Guid>(ref targetBytes, startOffset, offset, 0, __binaryLastIndex, __originalBytes, __extraFixedBytes, __tracker);
                 offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::System.Collections.Generic.IEnumerable<global::GameSaving.States.GameObjectState>>(ref targetBytes, startOffset, offset, 1, ref _GameObjectsStates);
                 offset += ObjectSegmentHelper.SerializeCacheSegment<TTypeResolver, global::System.Collections.Generic.HashSet<global::System.Guid>>(ref targetBytes, startOffset, offset, 2, ref _VisitedLevels);
+                offset += ObjectSegmentHelper.SerializeSegment<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState>(ref targetBytes, startOffset, offset, 3, _UserInputMapper);
 
-                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 2);
+                return ObjectSegmentHelper.WriteSize(ref targetBytes, startOffset, offset, 3);
             }
             else
             {
@@ -1499,6 +1668,97 @@ namespace ZeroFormatter.DynamicObjectSegments.UnityEngine
 #pragma warning disable 612
 #pragma warning disable 414
 #pragma warning disable 168
+namespace ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.Interfaces
+{
+    using global::System;
+    using global::ZeroFormatter.Formatters;
+    using global::ZeroFormatter.Internal;
+    using global::ZeroFormatter.Segments;
+
+    public class StateFormatter<TTypeResolver> : Formatter<TTypeResolver, global::TeamZ.Assets.GameSaving.Interfaces.State>
+        where TTypeResolver : ITypeResolver, new()
+    {
+        readonly global::System.Collections.Generic.IEqualityComparer<global::TeamZ.Assets.GameSaving.Interfaces.StateKind> comparer;
+        readonly global::TeamZ.Assets.GameSaving.Interfaces.StateKind[] unionKeys;
+        
+        public StateFormatter()
+        {
+            comparer = global::ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::TeamZ.Assets.GameSaving.Interfaces.StateKind>.Default;
+            unionKeys = new global::TeamZ.Assets.GameSaving.Interfaces.StateKind[1];
+            unionKeys[0] = new global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState().Kind;
+            
+        }
+
+        public override int? GetLength()
+        {
+            return null;
+        }
+
+        public override int Serialize(ref byte[] bytes, int offset, global::TeamZ.Assets.GameSaving.Interfaces.State value)
+        {
+            if (value == null)
+            {
+                return BinaryUtil.WriteInt32(ref bytes, offset, -1);
+            }
+
+            var startOffset = offset;
+
+            offset += 4;
+            offset += Formatter<TTypeResolver, global::TeamZ.Assets.GameSaving.Interfaces.StateKind>.Default.Serialize(ref bytes, offset, value.Kind);
+
+            if (value is global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState)
+            {
+                offset += Formatter<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState>.Default.Serialize(ref bytes, offset, (global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState)value);
+            }
+            
+            else
+            {
+                throw new Exception("Unknown subtype of Union:" + value.GetType().FullName);
+            }
+        
+            var writeSize = offset - startOffset;
+            BinaryUtil.WriteInt32(ref bytes, startOffset, writeSize);
+            return writeSize;
+        }
+
+        public override global::TeamZ.Assets.GameSaving.Interfaces.State Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        {
+            if ((byteSize = BinaryUtil.ReadInt32(ref bytes, offset)) == -1)
+            {
+                byteSize = 4;
+                return null;
+            }
+        
+            offset += 4;
+            int size;
+            var unionKey = Formatter<TTypeResolver, global::TeamZ.Assets.GameSaving.Interfaces.StateKind>.Default.Deserialize(ref bytes, offset, tracker, out size);
+            offset += size;
+
+            global::TeamZ.Assets.GameSaving.Interfaces.State result;
+            if (comparer.Equals(unionKey, unionKeys[0]))
+            {
+                result = Formatter<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapperState>.Default.Deserialize(ref bytes, offset, tracker, out size);
+            }
+            else
+            {
+                throw new Exception("Unknown unionKey type of Union: " + unionKey.ToString());
+            }
+
+            return result;
+        }
+    }
+
+
+}
+
+#pragma warning restore 168
+#pragma warning restore 414
+#pragma warning restore 618
+#pragma warning restore 612
+#pragma warning disable 618
+#pragma warning disable 612
+#pragma warning disable 414
+#pragma warning disable 168
 namespace ZeroFormatter.DynamicObjectSegments.GameSaving.States
 {
     using global::System;
@@ -2099,6 +2359,95 @@ namespace ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput
         }
 
         public int GetHashCode(global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping x)
+        {
+            return (int)x;
+        }
+    }
+
+
+
+}
+#pragma warning restore 168
+#pragma warning restore 414
+#pragma warning restore 618
+#pragma warning restore 612
+#pragma warning disable 618
+#pragma warning disable 612
+#pragma warning disable 414
+#pragma warning disable 168
+namespace ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.Interfaces
+{
+    using global::System;
+    using global::System.Collections.Generic;
+    using global::ZeroFormatter.Formatters;
+    using global::ZeroFormatter.Internal;
+    using global::ZeroFormatter.Segments;
+
+
+    public class StateKindFormatter<TTypeResolver> : Formatter<TTypeResolver, global::TeamZ.Assets.GameSaving.Interfaces.StateKind>
+        where TTypeResolver : ITypeResolver, new()
+    {
+        public override int? GetLength()
+        {
+            return 4;
+        }
+
+        public override int Serialize(ref byte[] bytes, int offset, global::TeamZ.Assets.GameSaving.Interfaces.StateKind value)
+        {
+            return BinaryUtil.WriteInt32(ref bytes, offset, (Int32)value);
+        }
+
+        public override global::TeamZ.Assets.GameSaving.Interfaces.StateKind Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        {
+            byteSize = 4;
+            return (global::TeamZ.Assets.GameSaving.Interfaces.StateKind)BinaryUtil.ReadInt32(ref bytes, offset);
+        }
+    }
+
+
+    public class NullableStateKindFormatter<TTypeResolver> : Formatter<TTypeResolver, global::TeamZ.Assets.GameSaving.Interfaces.StateKind?>
+        where TTypeResolver : ITypeResolver, new()
+    {
+        public override int? GetLength()
+        {
+            return 5;
+        }
+
+        public override int Serialize(ref byte[] bytes, int offset, global::TeamZ.Assets.GameSaving.Interfaces.StateKind? value)
+        {
+            BinaryUtil.WriteBoolean(ref bytes, offset, value.HasValue);
+            if (value.HasValue)
+            {
+                BinaryUtil.WriteInt32(ref bytes, offset + 1, (Int32)value.Value);
+            }
+            else
+            {
+                BinaryUtil.EnsureCapacity(ref bytes, offset, offset + 5);
+            }
+
+            return 5;
+        }
+
+        public override global::TeamZ.Assets.GameSaving.Interfaces.StateKind? Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        {
+            byteSize = 5;
+            var hasValue = BinaryUtil.ReadBoolean(ref bytes, offset);
+            if (!hasValue) return null;
+
+            return (global::TeamZ.Assets.GameSaving.Interfaces.StateKind)BinaryUtil.ReadInt32(ref bytes, offset + 1);
+        }
+    }
+
+
+
+    public class StateKindEqualityComparer : IEqualityComparer<global::TeamZ.Assets.GameSaving.Interfaces.StateKind>
+    {
+        public bool Equals(global::TeamZ.Assets.GameSaving.Interfaces.StateKind x, global::TeamZ.Assets.GameSaving.Interfaces.StateKind y)
+        {
+            return (Int32)x == (Int32)y;
+        }
+
+        public int GetHashCode(global::TeamZ.Assets.GameSaving.Interfaces.StateKind x)
         {
             return (int)x;
         }

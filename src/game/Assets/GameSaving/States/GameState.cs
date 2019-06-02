@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TeamZ.Assets.Code.Game.UserInput;
 using ZeroFormatter;
 
 namespace GameSaving.States
@@ -31,5 +32,13 @@ namespace GameSaving.States
             get;
             set;
         } = new HashSet<Guid>();
+
+
+        [Index(3)]
+        public virtual UserInputMapperState UserInputMapper
+        {
+            get;
+            set;
+        }
     }
 }

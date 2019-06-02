@@ -1,5 +1,6 @@
 ﻿using System;
 using GameSaving.States;
+using UnityEditor;
 
 namespace GameSaving.Interfaces
 {
@@ -7,9 +8,9 @@ namespace GameSaving.Interfaces
     {
         Type GetStateType();
 
+        void SetState(MonoBehaviourState state);
         MonoBehaviourState GetState();
 
-        void SetState(MonoBehaviourState state);
 
         void Loaded();
     }

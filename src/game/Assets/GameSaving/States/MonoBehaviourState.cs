@@ -1,4 +1,5 @@
-﻿using GameSaving.States.Charaters;
+﻿using GameSaving.Interfaces;
+using GameSaving.States.Charaters;
 using TeamZ.Assets.GameSaving.States;
 using ZeroFormatter;
 

@@ -14,6 +14,7 @@ using GameSaving.States.Charaters;
 using TeamZ.Assets.Code.DependencyInjection;
 using TeamZ.Assets.Code.Game.Messages.GameSaving;
 using TeamZ.Assets.Code.Game.Notifications;
+using TeamZ.Assets.Code.Game.UserInput;
 using TeamZ.Assets.Code.Helpers;
 using UniRx;
 using UniRx.Async;
@@ -132,7 +133,9 @@ namespace GameSaving
         public async Task LoadAsync(Level level)
         {
             this.VisitedLevels.Clear();
+
             await this.LevelManager.LoadAsync(level);
+            Dependency<UserInputMapper>.Resolve().Bootstrap();
 
             var gameState = this.GetState();
             await this.BootstrapAsync(gameState);
@@ -230,6 +233,7 @@ namespace GameSaving
             this.Loaded.OnNext(Unit.Default);
 
             this.VisitedLevels = gameState.VisitedLevels;
+            Dependency<UserInputMapper>.Resolve().SetState(gameState.UserInputMapper);
         }
 
         private GameState GetState()
@@ -242,6 +246,7 @@ namespace GameSaving
                 Select(o => new GameObjectState().SetGameObject(o.gameObject)).ToList();
 
             gameState.VisitedLevels = this.VisitedLevels;
+            gameState.UserInputMapper = Dependency<UserInputMapper>.Resolve().GetState();
 
             Time.timeScale = 1;
 
