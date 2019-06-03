@@ -97,8 +97,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         this.anim = this.GetComponent<Animator>();
         this.rigidBody = this.GetComponentInChildren<Rigidbody2D>();
 
-        this.Character = this.GetComponent<Lizard>();
-
         var prevHorizontalValue = 0f;
 
         this.UserInputProvider

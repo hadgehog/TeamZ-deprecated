@@ -8,6 +8,8 @@ public class LizardController : CharacterControllerScript
 
 	protected override void Start()
     {
+        this.Character = this.GetComponent<Lizard>();
+
         base.Start();
     }
 

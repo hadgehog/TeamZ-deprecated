@@ -8,6 +8,8 @@ public class HedgehogController : CharacterControllerScript
 
     protected override void Start()
     {
+        this.Character = this.GetComponent<Hedgehog>();
+
         base.Start();
     }
 
