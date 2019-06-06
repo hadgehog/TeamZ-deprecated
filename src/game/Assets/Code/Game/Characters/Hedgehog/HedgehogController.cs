@@ -17,6 +17,7 @@ public class HedgehogController : CharacterControllerScript
     {
         base.FixedUpdate();
     }
+
     protected override void OnTriggerEnter2D(Collider2D col)
     {
         base.OnTriggerEnter2D(col);

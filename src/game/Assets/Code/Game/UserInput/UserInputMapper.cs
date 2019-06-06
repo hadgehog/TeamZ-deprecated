@@ -86,7 +86,6 @@ namespace TeamZ.Assets.Code.Game.UserInput
         {
             var userInputProvider = this.UserInputProviders[KeyMapping.CombinedFirst];
             userInputProvider.StartMonitoring();
-
             this.FirstPlayer.UserInputProvider.Value = userInputProvider;
 
             userInputProvider = this.UserInputProviders[KeyMapping.CombinedSecond];

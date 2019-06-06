@@ -78,7 +78,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
     private bool loadingStarted;
 
-    private int[] activeLayersToInteraction = { 8, 9, 10 };
+    private int[] activeLayersToInteraction = { 8, 9, 10 };     // ground, level object, enemy
 
     private int impulseDirection = 1;
 
@@ -247,7 +247,6 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             if (isClimbed && this.climbingSurface)
             {
                 this.rigidBody.gravityScale = 0.0f;
-                
             }
             else
             {
