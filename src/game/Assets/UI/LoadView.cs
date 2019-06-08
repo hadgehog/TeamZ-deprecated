@@ -7,14 +7,16 @@ using TeamZ.Assets.Code.DependencyInjection;
 using TeamZ.Assets.UI.Load;
 using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class LoadView : MonoBehaviour
+public class LoadView : View
 {
 	private Dependency<GameStorage> GameStorage;
 	private UnityDependency<ViewRouter> Router;
 
 	public GameObject Root;
 	public GameObject LoadItemTemplate;
+    public Selectable VerticalBar;
 
 	public async void OnEnable()
 	{
@@ -25,14 +27,35 @@ public class LoadView : MonoBehaviour
 			GameObject.Destroy(loadItem.gameObject);
 		}
 
-		foreach (var slot in this.GameStorage.Value.Slots.OrderByDescending(o => o.Modified))
-		{
-			var loadItem = GameObject.Instantiate<GameObject>(this.LoadItemTemplate, this.Root.transform);
-			loadItem.GetComponent<LoadItemView>().SlotName = slot.Name;
-		}
-	}
+        var slots = this.GameStorage.Value.Slots.OrderByDescending(o => o.Modified).ToArray();
+        var firstSlot = this.CreateButton(slots.First());
 
-	private void Update()
+        var navigation = this.VerticalBar.navigation;
+        navigation.selectOnLeft = firstSlot;
+        this.VerticalBar.navigation = navigation;
+
+        foreach (var slot in slots.Skip(1))
+        {
+            this.CreateButton(slot);
+        }
+
+        this.VerticalBar.Select();
+    }
+
+    private Selectable CreateButton(GameSlot slot)
+    {
+        var loadItem = GameObject.Instantiate<GameObject>(this.LoadItemTemplate, this.Root.transform);
+        loadItem.GetComponent<LoadItemView>().SlotName = slot.Name;
+
+        var selectable = loadItem.GetComponent<Selectable>();
+        var navigation = selectable.navigation;
+        navigation.selectOnRight = this.VerticalBar;
+        selectable.navigation = navigation;
+
+        return selectable;
+    }
+
+    private void Update()
 	{
 		if (Input.GetKeyUp(KeyCode.Escape))
 		{

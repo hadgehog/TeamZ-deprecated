@@ -1,6 +1,7 @@
+using Assets.UI;
 using UnityEngine;
 
-public class SettingsView : MonoBehaviour
+public class SettingsView : View
 {
     
 }

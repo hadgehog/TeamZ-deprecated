@@ -5,6 +5,7 @@ using Assets.UI;
 using Effects;
 using Game.Activation.Core;
 using GameSaving;
+using GameSaving.MonoBehaviours;
 using GameSaving.States;
 using TeamZ.Assets.Code.DependencyInjection;
 using TeamZ.Assets.Code.Game.UserInput;
@@ -20,6 +21,7 @@ public class Main : MonoBehaviour
 	private readonly UnityDependency<BackgroundImage> BackgroundImage;
 	private readonly Dependency<GameController> gameController;
     private readonly Dependency<UserInputMapper> UserInputMapper;
+    private readonly UnityDependency<LevelBootstraper> LevelBootstrapper;
 
 
     private async void Start()
@@ -33,6 +35,11 @@ public class Main : MonoBehaviour
 
 		await UniTask.DelayFrame(1);
 		MessageBroker.Default.Publish(new GamePaused());
+
+        if (!this.LevelBootstrapper)
+        {
+            this.ViewRouter.Value.ShowMainView();
+        }
     }
 
     private void RegisterDependencies(DependencyContainer container)
@@ -72,7 +79,7 @@ public class Main : MonoBehaviour
 		if (Input.GetKeyUp(KeyCode.Escape) &&
 			this.gameController.Value.LevelManager.CurrentLevel != null)
 		{
-			if (this.ViewRouter.Value.MainView.isActiveAndEnabled && 
+			if (this.ViewRouter.Value.CurrentView is MainView && 
 				this.gameController.Value.LevelManager.CurrentLevel != null)
 			{
 				this.BackgroundImage.Value.Hide();

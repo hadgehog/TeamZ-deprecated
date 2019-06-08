@@ -4,8 +4,15 @@ using UnityEngine.UI;
 
 namespace Assets.UI
 {
+    public class View : MonoBehaviour
+    {
+
+    }
+
     public class ViewRouter : MonoBehaviour
     {
+        public GameObject View;
+
         public HUDController GameHUDView;
         public MainView MainView;
         public LoadView LoadView;
@@ -14,26 +21,37 @@ namespace Assets.UI
 
         public UnityDependency<MainMenuBackgroundImage> BackgroundImage;
 
+        public View CurrentView { get; private set; }
+
         public void ShowGameHUDView()
         {
-            this.DisableAll();
             this.EnableTips();
-            this.GameHUDView.Activate();
+            this.ShowView(this.GameHUDView);
+
             this.BackgroundImage.Value.Deactivate();
         }
 
         public void ShowMainView()
         {
-            this.DisableAll();
-            this.MainView.Activate();
+            this.ShowView(this.MainView);
             this.BackgroundImage.Value.Activate();
         }
 
-        private void DisableAll()
+        public void ShowView(View viewTemplate)
         {
-            foreach (Transform view in this.transform)
+            this.DestroyPreviousView();
+            var view = GameObject.Instantiate(viewTemplate);
+
+            view.transform.SetParent(this.View.transform, false);
+
+            this.CurrentView = view;
+        }
+
+        private void DestroyPreviousView()
+        {
+            foreach (Transform view in this.View.transform)
             {
-                view.gameObject.SetActive(false);
+                GameObject.Destroy(view.gameObject);
             }
         }
 

@@ -1,8 +1,9 @@
 ﻿using Assets.Code.Helpers;
+using Assets.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HUDController : MonoBehaviour
+public class HUDController : View
 {
 	public Slider HealthSlider;
 	public Slider ArmorSlider;

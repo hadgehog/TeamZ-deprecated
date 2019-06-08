@@ -84,11 +84,11 @@ namespace TeamZ.Assets.Code.Game.UserInput
 
         private void Map()
         {
-            var userInputProvider = this.UserInputProviders[KeyMapping.CombinedFirst];
+            var userInputProvider = this.UserInputProviders[KeyMapping.CombinedSecond];
             userInputProvider.StartMonitoring();
             this.FirstPlayer.UserInputProvider.Value = userInputProvider;
 
-            userInputProvider = this.UserInputProviders[KeyMapping.CombinedSecond];
+            userInputProvider = this.UserInputProviders[KeyMapping.CombinedFirst];
             userInputProvider.StartMonitoring();
             this.SecondPlayer.UserInputProvider.Value = userInputProvider;
         }

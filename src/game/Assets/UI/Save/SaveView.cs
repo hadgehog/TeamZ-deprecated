@@ -1,3 +1,4 @@
+using System.Linq;
 using Assets.Code.Helpers;
 using Assets.UI;
 using GameSaving;
@@ -6,7 +7,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SaveView : MonoBehaviour
+public class SaveView : View
 {
 	public InputField SlotName;
 	public Transform ItemsRoot;
@@ -27,6 +28,7 @@ public class SaveView : MonoBehaviour
 	private async void OnEnable()
 	{
 		await Observable.NextFrame();
+        Selectable.allSelectables.First().Select();
 
 		foreach (Transform saveItem in this.ItemsRoot)
 		{

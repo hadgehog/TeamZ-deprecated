@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Assets.Code.Helpers;
 using Assets.UI;
@@ -7,8 +8,9 @@ using GameSaving;
 using TeamZ.Assets.Code.DependencyInjection;
 using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class MainView : MonoBehaviour
+public class MainView : View
 {
 	public readonly Dependency<GameController> GameController;
 	public readonly UnityDependency<ViewRouter> ViewRouter;
@@ -28,9 +30,10 @@ public class MainView : MonoBehaviour
 	{
 		await Observable.NextFrame();
 		this.SaveButton.SetActive(this.GameController.Value.LevelManager.CurrentLevel != null);
-	}
+        Selectable.allSelectables.First().Select();
+    }
 
-	public async void PlayAsync()
+    public async void PlayAsync()
 	{
 		MessageBroker.Default.Publish(new GameResumed(string.Empty));
 
@@ -38,7 +41,7 @@ public class MainView : MonoBehaviour
 		this.backgroundImage.Value.Hide();
 		this.loadingText.Value.DisplayNewText("Level 1: Laboratory \n Stage 1: Initializing system");
 		this.Deactivate();
-		this.ViewRouter.Value.GameHUDView.Activate();
+        this.ViewRouter.Value.ShowGameHUDView();
 		await this.GameController.Value.LoadAsync(Level.Laboratory);
 		await Task.Delay(2000);
 		this.loadingText.Value.HideText();
@@ -48,15 +51,13 @@ public class MainView : MonoBehaviour
 
 	public void Load()
 	{
-		this.Deactivate();
-		this.ViewRouter.Value.LoadView.Activate();
+        this.ViewRouter.Value.ShowView(this.ViewRouter.Value.LoadView);
 	}
 
 	public void Save()
 	{
-		this.Deactivate();
-		this.ViewRouter.Value.SaveView.Activate();
-	}
+        this.ViewRouter.Value.ShowView(this.ViewRouter.Value.SaveView);
+    }
 
 	public void Quit()
 	{
