@@ -12,6 +12,8 @@ using GameSaving.MonoBehaviours;
 using GameSaving.States;
 using GameSaving.States.Charaters;
 using TeamZ.Assets.Code.DependencyInjection;
+using TeamZ.Assets.Code.Game.Characters;
+using TeamZ.Assets.Code.Game.Levels;
 using TeamZ.Assets.Code.Game.Messages.GameSaving;
 using TeamZ.Assets.Code.Game.Notifications;
 using TeamZ.Assets.Code.Game.UserInput;
@@ -29,6 +31,8 @@ namespace GameSaving
         private UnityDependency<NotificationService> Notifications;
         private UnityDependency<BackgroundImage> BackgroundImage;
         private UnityDependency<LoadingText> LoadingText;
+        Dependency<UserInputMapper> UserInputMapper;
+
         private bool loading;
 
         public HashSet<Guid> VisitedLevels { get; private set; }
@@ -37,13 +41,13 @@ namespace GameSaving
         {
             this.Storage = Dependency<GameStorage>.Resolve();
             this.LevelManager = Dependency<LevelManager>.Resolve();
-            this.EnttiesStorage = Dependency<EntitiesStorage>.Resolve();
+            this.EntitiesStorage = Dependency<EntitiesStorage>.Resolve();
 
             this.Loaded = new Subject<Unit>();
             this.VisitedLevels = new HashSet<Guid>();
 
-            this.EnttiesStorage.Root = null;
-            this.EnttiesStorage.Entities.Clear();
+            this.EntitiesStorage.Root = null;
+            this.EntitiesStorage.Entities.Clear();
 
             MessageBroker.Default.Receive<GameSaved>().
                 Subscribe(_ => this.Notifications.Value.ShowShortMessage("Game saved"));
@@ -61,7 +65,7 @@ namespace GameSaving
                 });
         }
 
-        public EntitiesStorage EnttiesStorage
+        public EntitiesStorage EntitiesStorage
         {
             get;
         }
@@ -83,11 +87,11 @@ namespace GameSaving
 
         public void BootstrapEntities(bool loaded = false)
         {
-            this.EnttiesStorage.Entities.Clear();
+            this.EntitiesStorage.Entities.Clear();
             foreach (var entity in GameObject.FindObjectsOfType<Entity>())
             {
                 entity.LevelId = this.LevelManager.CurrentLevel.Id;
-                this.EnttiesStorage.Entities.Add(entity.Id, entity);
+                this.EntitiesStorage.Entities.Add(entity.Id, entity);
             };
 
             if (loaded)
@@ -135,7 +139,6 @@ namespace GameSaving
             this.VisitedLevels.Clear();
 
             await this.LevelManager.LoadAsync(level);
-            Dependency<UserInputMapper>.Resolve().Bootstrap();
 
             var gameState = this.GetState();
             await this.BootstrapAsync(gameState);
@@ -189,7 +192,7 @@ namespace GameSaving
             var locationPosition = GameObject.FindObjectsOfType<Location>().
                 First(o => o.name == locationName).transform.position;
 
-            foreach (var character in this.EnttiesStorage.Entities.Values.Where(o => o.GetComponent<ICharacter>() != null))
+            foreach (var character in this.EntitiesStorage.Entities.Values.Where(o => o.GetComponent<ICharacter>() != null))
             {
                 character.transform.localPosition = locationPosition;
             }
@@ -213,23 +216,60 @@ namespace GameSaving
             await this.LoadSavedGameAsync(lastSave.Name);
         }
 
+        public async Task StartNewGameAsync(Characters.CharacterDescriptor characterDescriptor)
+        {
+            MessageBroker.Default.Publish(new GameResumed(string.Empty));
+
+            await this.BlackScreen.Value.ShowAsync();
+            this.BackgroundImage.Value.Hide();
+            this.LoadingText.Value.DisplayNewText("Level 1: Laboratory \n Stage 1: Initializing system");
+            this.ViewRouter.Value.ShowGameHUDView();
+            this.UserInputMapper.Value.Cleanup();
+
+            await this.LoadAsync(Level.Laboratory);
+
+            var characterTemplate = Resources.Load<GameObject>(characterDescriptor.Path);
+            var character = GameObject.Instantiate(characterTemplate);
+
+            var startLocation = GameObject.FindObjectOfType<StartLocation>();
+            character.transform.SetParent(this.EntitiesStorage.Root.transform, false);
+            character.transform.localPosition = startLocation.transform.localPosition;
+
+            MessageBroker.Default.Publish(new GameLoaded());
+            await Task.Delay(2000);
+
+            this.UserInputMapper.Value.Bootstrap(characterDescriptor);
+            this.LoadingText.Value.HideText();
+
+            await this.SaveAsync($"new game {this.FormDateTimeString()}");
+            await this.BlackScreen.Value.HideAsync();
+        }
+
+        private string FormDateTimeString()
+        {
+            var dateTimeString =
+                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + "_" +
+                DateTime.Now.Day.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Year.ToString();
+            return dateTimeString;
+        }
+
         private async Task BootstrapAsync(GameState gameState)
         {
-            this.EnttiesStorage.Root = GameObject.Find("Root");
+            this.EntitiesStorage.Root = GameObject.Find("Root");
             if (gameState.VisitedLevels.Contains(this.LevelManager.CurrentLevel.Id))
             {
-                GameObject.DestroyImmediate(this.EnttiesStorage.Root);
-                this.EnttiesStorage.Root = new GameObject("Root");
+                GameObject.DestroyImmediate(this.EntitiesStorage.Root);
+                this.EntitiesStorage.Root = new GameObject("Root");
             }
 
             this.BootstrapEntities();
-            this.EnttiesStorage.Root.SetActive(false);
+            this.EntitiesStorage.Root.SetActive(false);
 
             await this.RestoreGameStateAsync(gameState);
 
             GC.Collect();
 
-            this.EnttiesStorage.Root.SetActive(true);
+            this.EntitiesStorage.Root.SetActive(true);
             this.Loaded.OnNext(Unit.Default);
 
             this.VisitedLevels = gameState.VisitedLevels;
@@ -242,11 +282,11 @@ namespace GameSaving
 
             var gameState = new GameState();
             gameState.LevelId = this.LevelManager.CurrentLevel.Id;
-            gameState.GameObjectsStates = this.EnttiesStorage.Entities.Values.
+            gameState.GameObjectsStates = this.EntitiesStorage.Entities.Values.
                 Select(o => new GameObjectState().SetGameObject(o.gameObject)).ToList();
 
             gameState.VisitedLevels = this.VisitedLevels;
-            gameState.UserInputMapper = Dependency<UserInputMapper>.Resolve().GetState();
+            gameState.UserInputMapper = this.UserInputMapper.Value.GetState();
 
             Time.timeScale = 1;
 
@@ -267,7 +307,7 @@ namespace GameSaving
                     cache.Add(entity.AssetGuid, template);
                 }
 
-                var gameObject = GameObject.Instantiate<GameObject>(cache[entity.AssetGuid], this.EnttiesStorage.Root.transform);
+                var gameObject = GameObject.Instantiate<GameObject>(cache[entity.AssetGuid], this.EntitiesStorage.Root.transform);
 
                 var states = gameObjectState.MonoBehaviousStates.ToList();
                 states.Add(entity);
@@ -281,7 +321,7 @@ namespace GameSaving
                 }
 
                 var prefab = gameObject.GetComponent<Entity>();
-                this.EnttiesStorage.Entities.Add(prefab.Id, prefab);
+                this.EntitiesStorage.Entities.Add(prefab.Id, prefab);
             }
 
             foreach (var monoBehaviour in monoBehaviours)

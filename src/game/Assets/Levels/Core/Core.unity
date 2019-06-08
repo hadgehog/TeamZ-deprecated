@@ -1285,7 +1285,7 @@ GameObject:
   - component: {fileID: 2058098452}
   - component: {fileID: 2058098454}
   m_Layer: 0
-  m_Name: Views
+  m_Name: Router
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1332,6 +1332,8 @@ MonoBehaviour:
   LoadView: {fileID: 499237989975171808, guid: 3a8067ce9ade52a469dd2ea786cab5ab, type: 3}
   SaveView: {fileID: 347013112312984745, guid: 5244064a38cbea54f8460be4a7d92a2d, type: 3}
   SettingsView: {fileID: 0}
+  CharacterSelectionView: {fileID: 7649364581000516163, guid: 658e8f2bf36ed62488ab8cf030ebc513,
+    type: 3}
 --- !u!222 &2058098454
 CanvasRenderer:
   m_ObjectHideFlags: 0

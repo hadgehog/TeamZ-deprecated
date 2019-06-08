@@ -61,7 +61,6 @@ public class Main : MonoBehaviour
 	private void Loaded()
 	{
 		MessageBroker.Default.Publish(new GameResumed(this.gameController.Value.LevelManager.CurrentLevel.Name));
-        this.UserInputMapper.Value.Bootstrap();
     }
 
     public async void Update()

@@ -8,8 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TeamZ.Assets.Code.DependencyInjection;
+using TeamZ.Assets.Code.Game.Messages.GameSaving;
 using TeamZ.Assets.GameSaving.Interfaces;
+using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 using ZeroFormatter;
 
 namespace TeamZ.Assets.Code.Game.UserInput
@@ -65,7 +68,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
                 this.UserInputProviders[KeyMapping.JoystickSecond]);
         }
 
-        public void Bootstrap()
+        public void Bootstrap(params Characters.Characters.CharacterDescriptor[] descriptors)
         {
             var characters = GameObject.FindObjectsOfType<CharacterControllerScript>();
             if (!characters.Any())
@@ -73,10 +76,10 @@ namespace TeamZ.Assets.Code.Game.UserInput
                 return;
             }
             
-            this.FirstPlayer = characters.First();
+            this.FirstPlayer = characters.First(o => o.GetType() == descriptors.First().ControllerType);
             if (characters.Length > 1)
             {
-                this.SecondPlayer = characters.Last();
+                this.SecondPlayer = characters.First(o => o.GetType() == descriptors.Last().ControllerType);
             }
 
             this.Map();
@@ -84,20 +87,27 @@ namespace TeamZ.Assets.Code.Game.UserInput
 
         private void Map()
         {
-            var userInputProvider = this.UserInputProviders[KeyMapping.CombinedSecond];
-            userInputProvider.StartMonitoring();
-            this.FirstPlayer.UserInputProvider.Value = userInputProvider;
+            if (this.FirstPlayer)
+            {
+                var userInputProvider = this.UserInputProviders[KeyMapping.CombinedFirst];
+                userInputProvider.StartMonitoring();
 
-            userInputProvider = this.UserInputProviders[KeyMapping.CombinedFirst];
-            userInputProvider.StartMonitoring();
-            this.SecondPlayer.UserInputProvider.Value = userInputProvider;
+                this.FirstPlayer.UserInputProvider.Value = userInputProvider;
+            }
+
+            if (this.SecondPlayer)
+            {
+                var userInputProvider = this.UserInputProviders[KeyMapping.CombinedSecond];
+                userInputProvider.StartMonitoring();
+                this.SecondPlayer.UserInputProvider.Value = userInputProvider;
+            }
         }
 
         public override UserInputMapperState GetState()
         {
             return new UserInputMapperState
             {
-                FirstPlayer = this.FirstPlayer.GetComponent<Entity>().Id,
+                FirstPlayer = this.FirstPlayer?.GetComponent<Entity>().Id ?? Guid.Empty,
                 SecondPlayer = this.SecondPlayer?.GetComponent<Entity>().Id ?? Guid.Empty,
             };
         }
@@ -105,7 +115,10 @@ namespace TeamZ.Assets.Code.Game.UserInput
         public override void SetState(UserInputMapperState state)
         {
             var entityStorage = Dependency<EntitiesStorage>.Resolve();
-            this.FirstPlayer = entityStorage.Entities[state.FirstPlayer].GetComponent<CharacterControllerScript>();
+            if (state.SecondPlayer != Guid.Empty)
+            {
+                this.FirstPlayer = entityStorage.Entities[state.FirstPlayer].GetComponent<CharacterControllerScript>();
+            }
 
             if (state.SecondPlayer != Guid.Empty)
             {
@@ -113,6 +126,12 @@ namespace TeamZ.Assets.Code.Game.UserInput
             }
 
             this.Map();
+        }
+
+        public void Cleanup()
+        {
+            this.FirstPlayer = null;
+            this.SecondPlayer = null;
         }
     }
 }

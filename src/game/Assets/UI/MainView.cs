@@ -33,20 +33,9 @@ public class MainView : View
         Selectable.allSelectables.First().Select();
     }
 
-    public async void PlayAsync()
+    public void Play()
 	{
-		MessageBroker.Default.Publish(new GameResumed(string.Empty));
-
-		await this.blackScreen.Value.ShowAsync();
-		this.backgroundImage.Value.Hide();
-		this.loadingText.Value.DisplayNewText("Level 1: Laboratory \n Stage 1: Initializing system");
-		this.Deactivate();
-        this.ViewRouter.Value.ShowGameHUDView();
-		await this.GameController.Value.LoadAsync(Level.Laboratory);
-		await Task.Delay(2000);
-		this.loadingText.Value.HideText();
-		await this.GameController.Value.SaveAsync($"new game {this.FormDateTimeString()}");
-		await this.blackScreen.Value.HideAsync();
+        this.ViewRouter.Value.ShowView(this.ViewRouter.Value.CharacterSelectionView);
 	}
 
 	public void Load()
@@ -69,11 +58,4 @@ public class MainView : View
 
 	}
 
-	private string FormDateTimeString()
-	{
-		var dateTimeString = 
-			DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + "_" + 
-			DateTime.Now.Day.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Year.ToString();
-		return dateTimeString;
-	}
 }

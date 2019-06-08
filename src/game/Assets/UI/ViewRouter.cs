@@ -18,6 +18,7 @@ namespace Assets.UI
         public LoadView LoadView;
         public SaveView SaveView;
         public SettingsView SettingsView;
+        public CharacterSelectionView CharacterSelectionView;
 
         public UnityDependency<MainMenuBackgroundImage> BackgroundImage;
 
