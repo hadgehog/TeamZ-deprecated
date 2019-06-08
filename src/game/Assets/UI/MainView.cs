@@ -38,7 +38,7 @@ public class MainView : MonoBehaviour
 		this.backgroundImage.Value.Hide();
 		this.loadingText.Value.DisplayNewText("Level 1: Laboratory \n Stage 1: Initializing system");
 		this.Deactivate();
-		this.ViewRouter.Value.GameHUDView.Activate();
+		this.ViewRouter.Value.ShowGameHUDView();
 		await this.GameController.Value.LoadAsync(Level.Laboratory);
 		await Task.Delay(2000);
 		this.loadingText.Value.HideText();
