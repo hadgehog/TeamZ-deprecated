@@ -148,9 +148,13 @@ namespace GameSaving
 
         public async Task LoadGameStateAsync(GameState gameState)
         {
+            DependencyContainer.Instance.NewScope();
+
             var level = Level.AllById[gameState.LevelId];
             await this.LevelManager.LoadAsync(level);
             await this.BootstrapAsync(gameState);
+
+            this.Loaded.OnNext(Unit.Default);
         }
 
         public async Task SaveAsync(string slotName)
@@ -207,6 +211,7 @@ namespace GameSaving
 
             await Task.Delay(2000);
             this.LoadingText.Value.HideText();
+            this.Loaded.OnNext(Unit.Default);
             await this.BlackScreen.Value.HideAsync();
         }
 
@@ -218,22 +223,17 @@ namespace GameSaving
 
         public async Task StartNewGameAsync(Characters.CharacterDescriptor characterDescriptor)
         {
+            DependencyContainer.Instance.NewScope();
+
             MessageBroker.Default.Publish(new GameResumed(string.Empty));
 
             await this.BlackScreen.Value.ShowAsync();
             this.BackgroundImage.Value.Hide();
             this.LoadingText.Value.DisplayNewText("Level 1: Laboratory \n Stage 1: Initializing system");
             this.ViewRouter.Value.ShowGameHUDView();
-            this.UserInputMapper.Value.Cleanup();
 
             await this.LoadAsync(Level.Laboratory);
-
-            var characterTemplate = Resources.Load<GameObject>(characterDescriptor.Path);
-            var character = GameObject.Instantiate(characterTemplate);
-
-            var startLocation = GameObject.FindObjectOfType<StartLocation>();
-            character.transform.SetParent(this.EntitiesStorage.Root.transform, false);
-            character.transform.localPosition = startLocation.transform.localPosition;
+            this.AddCharacter(characterDescriptor);
 
             MessageBroker.Default.Publish(new GameLoaded());
             await Task.Delay(2000);
@@ -242,7 +242,23 @@ namespace GameSaving
             this.LoadingText.Value.HideText();
 
             await this.SaveAsync($"new game {this.FormDateTimeString()}");
+
+            this.Loaded.OnNext(Unit.Default);
             await this.BlackScreen.Value.HideAsync();
+        }
+
+        public void AddCharacter(Characters.CharacterDescriptor characterDescriptor)
+        {
+            var characterTemplate = Resources.Load<GameObject>(characterDescriptor.Path);
+            var character = GameObject.Instantiate(characterTemplate);
+
+            var startLocation = GameObject.FindObjectOfType<StartLocation>();
+            character.transform.SetParent(this.EntitiesStorage.Root.transform, false);
+            character.transform.localPosition = startLocation.transform.localPosition;
+
+            var entity = character.GetComponent<Entity>();
+            entity.LevelId = this.LevelManager.CurrentLevel.Id;
+            this.EntitiesStorage.Entities.Add(entity.Id, entity);
         }
 
         private string FormDateTimeString()
@@ -270,10 +286,9 @@ namespace GameSaving
             GC.Collect();
 
             this.EntitiesStorage.Root.SetActive(true);
-            this.Loaded.OnNext(Unit.Default);
 
             this.VisitedLevels = gameState.VisitedLevels;
-            Dependency<UserInputMapper>.Resolve().SetState(gameState.UserInputMapper);
+            this.UserInputMapper.Value.SetState(gameState.UserInputMapper);
         }
 
         private GameState GetState()

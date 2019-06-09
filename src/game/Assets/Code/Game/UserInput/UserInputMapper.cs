@@ -115,7 +115,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
         public override void SetState(UserInputMapperState state)
         {
             var entityStorage = Dependency<EntitiesStorage>.Resolve();
-            if (state.SecondPlayer != Guid.Empty)
+            if (state.FirstPlayer != Guid.Empty)
             {
                 this.FirstPlayer = entityStorage.Entities[state.FirstPlayer].GetComponent<CharacterControllerScript>();
             }
@@ -126,12 +126,6 @@ namespace TeamZ.Assets.Code.Game.UserInput
             }
 
             this.Map();
-        }
-
-        public void Cleanup()
-        {
-            this.FirstPlayer = null;
-            this.SecondPlayer = null;
         }
     }
 }

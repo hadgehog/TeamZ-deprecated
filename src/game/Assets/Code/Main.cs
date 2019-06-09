@@ -48,7 +48,7 @@ public class Main : MonoBehaviour
 		container.Add<GameStorage>();
 		container.Add<LevelManager>();
 		container.Add<EntitiesStorage>();
-        container.Add<UserInputMapper>();
+        container.AddScoped<UserInputMapper>();
 	}
 
 	private void RegisterHandlers()
