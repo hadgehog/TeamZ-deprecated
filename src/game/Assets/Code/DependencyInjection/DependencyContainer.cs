@@ -7,10 +7,15 @@ namespace TeamZ.Assets.Code.DependencyInjection
 	public class DependencyContainer : Singletone<DependencyContainer>
 	{
 		private Dictionary<Type, Lazy<object>> dependenies;
+		private Dictionary<Type, ResetableLazy<object>> scopedDependenies;
 
-		public DependencyContainer()
+        public Guid Scope { get; private set; }
+
+        public DependencyContainer()
 		{
 			this.dependenies = new Dictionary<Type, Lazy<object>>();
+			this.scopedDependenies = new Dictionary<Type, ResetableLazy<object>>();
+            this.Scope = Guid.NewGuid();
 		}
 
 		public void AddOrSet<TDependency>(TDependency depedency)
@@ -26,16 +31,36 @@ namespace TeamZ.Assets.Code.DependencyInjection
 			this.dependenies[dependecyType] = new Lazy<object>(() => new TDependency());
 		}
 
-		public TDependency Resolve<TDependency>()
+        public void AddScoped<TDependency>()
+            where TDependency : new()
+        {
+            var dependecyType = typeof(TDependency);
+            this.scopedDependenies[dependecyType] = new ResetableLazy<object>(() => new TDependency());
+        }
+
+        public void NewScope()
+        {
+            this.Scope = Guid.NewGuid();
+            foreach (var value in this.scopedDependenies.Values)
+            {
+                value.Reset();
+            }
+        }
+
+        public TDependency Resolve<TDependency>()
 		{
 			var dependecyType = typeof(TDependency);
-			var lazy = this.dependenies[dependecyType];
-			if (lazy is null)
+			if (this.dependenies.TryGetValue(dependecyType, out var lazy))
 			{
-				throw new InvalidOperationException($"Dependency for type {dependecyType.FullName} is missing");
+			    return (TDependency)lazy.Value;
 			}
 
-			return (TDependency)lazy.Value;
-		}
-	}
+            if (this.scopedDependenies.TryGetValue(dependecyType, out var resetableLazy))
+            {
+                return (TDependency)resetableLazy.Value;
+            }
+
+            throw new InvalidOperationException($"Dependency for type {dependecyType.FullName} is missing");
+        }
+    }
 }

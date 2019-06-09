@@ -10,15 +10,17 @@ namespace TeamZ.Assets.Code.DependencyInjection
 		where TValue : class
 	{
 		private TValue value;
+        private Guid currentScope;
 
-		public TValue Value
+        public TValue Value
 		{
 			get
 			{
-				if (this.value is null)
+				if (this.value is null || DependencyContainer.Instance.Scope != this.currentScope)
 				{
 					this.value = Resolve();
-				}
+                    this.currentScope = DependencyContainer.Instance.Scope;
+                }
 
 				return this.value;
 			}
