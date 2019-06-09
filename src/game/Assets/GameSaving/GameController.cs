@@ -31,7 +31,7 @@ namespace GameSaving
         private UnityDependency<NotificationService> Notifications;
         private UnityDependency<BackgroundImage> BackgroundImage;
         private UnityDependency<LoadingText> LoadingText;
-        Dependency<UserInputMapper> UserInputMapper;
+        private Dependency<UserInputMapper> UserInputMapper;
 
         private bool loading;
 
@@ -88,16 +88,12 @@ namespace GameSaving
         public void BootstrapEntities(bool loaded = false)
         {
             this.EntitiesStorage.Entities.Clear();
+            this.EntitiesStorage.Root = GameObject.Find("Root");
             foreach (var entity in GameObject.FindObjectsOfType<Entity>())
             {
                 entity.LevelId = this.LevelManager.CurrentLevel.Id;
                 this.EntitiesStorage.Entities.Add(entity.Id, entity);
             };
-
-            if (loaded)
-            {
-                this.Loaded.OnNext(Unit.Default);
-            }
 
             //await this.SaveAsync("temp");
             //await this.LoadAsync("temp");
@@ -238,7 +234,6 @@ namespace GameSaving
             MessageBroker.Default.Publish(new GameLoaded());
             await Task.Delay(2000);
 
-            this.UserInputMapper.Value.Bootstrap(characterDescriptor);
             this.LoadingText.Value.HideText();
 
             await this.SaveAsync($"new game {this.FormDateTimeString()}");
@@ -259,6 +254,8 @@ namespace GameSaving
             var entity = character.GetComponent<Entity>();
             entity.LevelId = this.LevelManager.CurrentLevel.Id;
             this.EntitiesStorage.Entities.Add(entity.Id, entity);
+
+            this.UserInputMapper.Value.Bootstrap(characterDescriptor);
         }
 
         private string FormDateTimeString()
