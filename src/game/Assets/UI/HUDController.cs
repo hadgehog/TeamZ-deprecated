@@ -1,21 +1,30 @@
 ﻿using Assets.Code.Helpers;
 using Assets.UI;
-using UnityEngine;
 using UnityEngine.UI;
 
 public class HUDController : View
 {
-	public Slider HealthSlider;
-	public Slider ArmorSlider;
+	public Slider HealthSliderPlayer1;
+	public Slider ArmorSliderPlayer1;
 
-	private UnityDependency<Lizard> character;
+    public Slider HealthSliderPlayer2;
+    public Slider ArmorSliderPlayer2;
 
-	void Update()
+    private UnityDependency<Lizard> lizardCharacter;
+    private UnityDependency<Hedgehog> hedgehogCharacter;
+
+    void Update()
 	{
-		if (this.character)
+		if (this.lizardCharacter)
 		{
-			this.HealthSlider.value = this.character.Value.Health;
-			this.ArmorSlider.value = this.character.Value.Armor;
+			this.HealthSliderPlayer1.value = this.lizardCharacter.Value.Health;
+			this.ArmorSliderPlayer1.value = this.lizardCharacter.Value.Armor;
 		}
-	}
+        
+        if (this.hedgehogCharacter)
+        {
+            this.HealthSliderPlayer2.value = this.hedgehogCharacter.Value.Health;
+            this.ArmorSliderPlayer2.value = this.hedgehogCharacter.Value.Armor;
+        }
+    }
 }
