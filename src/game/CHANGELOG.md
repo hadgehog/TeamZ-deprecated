@@ -1,3 +1,8 @@
+# v2019.06.13
+
+- Added HUD for second character
+- Implemented all Hedgehog animator's states (we use only one Idle animation for all states yet)
+
 # v2019.06.08
 
 - Switched character handling
