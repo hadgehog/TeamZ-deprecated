@@ -47,10 +47,10 @@ namespace ZeroFormatter
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::GameSaving.States.MonoBehaviourStateKind?>.Register(new ZeroFormatter.DynamicObjectSegments.GameSaving.States.NullableMonoBehaviourStateKindFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::GameSaving.States.MonoBehaviourStateKind?>.Register(new NullableEqualityComparer<global::GameSaving.States.MonoBehaviourStateKind>());
             
-            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput.UserInputMapper_KeyMappingFormatter<ZeroFormatter.Formatters.DefaultResolver>());
-            ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput.UserInputMapper_KeyMappingEqualityComparer());
-            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping?>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput.NullableUserInputMapper_KeyMappingFormatter<ZeroFormatter.Formatters.DefaultResolver>());
-            ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping?>.Register(new NullableEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping>());
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.Code.Game.UserInput.KeyMapping>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput.KeyMappingFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.KeyMapping>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput.KeyMappingEqualityComparer());
+            ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.Code.Game.UserInput.KeyMapping?>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput.NullableKeyMappingFormatter<ZeroFormatter.Formatters.DefaultResolver>());
+            ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.KeyMapping?>.Register(new NullableEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.KeyMapping>());
             
             ZeroFormatter.Formatters.Formatter<ZeroFormatter.Formatters.DefaultResolver, global::TeamZ.Assets.GameSaving.Interfaces.StateKind>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.Interfaces.StateKindFormatter<ZeroFormatter.Formatters.DefaultResolver>());
             ZeroFormatter.Comparers.ZeroFormatterEqualityComparer<global::TeamZ.Assets.GameSaving.Interfaces.StateKind>.Register(new ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.GameSaving.Interfaces.StateKindEqualityComparer());
@@ -2295,7 +2295,7 @@ namespace ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput
     using global::ZeroFormatter.Segments;
 
 
-    public class UserInputMapper_KeyMappingFormatter<TTypeResolver> : Formatter<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping>
+    public class KeyMappingFormatter<TTypeResolver> : Formatter<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.KeyMapping>
         where TTypeResolver : ITypeResolver, new()
     {
         public override int? GetLength()
@@ -2303,20 +2303,20 @@ namespace ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput
             return 4;
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping value)
+        public override int Serialize(ref byte[] bytes, int offset, global::TeamZ.Assets.Code.Game.UserInput.KeyMapping value)
         {
             return BinaryUtil.WriteInt32(ref bytes, offset, (Int32)value);
         }
 
-        public override global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        public override global::TeamZ.Assets.Code.Game.UserInput.KeyMapping Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
         {
             byteSize = 4;
-            return (global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping)BinaryUtil.ReadInt32(ref bytes, offset);
+            return (global::TeamZ.Assets.Code.Game.UserInput.KeyMapping)BinaryUtil.ReadInt32(ref bytes, offset);
         }
     }
 
 
-    public class NullableUserInputMapper_KeyMappingFormatter<TTypeResolver> : Formatter<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping?>
+    public class NullableKeyMappingFormatter<TTypeResolver> : Formatter<TTypeResolver, global::TeamZ.Assets.Code.Game.UserInput.KeyMapping?>
         where TTypeResolver : ITypeResolver, new()
     {
         public override int? GetLength()
@@ -2324,7 +2324,7 @@ namespace ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput
             return 5;
         }
 
-        public override int Serialize(ref byte[] bytes, int offset, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping? value)
+        public override int Serialize(ref byte[] bytes, int offset, global::TeamZ.Assets.Code.Game.UserInput.KeyMapping? value)
         {
             BinaryUtil.WriteBoolean(ref bytes, offset, value.HasValue);
             if (value.HasValue)
@@ -2339,26 +2339,26 @@ namespace ZeroFormatter.DynamicObjectSegments.TeamZ.Assets.Code.Game.UserInput
             return 5;
         }
 
-        public override global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping? Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
+        public override global::TeamZ.Assets.Code.Game.UserInput.KeyMapping? Deserialize(ref byte[] bytes, int offset, global::ZeroFormatter.DirtyTracker tracker, out int byteSize)
         {
             byteSize = 5;
             var hasValue = BinaryUtil.ReadBoolean(ref bytes, offset);
             if (!hasValue) return null;
 
-            return (global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping)BinaryUtil.ReadInt32(ref bytes, offset + 1);
+            return (global::TeamZ.Assets.Code.Game.UserInput.KeyMapping)BinaryUtil.ReadInt32(ref bytes, offset + 1);
         }
     }
 
 
 
-    public class UserInputMapper_KeyMappingEqualityComparer : IEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping>
+    public class KeyMappingEqualityComparer : IEqualityComparer<global::TeamZ.Assets.Code.Game.UserInput.KeyMapping>
     {
-        public bool Equals(global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping x, global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping y)
+        public bool Equals(global::TeamZ.Assets.Code.Game.UserInput.KeyMapping x, global::TeamZ.Assets.Code.Game.UserInput.KeyMapping y)
         {
             return (Int32)x == (Int32)y;
         }
 
-        public int GetHashCode(global::TeamZ.Assets.Code.Game.UserInput.UserInputMapper.KeyMapping x)
+        public int GetHashCode(global::TeamZ.Assets.Code.Game.UserInput.KeyMapping x)
         {
             return (int)x;
         }

@@ -20,7 +20,7 @@ public class DirectionalCamera : MonoBehaviour
 
     private void Start()
     {
-        this.gameController.Value.Loaded.Subscribe(_ => this.SearchForPlayers());
+        this.gameController.Value.Loaded.Subscribe(async _ => await this.SearchForPlayers());
         this.mainCamera = this.GetComponent<Camera>();
     }
 

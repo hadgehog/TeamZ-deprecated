@@ -43,42 +43,13 @@ namespace TeamZ.Assets.Code.Game.Players
 
         public PlayerService()
         {
-            var combinedFirst = UserInput.UserInputMapper.KeyMapping.CombinedFirst;
-            var combinedSecond = UserInput.UserInputMapper.KeyMapping.CombinedSecond;
+            this.UserInputMapper.Value.UserInputProviders[KeyMapping.CombinedFirst].Start
+                .HoldFor(TimeSpan.FromSeconds(3))
+                .Subscribe(_ => this.HandlePlayerActivation(this.FirstPlayer.Value, this.SecondPlayer.Value));
 
-            this.SubscribeForActivation(combinedFirst);
-            this.SubscribeForActivation(combinedSecond);
-        }
-
-        public void SubscribeForActivation(UserInputMapper.KeyMapping keyMapping)
-        {
-            var userInputProvider = this.UserInputMapper.Value.UserInputProviders[keyMapping];
-
-            IDisposable timer = null;
-            userInputProvider.Start
-                .Where(activated => activated)
-                .Subscribe(o =>
-                {
-                    timer?.Dispose();
-                    timer = Observable.Timer(TimeSpan.FromSeconds(3)).Subscribe(async _ =>
-                    {
-                        switch (keyMapping)
-                        {
-                            case UserInput.UserInputMapper.KeyMapping.CombinedFirst:
-                                this.HandlePlayerActivation(this.FirstPlayer.Value, this.SecondPlayer.Value);
-                                break;
-                            case UserInput.UserInputMapper.KeyMapping.CombinedSecond:
-                                this.HandlePlayerActivation(this.SecondPlayer.Value, this.FirstPlayer.Value);
-                                break;
-                        }
-
-                        await this.Camera.Value.SearchForPlayers();
-                    });
-                });
-
-            userInputProvider.Start
-                .Where(activated => !activated)
-                .Subscribe(_ => timer?.Dispose());
+            this.UserInputMapper.Value.UserInputProviders[KeyMapping.CombinedSecond].Start
+                .HoldFor(TimeSpan.FromSeconds(3))
+                .Subscribe(_ => this.HandlePlayerActivation(this.SecondPlayer.Value, this.FirstPlayer.Value));
         }
 
         private void HandlePlayerActivation(Player activatedPlayer, Player anotherPlayer)

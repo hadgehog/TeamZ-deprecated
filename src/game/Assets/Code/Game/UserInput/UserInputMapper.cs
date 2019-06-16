@@ -20,18 +20,18 @@ using ZeroFormatter;
 
 namespace TeamZ.Assets.Code.Game.UserInput
 {
+    public enum KeyMapping
+    {
+        KeyboardFirst,
+        KeyboardSecond,
+        JoystickFirst,
+        JoystickSecond,
+        CombinedFirst,
+        CombinedSecond
+    }
+
     public class UserInputMapper : IDisposable
     {
-        public enum KeyMapping
-        {
-            KeyboardFirst,
-            KeyboardSecond,
-            JoystickFirst,
-            JoystickSecond,
-            CombinedFirst,
-            CombinedSecond
-        }
-
         public UnityDependency<FirstPlayer> FirstPlayer { get; }
         public UnityDependency<SecondPlayer> SecondPlayer { get; }
 
