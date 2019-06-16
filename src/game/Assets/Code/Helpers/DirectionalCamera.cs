@@ -26,7 +26,7 @@ public class DirectionalCamera : MonoBehaviour
 
     public async Task SearchForPlayers()
     {
-        await UniTask.Delay(500);
+        await UniTask.DelayFrame(5);
         this.targets = this.entitiesStorage.Value.Entities.Values.
             Where(o => o.GetComponent<Lizard>() || o.GetComponent<Hedgehog>()).Select(o => o.transform).ToArray();
     }
