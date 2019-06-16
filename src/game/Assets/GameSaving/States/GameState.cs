@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TeamZ.Assets.Code.Game.Players;
 using TeamZ.Assets.Code.Game.UserInput;
 using ZeroFormatter;
 
@@ -35,7 +36,7 @@ namespace GameSaving.States
 
 
         [Index(3)]
-        public virtual UserInputMapperState UserInputMapper
+        public virtual PlayerServiceState PlayerServiceState
         {
             get;
             set;

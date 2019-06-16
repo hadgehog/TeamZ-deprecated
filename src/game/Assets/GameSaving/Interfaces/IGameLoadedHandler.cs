@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Game.Levels;
-using UnityEngine;
 
-namespace TeamZ.Assets.Code.Game.Levels
+namespace TeamZ.Assets.GameSaving.Interfaces
 {
-    public class StartLocation : Location
+    public interface IGameLoadedHandler
     {
+        void OnGameLoaded();
     }
 }

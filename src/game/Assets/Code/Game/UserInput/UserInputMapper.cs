@@ -1,4 +1,5 @@
-﻿using GameSaving;
+﻿using Assets.Code.Helpers;
+using GameSaving;
 using GameSaving.Interfaces;
 using GameSaving.MonoBehaviours;
 using GameSaving.States;
@@ -8,7 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TeamZ.Assets.Code.DependencyInjection;
+using TeamZ.Assets.Code.Game.Characters;
 using TeamZ.Assets.Code.Game.Messages.GameSaving;
+using TeamZ.Assets.Code.Game.Players;
 using TeamZ.Assets.GameSaving.Interfaces;
 using UniRx;
 using UnityEngine;
@@ -17,21 +20,7 @@ using ZeroFormatter;
 
 namespace TeamZ.Assets.Code.Game.UserInput
 {
-    [ZeroFormattable]
-    public class UserInputMapperState : State
-    {
-        public override StateKind Kind
-            => StateKind.UserInputMapper;
-
-        [Index(0)]
-        public virtual Guid FirstPlayer { get; set; }
-
-        [Index(1)]
-        public virtual Guid SecondPlayer { get; set; }
-    }
-
-
-    public class UserInputMapper : StateProvider<UserInputMapperState>
+    public class UserInputMapper : IDisposable
     {
         public enum KeyMapping
         {
@@ -43,9 +32,8 @@ namespace TeamZ.Assets.Code.Game.UserInput
             CombinedSecond
         }
 
-        public CharacterControllerScript FirstPlayer { get; private set; }
-
-        public CharacterControllerScript SecondPlayer { get; private set; }
+        public UnityDependency<FirstPlayer> FirstPlayer { get; }
+        public UnityDependency<SecondPlayer> SecondPlayer { get; }
 
         public Dictionary<KeyMapping, IUserInputProvider> UserInputProviders { get; }
             = new Dictionary<KeyMapping, IUserInputProvider>()
@@ -59,29 +47,23 @@ namespace TeamZ.Assets.Code.Game.UserInput
 
         public UserInputMapper()
         {
-            this.UserInputProviders[KeyMapping.CombinedFirst] = new CombinedUserInputProvider(
+            var combinedUserInputProvider = new CombinedUserInputProvider(
                 this.UserInputProviders[KeyMapping.KeyboardFirst],
                 this.UserInputProviders[KeyMapping.JoystickFirst]);
+            combinedUserInputProvider.StartMonitoring();
 
-            this.UserInputProviders[KeyMapping.CombinedSecond] = new CombinedUserInputProvider(
+            this.UserInputProviders[KeyMapping.CombinedFirst] = combinedUserInputProvider;
+
+            combinedUserInputProvider = new CombinedUserInputProvider(
                 this.UserInputProviders[KeyMapping.KeyboardSecond],
                 this.UserInputProviders[KeyMapping.JoystickSecond]);
+            combinedUserInputProvider.StartMonitoring();
+
+            this.UserInputProviders[KeyMapping.CombinedSecond] = combinedUserInputProvider;
         }
 
-        public void Bootstrap(params Characters.Characters.CharacterDescriptor[] descriptors)
+        public void Bootstrap()
         {
-            var characters = GameObject.FindObjectsOfType<CharacterControllerScript>();
-            if (!characters.Any())
-            {
-                return;
-            }
-            
-            this.FirstPlayer = characters.First(o => o.GetType() == descriptors.First().ControllerType);
-            if (characters.Length > 1)
-            {
-                this.SecondPlayer = characters.First(o => o.GetType() == descriptors.Last().ControllerType);
-            }
-
             this.Map();
         }
 
@@ -90,42 +72,22 @@ namespace TeamZ.Assets.Code.Game.UserInput
             if (this.FirstPlayer)
             {
                 var userInputProvider = this.UserInputProviders[KeyMapping.CombinedFirst];
-                userInputProvider.StartMonitoring();
-
-                this.FirstPlayer.UserInputProvider.Value = userInputProvider;
+                this.FirstPlayer.Value.GetComponent<CharacterControllerScript>().UserInputProvider.Value = userInputProvider;
             }
 
             if (this.SecondPlayer)
             {
                 var userInputProvider = this.UserInputProviders[KeyMapping.CombinedSecond];
-                userInputProvider.StartMonitoring();
-                this.SecondPlayer.UserInputProvider.Value = userInputProvider;
+                this.SecondPlayer.Value.GetComponent<CharacterControllerScript>().UserInputProvider.Value = userInputProvider;
             }
         }
 
-        public override UserInputMapperState GetState()
+        public void Dispose()
         {
-            return new UserInputMapperState
+            foreach (var provider in this.UserInputProviders.Values)
             {
-                FirstPlayer = this.FirstPlayer?.GetComponent<Entity>().Id ?? Guid.Empty,
-                SecondPlayer = this.SecondPlayer?.GetComponent<Entity>().Id ?? Guid.Empty,
-            };
-        }
-
-        public override void SetState(UserInputMapperState state)
-        {
-            var entityStorage = Dependency<EntitiesStorage>.Resolve();
-            if (state.FirstPlayer != Guid.Empty)
-            {
-                this.FirstPlayer = entityStorage.Entities[state.FirstPlayer].GetComponent<CharacterControllerScript>();
+                provider.Dispose();
             }
-
-            if (state.SecondPlayer != Guid.Empty)
-            {
-                this.SecondPlayer = entityStorage.Entities[state.SecondPlayer].GetComponent<CharacterControllerScript>();
-            }
-
-            this.Map();
         }
     }
 }

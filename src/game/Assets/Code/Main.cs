@@ -8,6 +8,7 @@ using GameSaving;
 using GameSaving.MonoBehaviours;
 using GameSaving.States;
 using TeamZ.Assets.Code.DependencyInjection;
+using TeamZ.Assets.Code.Game.Players;
 using TeamZ.Assets.Code.Game.UserInput;
 using TeamZ.Handlers;
 using TeamZ.Mediator;
@@ -19,9 +20,12 @@ public class Main : MonoBehaviour
 {
 	private readonly UnityDependency<ViewRouter> ViewRouter;
 	private readonly UnityDependency<BackgroundImage> BackgroundImage;
-	private readonly Dependency<GameController> gameController;
-    private readonly Dependency<UserInputMapper> UserInputMapper;
     private readonly UnityDependency<LevelBootstraper> LevelBootstrapper;
+
+    private readonly Dependency<GameController> gameController;
+    private readonly Dependency<UserInputMapper> userInputMapper;
+    private readonly Dependency<LevelManager> levelManager;
+
 
 
     private async void Start()
@@ -49,9 +53,10 @@ public class Main : MonoBehaviour
 		container.Add<LevelManager>();
 		container.Add<EntitiesStorage>();
         container.AddScoped<UserInputMapper>();
-	}
+        container.AddScoped<PlayerService>();
+    }
 
-	private void RegisterHandlers()
+    private void RegisterHandlers()
 	{
 		Mediator.Instance.Add(new DeathHandler());
 		Mediator.Instance.Add<GamePaused>(o => Time.timeScale = 0);
@@ -60,7 +65,7 @@ public class Main : MonoBehaviour
 
 	private void Loaded()
 	{
-		MessageBroker.Default.Publish(new GameResumed(this.gameController.Value.LevelManager.CurrentLevel.Name));
+		MessageBroker.Default.Publish(new GameResumed(this.levelManager.Value.CurrentLevel.Name));
     }
 
     public async void Update()
@@ -76,14 +81,14 @@ public class Main : MonoBehaviour
 		}
 
 		if (Input.GetKeyUp(KeyCode.Escape) &&
-			this.gameController.Value.LevelManager.CurrentLevel != null)
+            this.levelManager.Value.CurrentLevel != null)
 		{
-			if (this.ViewRouter.Value.CurrentView is MainView && 
-				this.gameController.Value.LevelManager.CurrentLevel != null)
+			if (this.ViewRouter.Value.CurrentView is MainView &&
+                this.levelManager.Value.CurrentLevel != null)
 			{
 				this.BackgroundImage.Value.Hide();
 				this.ViewRouter.Value.ShowGameHUDView();
-				MessageBroker.Default.Publish(new GameResumed(this.gameController.Value.LevelManager.CurrentLevel.Name));
+				MessageBroker.Default.Publish(new GameResumed(this.levelManager.Value.CurrentLevel.Name));
 				return;
 			}
 

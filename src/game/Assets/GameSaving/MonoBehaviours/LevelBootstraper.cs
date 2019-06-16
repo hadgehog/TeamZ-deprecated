@@ -1,8 +1,11 @@
-﻿using Assets.Code.Helpers;
+﻿using System.Linq;
+using Assets.Code.Helpers;
 using Assets.UI;
+using Game.Levels;
 using GameSaving.States;
 using TeamZ.Assets.Code.DependencyInjection;
 using TeamZ.Assets.Code.Game.Characters;
+using TeamZ.Assets.Code.Game.Players;
 using TeamZ.Assets.Code.Game.UserInput;
 using UniRx;
 using UniRx.Async;
@@ -19,7 +22,7 @@ namespace GameSaving.MonoBehaviours
 		private UnityDependency<ViewRouter> Router;
 		private Dependency<GameController> GameController;
 		private Dependency<LevelManager> LevelManager;
-        private Dependency<UserInputMapper> UserInputMapper;
+        private Dependency<PlayerService> PlayerService;
 
         private async void Start()
 		{
@@ -32,7 +35,10 @@ namespace GameSaving.MonoBehaviours
                 this.LevelManager.Value.CurrentLevel = level;
                 this.GameController.Value.VisitedLevels.Add(level.Id);
                 this.GameController.Value.BootstrapEntities(true);
-                this.GameController.Value.AddCharacter(Characters.Lizard);
+
+                var startLocation = GameObject.FindObjectsOfType<Location>().First().transform.localPosition;
+
+                this.PlayerService.Value.AddPlayer(Characters.Lizard, startLocation);
                 this.GameController.Value.Loaded.OnNext(Unit.Default);
 
                 this.Router.Value.ShowGameHUDView();

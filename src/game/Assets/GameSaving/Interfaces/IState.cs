@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TeamZ.Assets.Code.Game.Players;
 using TeamZ.Assets.Code.Game.UserInput;
 using ZeroFormatter;
 
@@ -12,11 +13,11 @@ namespace TeamZ.Assets.GameSaving.Interfaces
 {
     public enum StateKind
     {
-        UserInputMapper
+        PlayerService
     }
 
     [ZeroFormattable]
-    [Union(typeof(UserInputMapperState))]
+    [Union(typeof(PlayerServiceState))]
     public abstract class State
     {
         [UnionKey]

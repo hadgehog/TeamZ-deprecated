@@ -94,6 +94,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
                     this.Kick.Dispose();
                     this.Jump.Dispose();
                     this.Activate.Dispose();
+                    this.Start.Dispose();
                     this.Cancel.Dispose();
                 }
                 disposedValue = true;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Code.Helpers;
 using GameSaving.MonoBehaviours;
 using Helpers;
 using UniRx;
@@ -24,6 +25,10 @@ namespace GameSaving
             get;
             set;
         }
+
+
+        public UnityDependency<Lizard> Lizard { get; }
+        public UnityDependency<Lizard> Hedgehog { get;  }
 
         public ReactiveDictionary<Guid, Entity> Entities
         {

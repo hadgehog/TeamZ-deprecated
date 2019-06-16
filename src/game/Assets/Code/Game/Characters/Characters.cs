@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace TeamZ.Assets.Code.Game.Characters
 {
+    public class CharacterDescriptor
+    {
+        public string Path { get; set; }
+        public Type ControllerType { get; set; }
+    }
+
     public static class Characters
     {
-        public class CharacterDescriptor
-        {
-            public string Path { get; set; }
-            public Type ControllerType { get; set; }
-        }
-
+        
         public static CharacterDescriptor Lizard { get; }
             = new CharacterDescriptor
             {

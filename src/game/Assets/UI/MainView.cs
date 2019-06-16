@@ -13,7 +13,8 @@ using UnityEngine.UI;
 public class MainView : View
 {
 	public readonly Dependency<GameController> GameController;
-	public readonly UnityDependency<ViewRouter> ViewRouter;
+	public readonly Dependency<LevelManager> LevelManager;
+    public readonly UnityDependency<ViewRouter> ViewRouter;
 
 	private UnityDependency<BlackScreen> blackScreen;
 	private UnityDependency<BackgroundImage> backgroundImage;
@@ -29,7 +30,7 @@ public class MainView : View
 	private async void OnEnable()
 	{
 		await Observable.NextFrame();
-		this.SaveButton.SetActive(this.GameController.Value.LevelManager.CurrentLevel != null);
+		this.SaveButton.SetActive(this.LevelManager.Value.CurrentLevel != null);
         Selectable.allSelectables.First().Select();
     }
 

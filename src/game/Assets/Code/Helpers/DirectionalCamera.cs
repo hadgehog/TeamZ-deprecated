@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Assets.Code.Helpers;
 using GameSaving;
 using GameSaving.States;
 using TeamZ.Assets.Code.DependencyInjection;
 using UniRx;
+using UniRx.Async;
 using UnityEngine;
 
 public class DirectionalCamera : MonoBehaviour
@@ -18,12 +20,13 @@ public class DirectionalCamera : MonoBehaviour
 
     private void Start()
     {
-        this.gameController.Value.Loaded.Subscribe(_ => this.Loaded());
+        this.gameController.Value.Loaded.Subscribe(_ => this.SearchForPlayers());
         this.mainCamera = this.GetComponent<Camera>();
     }
 
-    private void Loaded()
+    public async Task SearchForPlayers()
     {
+        await UniTask.Delay(500);
         this.targets = this.entitiesStorage.Value.Entities.Values.
             Where(o => o.GetComponent<Lizard>() || o.GetComponent<Hedgehog>()).Select(o => o.transform).ToArray();
     }
@@ -39,7 +42,7 @@ public class DirectionalCamera : MonoBehaviour
                 // it can be broken during level switch
                 if (!target)
                 {
-                    return;
+                    continue;
                 }
 
                 var point = this.mainCamera.WorldToViewportPoint(new Vector3(target.position.x, target.position.y + 1.5f, target.position.z));
