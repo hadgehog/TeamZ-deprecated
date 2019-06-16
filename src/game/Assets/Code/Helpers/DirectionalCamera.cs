@@ -53,6 +53,7 @@ public class DirectionalCamera : MonoBehaviour
             }
 
             var approximateDestination = sum / this.targets.Length;
+            approximateDestination.z = -20;
 
             this.transform.position = Vector3.SmoothDamp(this.transform.position, approximateDestination, ref this.velocity, this.dampTime);
         }
