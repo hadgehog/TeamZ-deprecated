@@ -23,6 +23,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
     public LayerMask WhatIsLevelObject;
     public LayerMask WhatIsEnemy;
     public LayerMask WhatIsSurfaceForClimbing;
+    public LayerMask WhatIsCharacter;
 
     public Transform Punch;
     public float PunchRadius;
@@ -78,7 +79,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
     private bool loadingStarted;
 
-    private int[] activeLayersToInteraction = { 8, 9, 10 };     // ground, level object, enemy
+    private int[] activeLayersToInteraction = { 8, 9, 10, 13 };     // ground, level object, enemy, characters
 
     private int impulseDirection = 1;
 
@@ -315,7 +316,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             this.climbingSurface = null;
         }
 
-        this.IsGrounded.Value = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy) && !this.IsClimbed.Value;
+        this.IsGrounded.Value = Physics2D.OverlapCircle(this.GroundCheck.position, this.GroundRadius, this.WhatIsGround | this.WhatIsLevelObject | this.WhatIsEnemy | this.WhatIsCharacter) && !this.IsClimbed.Value;
         this.CanClimb.Value = Physics2D.OverlapCircle(this.ClimbCheck.position, this.ClimbRadius, this.WhatIsSurfaceForClimbing) && this.climbingSurface;
 
         if (this.IsClimbed.Value && this.climbingSurface)

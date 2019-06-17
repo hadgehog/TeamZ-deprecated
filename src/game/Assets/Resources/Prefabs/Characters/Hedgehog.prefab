@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3529954853228572229}
   - component: {fileID: 6025896208366124813}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: PhysicalBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3529954853301332543}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3529954853598688872}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: groundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 3529954853643206586}
   - component: {fileID: 3529954853643206589}
   - component: {fileID: 3529954853643206587}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Hedgehog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,6 +245,9 @@ MonoBehaviour:
   WhatIsSurfaceForClimbing:
     serializedVersion: 2
     m_Bits: 2048
+  WhatIsCharacter:
+    serializedVersion: 2
+    m_Bits: 8192
   Punch: {fileID: 3529954853301332543}
   PunchRadius: 1
   Kick: {fileID: 3529954854469826096}
@@ -322,7 +325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3529954853876247848}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: climbCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,7 +355,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3529954854469826096}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
