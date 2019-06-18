@@ -31,7 +31,9 @@ namespace TeamZ.Assets.Code.Game.Notifications
         public void ShowMessageWithDuration(string message, float seconds)
         {
             var disposer = this.ShowMessage(message);
-            Observable.Timer(TimeSpan.FromSeconds(seconds)).Subscribe(_ => disposer.Dispose());
+            FixedObservable.Timer(TimeSpan.FromSeconds(seconds))
+                .ObserveOnMainThread()
+                .Subscribe(_ => disposer.Dispose());
         }
 
         public void ShowLongMessage(string message)

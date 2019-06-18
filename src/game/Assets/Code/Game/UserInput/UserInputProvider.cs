@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using UniRx;
@@ -58,10 +59,10 @@ namespace TeamZ.Assets.Code.Game.UserInput
         public IDisposable StartMonitoring()
         {
             this.subcription?.Dispose();
-            this.subcription = UIObservable.EveryUpdate().Subscribe(_ =>
+            this.subcription = Observable.EveryUpdate().Subscribe(_ =>
             {
-                this.Horizontal.Value = Input.GetAxis(this.horizontalAxisName);
-                this.Vertical.Value = Input.GetAxis(this.verticalAxisName);
+                this.Horizontal.Value = Input.GetAxisRaw(this.horizontalAxisName);
+                this.Vertical.Value = Input.GetAxisRaw(this.verticalAxisName);
 
                 this.Jump.Value = Input.GetButton(this.jumpButton);
                 this.Punch.Value = Input.GetButton(this.punchButton);

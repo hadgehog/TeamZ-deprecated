@@ -23,24 +23,22 @@ namespace UniRx
         public static IObservable<Unit> HoldFor<TValue>(this IObservable<TValue> reactiveProperty, TValue negativeValue, TimeSpan time)
         {
             var observable = new Subject<Unit>();
-            IDisposable timer = null;
+            var id = Guid.NewGuid();
             reactiveProperty
                 .Where(o => !o.Equals(negativeValue))
-                .Subscribe(o =>
+                .Subscribe(async o =>
                 {
-                    timer?.Dispose();
-                    timer = Observable.Timer(time)
-                        .Do(_ => Debug.Log("timer"))
-                        .Subscribe(_ =>
-                        {
-                            timer?.Dispose();
-                            observable.OnNext(Unit.Default);
-                        });
+                    var initialGuid = id;
+                    await Task.Delay((int)time.TotalMilliseconds);
+                    if (initialGuid == id)
+                    {
+                        observable.OnNext(Unit.Default);
+                    }
                 });
 
             reactiveProperty
                 .Where(o => o.Equals(negativeValue))
-                .Subscribe(_ => timer?.Dispose());
+                .Subscribe(_ => id = Guid.NewGuid());
 
             return observable.AsObservable();
         }

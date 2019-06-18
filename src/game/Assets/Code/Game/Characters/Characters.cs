@@ -10,6 +10,7 @@ namespace TeamZ.Assets.Code.Game.Characters
     {
         public string Path { get; set; }
         public Type ControllerType { get; set; }
+        public string Name { get; set; }
     }
 
     public static class Characters
@@ -17,6 +18,7 @@ namespace TeamZ.Assets.Code.Game.Characters
         public static CharacterDescriptor Lizard { get; }
             = new CharacterDescriptor
             {
+                Name = nameof(Lizard),
                 Path = @"Prefabs\Characters\Lizard",
                 ControllerType = typeof(LizardController)
             };
@@ -24,6 +26,7 @@ namespace TeamZ.Assets.Code.Game.Characters
         public static CharacterDescriptor Hedgehog { get; }
             = new CharacterDescriptor
             {
+                Name = nameof(Hedgehog),
                 Path = @"Prefabs\Characters\Hedgehog",
                 ControllerType = typeof(HedgehogController)
             };

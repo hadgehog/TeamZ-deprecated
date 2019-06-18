@@ -44,11 +44,13 @@ namespace TeamZ.Assets.Code.Game.Players
         public PlayerService()
         {
             this.UserInputMapper.Value.UserInputProviders[KeyMapping.CombinedFirst].Start
+                .Where(_ => EntitiesStorage.Value.Root)
                 .True()
                 .HoldFor(TimeSpan.FromSeconds(3))
                 .Subscribe(_ => this.HandlePlayerActivation(this.FirstPlayer.Value, this.SecondPlayer.Value));
 
             this.UserInputMapper.Value.UserInputProviders[KeyMapping.CombinedSecond].Start
+                .Where(_ => EntitiesStorage.Value.Root)
                 .True()
                 .HoldFor(TimeSpan.FromSeconds(3))
                 .Subscribe(_ => this.HandlePlayerActivation(this.SecondPlayer.Value, this.FirstPlayer.Value));
