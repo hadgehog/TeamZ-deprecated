@@ -58,7 +58,7 @@ namespace TeamZ.Assets.Code.Game.UserInput
         public IDisposable StartMonitoring()
         {
             this.subcription?.Dispose();
-            this.subcription = Observable.EveryUpdate().Subscribe(_ =>
+            this.subcription = UIObservable.EveryUpdate().Subscribe(_ =>
             {
                 this.Horizontal.Value = Input.GetAxis(this.horizontalAxisName);
                 this.Vertical.Value = Input.GetAxis(this.verticalAxisName);

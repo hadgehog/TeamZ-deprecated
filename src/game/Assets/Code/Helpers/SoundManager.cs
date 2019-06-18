@@ -2,7 +2,6 @@
 using UniRx;
 using Game.Levels;
 using System;
-using UniRx.Async;
 using System.Collections.Generic;
 using System.Collections;
 using TeamZ.Assets.Code.Helpers;

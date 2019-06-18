@@ -202,7 +202,7 @@ namespace GameSaving
             await this.LoadSavedGameAsync(lastSave.Name);
         }
 
-        public async Task StartNewGameAsync(CharacterDescriptor characterDescriptor)
+        public async Task StartNewGameAsync(params CharacterDescriptor[] characterDescriptors)
         {
             DependencyContainer.Instance.NewScope();
 
@@ -216,7 +216,11 @@ namespace GameSaving
             await this.LoadAsync(Level.Laboratory);
 
             var startLocation = GameObject.FindObjectOfType<StartLocation>().transform.localPosition;
-            this.PlayerService.Value.AddPlayer(characterDescriptor, startLocation);
+    
+            foreach (var descriptor in characterDescriptors)
+            {
+                this.PlayerService.Value.AddPlayer(descriptor, startLocation);
+            }
 
             this.UserInputMapper.Value.Bootstrap();
 

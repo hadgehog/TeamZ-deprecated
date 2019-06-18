@@ -45,6 +45,12 @@ namespace TeamZ.Assets.Code.Game.UserInput
                 { KeyMapping.JoystickSecond,  new UserInputProvider("HorizontalJoystic2", "VerticalJoystic2", "JumpJoystic2", "PunchJoystic2", "KickJoystic2", "ActivateJoystic2", "StartJoystic2","CancelJoystic2") },
             };
 
+        public IUserInputProvider FirstUserInputProvider 
+            => this.UserInputProviders[KeyMapping.CombinedFirst];
+
+        public IUserInputProvider SecondUserInputProvider 
+            => this.UserInputProviders[KeyMapping.CombinedSecond];
+
         public UserInputMapper()
         {
             var combinedUserInputProvider = new CombinedUserInputProvider(
