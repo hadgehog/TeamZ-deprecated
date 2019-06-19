@@ -50,7 +50,7 @@ public class CharacterSelectionView : View
             .AddTo(this);
 
         this.UserInputMapper.Value.FirstUserInputProvider.Start
-            .Concat(this.UserInputMapper.Value.SecondUserInputProvider.Start)
+            .Merge(this.UserInputMapper.Value.SecondUserInputProvider.Start)
             .HoldFor(TimeSpan.FromSeconds(3))
             .Subscribe(async _ =>
             {
