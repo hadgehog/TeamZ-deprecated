@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TeamZ.Assets.Code.Game;
 using UniRx;
 using UnityEngine;
 
@@ -10,10 +11,16 @@ namespace UniRx
 {
     public static class ReactivePropertyExtentions
     {
-        public static IObservable<bool> True(this IObservable<bool> reactiveProperty)
+        public static IObservable<bool> True(this IObservable<bool> observable)
         {
-            return reactiveProperty.Where(o => o);
+            return observable.Where(o => o);
         }
+
+        public static IObservable<TValue> GameActive<TValue>(this IObservable<TValue> observable)
+        {
+            return observable.Where(o => GameHelper.IsActive);
+        }
+
 
         public static IObservable<Unit> HoldFor(this IObservable<bool> reactiveProperty, TimeSpan time)
         {
