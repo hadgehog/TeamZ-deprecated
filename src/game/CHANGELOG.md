@@ -1,3 +1,12 @@
+# v2019.06.23
+
+- added interaction layers for characters to interact each with other
+- fixed unlimited jumps
+- fixed enemy turret for shooting to the both characters
+- implemented user friendly interface for selecting characterd
+- fixed ingame messages, hide tips in the main menu, show tips in the game
+- separated Tips for game and Text for UI and menu
+
 # v2019.06.13
 
 - Added HUD for second character
