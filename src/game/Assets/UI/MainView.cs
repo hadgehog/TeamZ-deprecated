@@ -37,7 +37,7 @@ public class MainView : View
     public void Play()
 	{
         this.ViewRouter.Value.ShowView(this.ViewRouter.Value.CharacterSelectionView);
-	}
+    }
 
 	public void Load()
 	{

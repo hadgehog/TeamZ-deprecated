@@ -34,6 +34,7 @@ namespace Assets.UI
 
         public void ShowMainView()
         {
+            this.DisableTips();
             this.ShowView(this.MainView);
             this.BackgroundImage.Value.Activate();
         }
@@ -53,6 +54,17 @@ namespace Assets.UI
             foreach (Transform view in this.View.transform)
             {
                 GameObject.Destroy(view.gameObject);
+            }
+        }
+
+        private void DisableTips()
+        {
+            foreach (Transform view in this.transform)
+            {
+                if (view.name == "Text")
+                {
+                    view.gameObject.SetActive(false);
+                }
             }
         }
 

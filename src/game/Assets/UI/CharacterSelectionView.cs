@@ -20,8 +20,10 @@ public class CharacterSelectionView : View
     Dependency<UserInputMapper> UserInputMapper;
     UnityDependency<NotificationService> NotificationService;
 
-    public CharacterDescriptor firstUserSelection;
-    public CharacterDescriptor secondUserSelection;
+    public CharacterDescriptor firstUserSelection = null;
+    public CharacterDescriptor secondUserSelection = null;
+
+    private CharacterDescriptor[] selectedCharacters;
 
     private void OnEnable()
     {
@@ -66,20 +68,87 @@ public class CharacterSelectionView : View
                     return;
                 }
 
-                var selectedCharacters = new[] { this.firstUserSelection, this.secondUserSelection }.Where(o => o != null).ToArray();
-                await this.GameController.Value.StartNewGameAsync(selectedCharacters);
+                this.selectedCharacters = new[] { this.firstUserSelection, this.secondUserSelection }.Where(o => o != null).ToArray();
+                await this.GameController.Value.StartNewGameAsync(this.selectedCharacters);
             })
             .AddTo(this);
 
     }
 
-    public async void Lizard()
+    public void SelectLizard(bool isActive)
     {
-        //await this.GameController.Value.StartNewGameAsync(Characters.Lizard);
+        if (isActive)
+        {
+            if (this.firstUserSelection == null)
+            {
+                this.firstUserSelection = Characters.Lizard;
+                this.NotificationService.Value.ShowShortMessage($"First player selectecs {this.firstUserSelection.Name}");
+            }
+            else if (this.secondUserSelection == null)
+            {
+                this.secondUserSelection = Characters.Lizard;
+                this.NotificationService.Value.ShowShortMessage($"Second player selectecs {this.secondUserSelection.Name}");
+            }
+        }
+        else
+        {
+            if (this.firstUserSelection == Characters.Lizard)
+            {
+                this.firstUserSelection = null;
+            }
+
+            if (this.secondUserSelection == Characters.Lizard)
+            {
+                this.secondUserSelection = null;
+            }
+        }
     }
 
-    public async void Hedgehog()
+    public void SelectHedgehog(bool isActive)
     {
-        //await this.GameController.Value.StartNewGameAsync(Characters.Hedgehog);
+        if (isActive)
+        {
+            if (this.firstUserSelection == null)
+            {
+                this.firstUserSelection = Characters.Hedgehog;
+                this.NotificationService.Value.ShowShortMessage($"First player selectecs {this.firstUserSelection.Name}");
+            }
+            else if (this.secondUserSelection == null)
+            {
+                this.secondUserSelection = Characters.Hedgehog;
+                this.NotificationService.Value.ShowShortMessage($"Second player selectecs {this.secondUserSelection.Name}");
+            }
+        }
+        else
+        {
+            if (this.firstUserSelection == Characters.Hedgehog)
+            {
+                this.firstUserSelection = null;
+            }
+
+            if (this.secondUserSelection == Characters.Hedgehog)
+            {
+                this.secondUserSelection = null;
+            }
+        }
+    }
+
+    public async void StartGame()
+    {
+        if (this.firstUserSelection is null && this.secondUserSelection is null)
+        {
+            this.NotificationService.Value.ShowShortMessage("Selecte some character");
+            return;
+        }
+
+        if (this.firstUserSelection == this.secondUserSelection)
+        {
+            this.NotificationService.Value.ShowShortMessage("Same character are not allowed");
+            return;
+        }
+
+        this.selectedCharacters = new[] { this.firstUserSelection, this.secondUserSelection }.Where(o => o != null).ToArray();
+
+        await this.GameController.Value.StartNewGameAsync(this.selectedCharacters);
     }
 }
