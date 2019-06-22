@@ -13,7 +13,7 @@ namespace TeamZ.Assets.Code.Game.Tips
 
         public override void Activate()
         {
-            this.message = this.Notifications.Value.ShowMessage(this.Message);
+            this.message = this.Notifications.Value.ShowMessage(this.Message, true);
         }
 
         public override void Deactivate()
