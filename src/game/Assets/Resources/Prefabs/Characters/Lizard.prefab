@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 1752780952135111716}
   m_Layer: 13
   m_Name: Lizard
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -170,7 +170,7 @@ MonoBehaviour:
     m_Bits: 2048
   WhatIsCharacter:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 16384
   Punch: {fileID: 4946839098338384}
   PunchRadius: 0.8
   Kick: {fileID: 4495286561585158}

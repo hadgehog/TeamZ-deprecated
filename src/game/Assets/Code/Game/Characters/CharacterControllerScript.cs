@@ -79,7 +79,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
     private bool loadingStarted;
 
-    private int[] activeLayersToInteraction = { 8, 9, 10, 13 };     // ground, level object, enemy, characters
+    private int[] activeLayersToInteraction = { 8, 9, 10, 13, 14 };     // ground, level object, enemy, characters
 
     private int impulseDirection = 1;
 
