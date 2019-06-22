@@ -8,14 +8,23 @@ namespace TeamZ.Assets.Code.Game.Notifications
     public class NotificationService : MonoBehaviour
     {
         public TextMeshProUGUI Text;
+        public TextMeshProUGUI Tips;
+
         private Guid lastMessageId;
 
-        public IDisposable ShowMessage(string message)
+        public IDisposable ShowMessage(string message, bool isTip)
         {
             var messageId = Guid.NewGuid();
             this.lastMessageId = messageId;
 
-            this.Text.text = message;
+            if (isTip)
+            {
+                this.Tips.text = message;
+            }
+            else
+            {
+                this.Text.text = message;
+            }
 
             return Disposable.Create(() =>
             {
@@ -24,26 +33,33 @@ namespace TeamZ.Assets.Code.Game.Notifications
                     return;
                 }
 
-                this.Text.text = string.Empty;
+                if (isTip)
+                {
+                    this.Tips.text = string.Empty;
+                }
+                else
+                {
+                    this.Text.text = string.Empty;
+                }
             });
         }
 
-        public void ShowMessageWithDuration(string message, float seconds)
+        public void ShowMessageWithDuration(string message, float seconds, bool isTip)
         {
-            var disposer = this.ShowMessage(message);
+            var disposer = this.ShowMessage(message, isTip);
             FixedObservable.Timer(TimeSpan.FromSeconds(seconds))
                 .ObserveOnMainThread()
                 .Subscribe(_ => disposer.Dispose());
         }
 
-        public void ShowLongMessage(string message)
+        public void ShowLongMessage(string message, bool isTip)
         {
-            this.ShowMessageWithDuration(message, 5);
+            this.ShowMessageWithDuration(message, 5, isTip);
         }
 
-        public void ShowShortMessage(string message)
+        public void ShowShortMessage(string message, bool isTip)
         {
-            this.ShowMessageWithDuration(message, 1);
+            this.ShowMessageWithDuration(message, 1, isTip);
         }
     }
 }

@@ -36,7 +36,7 @@ public class CharacterSelectionView : View
             .Subscribe(o =>
             {
                 this.firstUserSelection = o;
-                this.NotificationService.Value.ShowShortMessage($"First player selectecs {o.Name}");
+                this.NotificationService.Value.ShowShortMessage($"First player selectecs {o.Name}", false);
             })
             .AddTo(this);
 
@@ -47,7 +47,7 @@ public class CharacterSelectionView : View
             .Subscribe(o =>
             {
                 this.secondUserSelection = o;
-                this.NotificationService.Value.ShowShortMessage($"Second player selectecs {o.Name}");
+                this.NotificationService.Value.ShowShortMessage($"Second player selectecs {o.Name}", false);
             })
             .AddTo(this);
 
@@ -58,13 +58,13 @@ public class CharacterSelectionView : View
             {
                 if (this.firstUserSelection is null && this.secondUserSelection is null)
                 {
-                    this.NotificationService.Value.ShowShortMessage("Selecte some character");
+                    this.NotificationService.Value.ShowShortMessage("Selecte some character", false);
                     return;
                 }
 
                 if (this.firstUserSelection == this.secondUserSelection)
                 {
-                    this.NotificationService.Value.ShowShortMessage("Same character are not allowed");
+                    this.NotificationService.Value.ShowShortMessage("Same character are not allowed", false);
                     return;
                 }
 
@@ -82,12 +82,12 @@ public class CharacterSelectionView : View
             if (this.firstUserSelection == null)
             {
                 this.firstUserSelection = Characters.Lizard;
-                this.NotificationService.Value.ShowShortMessage($"First player selectecs {this.firstUserSelection.Name}");
+                this.NotificationService.Value.ShowShortMessage($"First player selectecs {this.firstUserSelection.Name}", false);
             }
             else if (this.secondUserSelection == null)
             {
                 this.secondUserSelection = Characters.Lizard;
-                this.NotificationService.Value.ShowShortMessage($"Second player selectecs {this.secondUserSelection.Name}");
+                this.NotificationService.Value.ShowShortMessage($"Second player selectecs {this.secondUserSelection.Name}", false);
             }
         }
         else
@@ -111,12 +111,12 @@ public class CharacterSelectionView : View
             if (this.firstUserSelection == null)
             {
                 this.firstUserSelection = Characters.Hedgehog;
-                this.NotificationService.Value.ShowShortMessage($"First player selectecs {this.firstUserSelection.Name}");
+                this.NotificationService.Value.ShowShortMessage($"First player selectecs {this.firstUserSelection.Name}", false);
             }
             else if (this.secondUserSelection == null)
             {
                 this.secondUserSelection = Characters.Hedgehog;
-                this.NotificationService.Value.ShowShortMessage($"Second player selectecs {this.secondUserSelection.Name}");
+                this.NotificationService.Value.ShowShortMessage($"Second player selectecs {this.secondUserSelection.Name}", false);
             }
         }
         else
@@ -137,13 +137,13 @@ public class CharacterSelectionView : View
     {
         if (this.firstUserSelection is null && this.secondUserSelection is null)
         {
-            this.NotificationService.Value.ShowShortMessage("Selecte some character");
+            this.NotificationService.Value.ShowShortMessage("Select some character", false);
             return;
         }
 
         if (this.firstUserSelection == this.secondUserSelection)
         {
-            this.NotificationService.Value.ShowShortMessage("Same character are not allowed");
+            this.NotificationService.Value.ShowShortMessage("Same character are not allowed", false);
             return;
         }
 

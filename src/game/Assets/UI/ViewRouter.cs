@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Helpers;
+using TeamZ.Assets.Code.Game.Tips;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -61,7 +62,7 @@ namespace Assets.UI
         {
             foreach (Transform view in this.transform)
             {
-                if (view.name == "Text")
+                if (view.name == "Tips")
                 {
                     view.gameObject.SetActive(false);
                 }
@@ -72,7 +73,7 @@ namespace Assets.UI
         {
             foreach (Transform view in this.transform)
             {
-                if (view.name == "Text")
+                if (view.name == "Tips")
                 {
                     view.gameObject.SetActive(true);
                 }

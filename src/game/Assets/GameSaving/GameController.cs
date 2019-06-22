@@ -48,7 +48,7 @@ namespace GameSaving
             this.VisitedLevels = new HashSet<Guid>();
 
             MessageBroker.Default.Receive<GameSaved>().
-                Subscribe(_ => this.Notifications.Value.ShowShortMessage("Game saved"));
+                Subscribe(_ => this.Notifications.Value.ShowShortMessage("Game saved", true));
 
             MessageBroker.Default.Receive<LoadGameRequest>().
                 Subscribe(async o =>
