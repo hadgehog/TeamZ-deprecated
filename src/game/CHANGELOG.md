@@ -1,3 +1,7 @@
+# v2019.06.23_2
+- added property Name for character
+- improved Hedgehog alignment at the climbing surface
+
 # v2019.06.23
 
 - added interaction layers for characters to interact each with other
