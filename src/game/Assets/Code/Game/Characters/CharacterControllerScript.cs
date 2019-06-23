@@ -5,6 +5,7 @@ using Game.Activation.Core;
 using GameSaving;
 using GameSaving.MonoBehaviours;
 using TeamZ.Assets.Code.DependencyInjection;
+using TeamZ.Assets.Code.Game.Characters;
 using TeamZ.Assets.Code.Game.UserInput;
 using TeamZ.Assets.GameSaving.States;
 using UniRx;
@@ -433,6 +434,12 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         var hitRight = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(characterSizeX / 2, 0, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
         var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
         var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+
+        if (this.Character.Name.Equals(Characters.Hedgehog.Name))
+        {
+            hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+            hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        }
 
         var horizontalMove = this.HorizontalValue.Value;
         var verticalMove = this.VerticalValue.Value;

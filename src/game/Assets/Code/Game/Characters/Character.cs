@@ -7,6 +7,8 @@ using static CharacterControllerScript;
 
 public interface ICharacter
 {
+    string Name { get; set; }
+
     int Health { get; set; }
     int Armor { get; set; }
     int PunchDamage { get; set; }
@@ -25,6 +27,9 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
     where TState : CharacterState
 {
     [SerializeField]
+    private string characterName;
+
+    [SerializeField]
     private int health;
 
     [SerializeField]
@@ -41,6 +46,12 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
 
 	[SerializeField]
 	private int kickImpulse;
+
+    public string Name
+    {
+        get { return this.characterName; }
+        set { this.characterName = value; }
+    }
 
 	public int Health
     {

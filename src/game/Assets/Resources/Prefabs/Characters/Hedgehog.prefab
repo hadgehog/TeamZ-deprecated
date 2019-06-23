@@ -264,6 +264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f44178563da39547a3b81bdcc86e0d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterName: Hedgehog
   health: 100
   armor: 50
   punchDamage: 20

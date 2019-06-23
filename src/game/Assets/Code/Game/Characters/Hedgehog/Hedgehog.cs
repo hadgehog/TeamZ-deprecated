@@ -11,7 +11,8 @@ public class Hedgehog : Character<HedgehogState>
             Armor = this.Armor,
             PunchDamage = this.PunchDamage,
             KickDamage = this.KickDamage,
-            Health = this.Health
+            Health = this.Health,
+            Name = this.Name
         };
     }
 

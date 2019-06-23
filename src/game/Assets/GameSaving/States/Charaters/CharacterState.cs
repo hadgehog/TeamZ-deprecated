@@ -31,5 +31,12 @@ namespace GameSaving.States.Charaters
 			get;
 			set;
 		}
-	}
+
+        [Index(4)]
+        public virtual string Name
+        {
+            get;
+            set;
+        }
+    }
 }
