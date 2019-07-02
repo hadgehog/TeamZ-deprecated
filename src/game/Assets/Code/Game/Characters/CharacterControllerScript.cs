@@ -93,6 +93,11 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
     protected ClimbingSurface climbingSurface = null;
     private IDisposable climbingMovement;
 
+    private bool climbingSurfaceOnLeftIsMissing;
+    private bool climbingSurfaceOnRightIsMissing;
+    private bool climbingSurfaceOnTopIsMissing;
+    private bool climbingSurfaceOnBottomIsMissing;
+
     // Use this for initialization
     protected virtual void Start()
     {
@@ -277,7 +282,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
                 this.climbingMovement = Observable
                     .EveryUpdate()
-                    .Subscribe(_ => this.LimitCharacterMovement())
+                    .Subscribe(_ => this.CheckClimbingSurfaceBorders())
                     .AddTo(this);
             }
             else
@@ -322,7 +327,30 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
         if (this.IsClimbed.Value && this.climbingSurface)
         {
-            this.rigidBody.velocity = new Vector2(this.HorizontalValue.Value * this.CreepSpeed, this.VerticalValue.Value * this.CreepSpeed);
+            var horizontalValue = this.HorizontalValue.Value * this.CreepSpeed;
+            var verticalValue = this.VerticalValue.Value * this.CreepSpeed;
+
+            if (this.climbingSurfaceOnRightIsMissing && horizontalValue > 0)
+            {
+                horizontalValue = 0;
+            }
+
+            if (this.climbingSurfaceOnLeftIsMissing && horizontalValue < 0)
+            {
+                horizontalValue = 0;
+            }
+
+            if (this.climbingSurfaceOnTopIsMissing && verticalValue > 0)
+            {
+                verticalValue = 0;
+            }
+
+            if (this.climbingSurfaceOnBottomIsMissing && verticalValue < 0)
+            {
+                verticalValue = 0;
+            }
+
+            this.rigidBody.velocity = new Vector2(horizontalValue, verticalValue);
         }
 
         if (!this.IsClimbed.Value)
@@ -424,7 +452,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         this.CanClimb.Value = state.IsClimbed;
     }
 
-    protected virtual void LimitCharacterMovement()
+    protected virtual void CheckClimbingSurfaceBorders()
     {
         var localScale = this.transform.localScale;
         var characterSizeX = Math.Abs(localScale.x);
@@ -441,36 +469,10 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
             hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
         }
 
-        var horizontalMove = this.HorizontalValue.Value;
-        var verticalMove = this.VerticalValue.Value;
-
-        if (hitLeft.collider == null && horizontalMove < 0)
-        {
-            var tempPos = this.rigidBody.transform.position;
-            tempPos.x += 0.2f;
-            this.rigidBody.transform.position = tempPos;
-        }
-
-        if (hitRight.collider == null && horizontalMove > 0)
-        {
-            var tempPos = this.rigidBody.transform.position;
-            tempPos.x -= 0.2f;
-            this.rigidBody.transform.position = tempPos;
-        }
-
-        if (hitTop.collider == null && verticalMove > 0)
-        {
-            var tempPos = this.rigidBody.transform.position;
-            tempPos.y -= 0.2f;
-            this.rigidBody.transform.position = tempPos;
-        }
-
-        if (hitBottom.collider == null && verticalMove < 0)
-        {
-            var tempPos = this.rigidBody.transform.position;
-            tempPos.y += 0.2f;
-            this.rigidBody.transform.position = tempPos;
-        }
+        this.climbingSurfaceOnLeftIsMissing = hitLeft.collider == null;
+        this.climbingSurfaceOnRightIsMissing = hitRight.collider == null;
+        this.climbingSurfaceOnTopIsMissing = hitTop.collider == null;
+        this.climbingSurfaceOnBottomIsMissing = hitBottom.collider == null;
     }
 
     private void AlignCharacter()
