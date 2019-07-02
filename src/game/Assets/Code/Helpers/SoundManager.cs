@@ -84,7 +84,7 @@ public class SoundManager : MonoBehaviour
 		this.sounds.PlayLooped(this.MenuBackgroungMusic, MENU, MUSIC_VOLUME);
 	}
 
-	private async void OnGameResumedAsync(GameResumed message)
+	private void OnGameResumedAsync(GameResumed message)
 	{
 		if (string.IsNullOrWhiteSpace(message.Level))
 		{
@@ -104,10 +104,20 @@ public class SoundManager : MonoBehaviour
 		switch (message.Level)
 		{
 			case Level.LABORATORY:
+                if (this.sounds.IsPlaying(levelName, this.Level1BackgroungMusic))
+                {
+                    break;
+                }
+
 				this.sounds.PlayLooped(this.Level1BackgroungMusic, levelName, MUSIC_VOLUME, MUSIC_CHANGE_RATE);
 				break;
 			case Level.LABORATORY2:
-				this.sounds.PlayLooped(this.Level2BackgroungMusic, levelName, MUSIC_VOLUME, MUSIC_CHANGE_RATE);
+                if (this.sounds.IsPlaying(levelName, this.Level2BackgroungMusic))
+                {
+                    break;
+                }
+
+                this.sounds.PlayLooped(this.Level2BackgroungMusic, levelName, MUSIC_VOLUME, MUSIC_CHANGE_RATE);
 				break;
 		}
 

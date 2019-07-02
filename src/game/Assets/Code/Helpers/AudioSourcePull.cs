@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -124,6 +125,13 @@ namespace TeamZ.Assets.Code.Helpers
 
 			await this.InreaseVolume(audioSource, volume, rate);
 		}
+
+        public bool IsPlaying(object id, AudioClip audio)
+        {
+            var audioSource = this.Lend(id);
+
+            return audioSource.isPlaying && audioSource.clip == audio;
+        }
 
 		private async UniTask InreaseVolume(AudioSource audioSource, float volume, float rate)
 		{
