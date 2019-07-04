@@ -1,3 +1,8 @@
+# v2019.07.05
+- fixed repeating music playback after level switch 
+- fixed character alignment on a climbing surface
+- fixed floor at the Level 2
+
 # v2019.06.23_2
 - added property Name for character
 - improved Hedgehog alignment at the climbing surface
