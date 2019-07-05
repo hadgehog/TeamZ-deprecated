@@ -97,6 +97,11 @@ public class Main : MonoBehaviour
 			this.ViewRouter.Value.ShowMainView();
 		}
 	}
+
+    private void OnDestroy()
+    {
+        Mediator.Instance.Reset();
+    }
 }
 
 public class GamePaused : ICommand

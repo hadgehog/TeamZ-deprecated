@@ -30,7 +30,12 @@ public class MainView : View
 	private async void OnEnable()
 	{
 		await Observable.NextFrame();
-		this.SaveButton.SetActive(this.LevelManager.Value.CurrentLevel != null);
+
+        if (this.SaveButton)
+        {
+            this.SaveButton.SetActive(this.LevelManager.Value.CurrentLevel != null);
+        }
+
         Selectable.allSelectables.First().Select();
     }
 

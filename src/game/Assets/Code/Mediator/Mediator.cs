@@ -61,5 +61,10 @@ namespace TeamZ.Mediator
 
 			((IHandler<TCommand>)handler).Handle(command);
 		}
-	}
+
+        public void Reset()
+        {
+            this.handlers.Clear();
+        }
+    }
 }
