@@ -19,17 +19,22 @@ namespace Tests
 			var levelManager = new LevelManager();
 			yield return levelManager.LoadAsync(Level.Core).AsUniTask().ToCoroutine();
 
-			GameObject.FindObjectOfType<MainView>().Load();
+            yield return null;
+            yield return null;
 
-			while (!GameObject.FindObjectOfType<LoadItemView>())
+            GameObject.FindObjectOfType<MainView>().Load();
+
+            var time = Time.time;
+            LoadItemView testSlot = null;
+            while (!(testSlot = GameObject.FindObjectsOfType<LoadItemView>().FirstOrDefault(o => o.SlotName == "test")) && time < 10)
 			{
 				yield return null;
 			}
 
-			GameObject.FindObjectOfType<LoadItemView>().Load();
+			testSlot.Load();
 			
 			// TODO: figure out better wayt to do it
-			yield return new WaitForSeconds(2);
+			yield return new WaitForSeconds(5);
 
 			Assert.True(Dependency<LevelManager>.Resolve().CurrentLevel != null);
 			//
