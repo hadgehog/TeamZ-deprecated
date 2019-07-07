@@ -75,5 +75,11 @@ namespace TeamZ.Assets.Code.DependencyInjection
 
             throw new InvalidOperationException($"Dependency for type {dependecyType.FullName} is missing");
         }
+
+        public void Reset()
+        {
+            this.dependenies.Clear();
+            this.scopedDependenies.Clear();
+        }
     }
 }

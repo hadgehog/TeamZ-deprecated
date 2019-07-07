@@ -12,18 +12,24 @@ using Assets.Code.Helpers;
 using Assets.UI;
 using UnityEngine.UI;
 using System;
+using TeamZ.Assets.Tests;
 
-namespace Tests
+namespace TeamZ.Tests
 {
-    public class MainMenuTests
+    public class MainMenuLoadingTests
     {
         [UnityTest]
         public IEnumerator LoadGameSaveFromMainMenu()
         {
+            yield return LoadGameSave();
+        }
+
+        public static IEnumerator LoadGameSave()
+        {
             if (!GameObject.FindObjectOfType<Main>())
             {
                 var levelManager = new LevelManager();
-			    yield return levelManager.LoadAsync(Level.Core).AsUniTask().ToCoroutine();
+                yield return levelManager.LoadAsync(Level.Core).AsUniTask().ToCoroutine();
             }
 
             yield return null;
@@ -40,7 +46,7 @@ namespace Tests
             var time = Time.time;
             LoadItemView testSlot = null;
             while (Time.time - time < 10)
-			{
+            {
                 testSlot = GameObject.FindObjectsOfType<LoadItemView>().FirstOrDefault(o => o.SlotName == "test");
                 if (testSlot)
                 {
@@ -48,21 +54,24 @@ namespace Tests
                 }
 
                 yield return null;
-			}
+            }
 
-			testSlot.Load();
-			
-			// TODO: figure out better wayt to do it
-			yield return new WaitForSeconds(5);
+            testSlot.Load();
 
-			Assert.True(Dependency<LevelManager>.Resolve().CurrentLevel != null);
-			//
-		}
+            var levelManagerDependency = Dependency<LevelManager>.Resolve();
+            yield return new WaitUntilWithTimeout(() => levelManagerDependency.CurrentLevel == null, TimeSpan.FromSeconds(5));
 
+            Assert.True(levelManagerDependency.CurrentLevel != null);
+        }
+
+        
+    }
+    public class MainMenuSavingTests
+    {
         [UnityTest]
         public IEnumerator SaveGameFromMainMenu()
         {
-            yield return this.LoadGameSaveFromMainMenu();
+            yield return MainMenuLoadingTests.LoadGameSave();
 
             yield return null;
             yield return null;
@@ -84,7 +93,7 @@ namespace Tests
             yield return null;
             router.ShowGameHUDView();
 
-            yield return this.LoadGameSaveFromMainMenu();
+            yield return MainMenuLoadingTests.LoadGameSave();
         }
     }
 }

@@ -30,6 +30,11 @@ public class SaveView : View
 		await Observable.NextFrame();
         Selectable.allSelectables.First().Select();
 
+        if (!this.ItemsRoot)
+        {
+            return;
+        }
+
 		foreach (Transform saveItem in this.ItemsRoot)
 		{
 			GameObject.Destroy(saveItem.gameObject);
