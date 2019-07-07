@@ -39,9 +39,15 @@ namespace Tests
 
             var time = Time.time;
             LoadItemView testSlot = null;
-            while (!(testSlot = GameObject.FindObjectsOfType<LoadItemView>().FirstOrDefault(o => o.SlotName == "test")) && time < 10)
+            while (Time.time - time < 10)
 			{
-				yield return null;
+                testSlot = GameObject.FindObjectsOfType<LoadItemView>().FirstOrDefault(o => o.SlotName == "test");
+                if (testSlot)
+                {
+                    break;
+                }
+
+                yield return null;
 			}
 
 			testSlot.Load();
@@ -74,6 +80,9 @@ namespace Tests
 
             var saveButton = GameObject.Find("Save_Button").GetComponent<Button>();
             saveButton.onClick.Invoke();
+
+            yield return null;
+            router.ShowGameHUDView();
 
             yield return this.LoadGameSaveFromMainMenu();
         }
