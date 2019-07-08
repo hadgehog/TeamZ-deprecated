@@ -463,16 +463,21 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
         var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
 
-        if (this.Character.Name.Equals(Characters.Hedgehog.Name))
-        {
-            hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
-            hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
-        }
-
         this.climbingSurfaceOnLeftIsMissing = hitLeft.collider == null;
         this.climbingSurfaceOnRightIsMissing = hitRight.collider == null;
         this.climbingSurfaceOnTopIsMissing = hitTop.collider == null;
         this.climbingSurfaceOnBottomIsMissing = hitBottom.collider == null;
+
+        if (this.Character.Name.Equals(Characters.Hedgehog.Name))
+        {
+            hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+            hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+
+            this.climbingSurfaceOnLeftIsMissing = hitLeft.collider == null || (hitLeft.collider != null && hitLeft.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Fence);
+            this.climbingSurfaceOnRightIsMissing = hitRight.collider == null || (hitRight.collider != null && hitRight.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Fence);
+            this.climbingSurfaceOnTopIsMissing = hitTop.collider == null || (hitTop.collider != null && hitTop.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Fence);
+            this.climbingSurfaceOnBottomIsMissing = hitBottom.collider == null || (hitBottom.collider != null && hitBottom.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Fence);
+        }
     }
 
     private void AlignCharacter()
