@@ -485,6 +485,17 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         var stairwayPos = this.climbingSurface.Position;
         this.rigidBody.position = new Vector2(stairwayPos.x, this.rigidBody.position.y);
     }
+
+    protected virtual void CheckGroundUnderTheStairs()
+    {
+        var localScale = this.transform.localScale;
+        var characterSizeY = Math.Abs(localScale.y);
+
+        var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+
+
+    }
 }
 
 public class RunHappened
