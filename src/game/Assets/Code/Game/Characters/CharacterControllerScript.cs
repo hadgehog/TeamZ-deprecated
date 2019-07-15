@@ -98,6 +98,9 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
     private bool climbingSurfaceOnTopIsMissing;
     private bool climbingSurfaceOnBottomIsMissing;
 
+    private bool isTopOnStairs;
+    private bool isBottomNotOnStairs;
+
     // Use this for initialization
     protected virtual void Start()
     {
@@ -282,7 +285,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
                 this.climbingMovement = Observable
                     .EveryUpdate()
-                    .Subscribe(_ => this.CheckClimbingSurfaceBorders())
+                    .Subscribe(_ => { this.CheckClimbingSurfaceBorders(); this.CheckGroundUnderTheStairs(); })
                     .AddTo(this);
             }
             else
@@ -350,7 +353,16 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
                 verticalValue = 0;
             }
 
-            this.rigidBody.velocity = new Vector2(horizontalValue, verticalValue);
+            if (verticalValue < 0 && this.isTopOnStairs && this.isBottomNotOnStairs)
+            {
+                this.IsGrounded.Value = true;
+                this.IsClimbed.Value = false;
+                this.rigidBody.gravityScale = 1.0f;
+            }
+            else
+            {
+                this.rigidBody.velocity = new Vector2(horizontalValue, verticalValue);
+            }
         }
 
         if (!this.IsClimbed.Value)
@@ -488,13 +500,16 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
     protected virtual void CheckGroundUnderTheStairs()
     {
+        var spriteSize = GetComponent<SpriteRenderer>().size;
         var localScale = this.transform.localScale;
-        var characterSizeY = Math.Abs(localScale.y);
+        var characterSizeY = Math.Abs(localScale.y * spriteSize.y);
 
-        var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
-        var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 2.0f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        // tune the magic constant if it will work bad
+        var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 1.2f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
 
-
+        this.isTopOnStairs = hitTop.collider != null && hitTop.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Stairway;
+        this.isBottomNotOnStairs = hitBottom.collider == null;
     }
 }
 
