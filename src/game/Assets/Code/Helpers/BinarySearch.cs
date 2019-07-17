@@ -76,5 +76,55 @@ namespace TeamZ.Code.Helpers
 
             return left;
         }
+
+        public static int ExactBinarySearch<TValue>(this List<TValue> values, float value, Func<TValue, float> getter)
+        {
+            var left = 0;
+            var right = values.Count - 1;
+            while ((right - left) > 1)
+            {
+                var index = left + (right - left) / 2;
+                var newValue = getter(values[index]);
+                if (newValue > value)
+                {
+                    right = index;
+                    continue;
+                }
+
+                if (newValue < value)
+                {
+                    left = index;
+                    continue;
+                }
+
+                return index;
+            }
+
+           var leftValue = getter(values[left]);
+            if (leftValue == value)
+            {
+                return left;
+            }
+
+            var rightValue = getter(values[right]);
+            if (rightValue == value)
+            {
+                return right;
+            }
+
+            return -1;
+        }
+
+        public static (TValue Value, bool Empty) ExactBinarySearchValue<TValue>(this List<TValue> values, float value, Func<TValue, float> getter)
+        {
+            var index = values.ExactBinarySearch(value, getter);
+            if (index == -1)
+            {
+                return (default, true);
+            }
+
+            return (values[index], true);
+        }
+
     }
 }
