@@ -13,6 +13,15 @@ namespace TeamZ.Tests.BinarySearch
         private List<float> Items { get; } = new List<float> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 
         [Test]
+        public void CheckEmpty()
+        {
+            var (min, max) = new List<float>().RangedBinarySearch(1, 5, o => o);
+
+            Assert.AreEqual(-1, min);
+            Assert.AreEqual(-1, max);
+        }
+
+        [Test]
         public void CheckSmallest()
         {
             var indexes = this.Items.RangedBinarySearch(1, 5, o => o);

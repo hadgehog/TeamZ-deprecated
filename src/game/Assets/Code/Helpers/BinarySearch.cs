@@ -20,6 +20,12 @@ namespace TeamZ.Code.Helpers
         public static IEnumerable<TValue> RangedBinarySearchValues<TValue>(this List<TValue> values, float minValue, float maxValue, Func<TValue, float> getter)
         {
             var (minIndex, maxIndex) = values.RangedBinarySearch(minValue, maxValue, getter);
+
+            if (minIndex == -1 || maxIndex == -1)
+            {
+                yield break;
+            }
+
             for (int i = minIndex; i < maxIndex; i++)
             {
                 yield return values[i];
@@ -28,14 +34,25 @@ namespace TeamZ.Code.Helpers
             yield return values[maxIndex];
         }
 
-        public static TValue NearestBinarySearchValue<TValue>(this List<TValue> values, float value, Func<TValue, float> getter)
+        public static (TValue value, bool Empty) NearestBinarySearchValue<TValue>(this List<TValue> values, float value, Func<TValue, float> getter)
         {
             var index = values.NearestBinarySearch(value, getter);
-            return values[index];
+
+            if (index == -1)
+            {
+                return (default, true);
+            }
+
+            return (values[index], false);
         }
 
         public static int NearestBinarySearch<TValue>(this List<TValue> values, float value, Func<TValue, float> getter)
         {
+            if (!values.Any())
+            {
+                return -1;
+            }
+
             var left = 0;
             var right = values.Count - 1;
             while ((right - left) > 1)
@@ -79,6 +96,11 @@ namespace TeamZ.Code.Helpers
 
         public static int ExactBinarySearch<TValue>(this List<TValue> values, float value, Func<TValue, float> getter)
         {
+            if (!values.Any())
+            {
+                return -1;
+            }
+
             var left = 0;
             var right = values.Count - 1;
             while ((right - left) > 1)

@@ -14,6 +14,14 @@ namespace TeamZ.Tests.BinarySearch
         private List<float> Items { get; } = new List<float> { 1, 2, 3, 4, 5, 6, 7, 8, 0, 10, 11 };
 
         [Test]
+        public void CheckEmpty()
+        {
+            var index = new List<float>().NearestBinarySearch(1, o => o);
+
+            Assert.AreEqual(-1, index);
+        }
+
+        [Test]
         public void CheckSmallest()
         {
             var index = this.Items.NearestBinarySearch(1, o => o);
