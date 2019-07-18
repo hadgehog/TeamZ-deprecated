@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
+using UniRx.InternalUtil;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Video;
@@ -11,6 +14,8 @@ namespace TeamZ.Assets.Code.Game.Navigation
     {
         public Vector3 Position { get; set; }
         public List<Waypoint> Waypoints { get; set; }
+
+        public BoxCollider2D Collider { get; set; }
     }
 
     public class NavigationService : IDisposable
@@ -19,6 +24,7 @@ namespace TeamZ.Assets.Code.Game.Navigation
         private BoxCollider2D boxCollider;
         private Rigidbody2D rigibody2d;
         private NavigationEventProvider eventProvider;
+        private OrderedMatrix<Waypoint> orderedMatrix;
 
         public Dictionary<BoxCollider2D, Waypoint[]> Planes { get; }
             = new Dictionary<BoxCollider2D, Waypoint[]>();
@@ -42,6 +48,8 @@ namespace TeamZ.Assets.Code.Game.Navigation
             // Add caching
             this.eventProvider.Enter.Subscribe(o => this.AddNewEntry(o));
             this.eventProvider.Exit.Subscribe(o => this.RemoveEntry(o));
+
+            this.orderedMatrix = new OrderedMatrix<Waypoint>(o => o.Position.x, o => o.Position.y);
         }
 
         private void RemoveEntry(BoxCollider2D collider)
@@ -51,12 +59,55 @@ namespace TeamZ.Assets.Code.Game.Navigation
 
         private void AddNewEntry(BoxCollider2D collider)
         {
+            var (left, right) = this.CalculateWaypointsPositions(collider);
+
+            var nearestToLeft = this.orderedMatrix.GetNearestInRadius(left, 5)
+                .Where(o => o.Collider != collider)
+                .ToList();
+
+            var nearestToRight = this.orderedMatrix.GetNearestInRadius(right, 5)
+                .Where(o => o.Collider != collider)
+                .ToList();
+
+
+            var leftWaypoint = new Waypoint
+            {
+                Position = left,
+                Waypoints = nearestToLeft,
+                Collider = collider
+            };
+
+            foreach (var waypoint in nearestToLeft)
+            {
+                waypoint.Waypoints.Add(leftWaypoint);
+            }
+
+            var rightWaypoint = new Waypoint
+            {
+                Position = right,
+                Waypoints = nearestToRight,
+                Collider = collider
+            };
+
+            foreach (var waypoint in nearestToRight)
+            {
+                waypoint.Waypoints.Add(rightWaypoint);
+            }
+
+            this.orderedMatrix.Add(leftWaypoint);
+            this.orderedMatrix.Add(rightWaypoint);
+            this.Planes.Add(collider, new[] {leftWaypoint, rightWaypoint});
+        }
+
+        private (Vector2 Left, Vector2 Right) CalculateWaypointsPositions(BoxCollider2D collider)
+        {
             var center = collider.bounds.center;
             var extents = collider.bounds.extents;
             var left = new Vector2(center.x - extents.x * 0.9f, center.y + extents.y * 1.1f);
             var right = new Vector2(center.x + extents.x * 0.9f, center.y + extents.y * 1.1f);
-        }
 
+            return (left, right);
+        }
 
         public IEnumerable<Vector3> CalculatePath(Vector3 start, Vector3 end)
         {
@@ -73,6 +124,7 @@ namespace TeamZ.Assets.Code.Game.Navigation
                 {
                     yield return point;
                 }
+
                 yield return end;
             }
 
@@ -85,6 +137,63 @@ namespace TeamZ.Assets.Code.Game.Navigation
             {
                 yield break;
             }
+
+            if (!this.Planes.TryGetValue(startCollider, out var startWaypoints))
+            {
+                yield break;
+            }
+
+            if (!this.Planes.TryGetValue(endCollider, out var endWaypoints))
+            {
+                yield break;
+            }
+
+            this.CalculatePathFromWaypoints(startWaypoints, endWaypoints);
+        }
+
+        public Waypoint[] CalculatePathFromWaypoints(Waypoint[] startWaypoints, Waypoint[] endWaypoints)
+        {
+            var visitedWaypoints = new HashSet<Waypoint>();
+            var paths = new LinkedList<Waypoint>[startWaypoints.Length];
+
+            for (int i = 0; i < paths.Length; i++)
+            {
+                paths[i] = new LinkedList<Waypoint>();
+                paths[i].AddLast(startWaypoints[i]);
+            }
+
+            while (startWaypoints.Any())
+            {
+                foreach (var path in paths)
+                {
+                    var waypoint = path.Last();
+                    visitedWaypoints.Add(waypoint);
+
+                    if (endWaypoints.Contains(waypoint))
+                    {
+                        return path.ToArray();
+                    }
+                }
+
+                var nextStartWaypoints = startWaypoints
+                    .SelectMany((o, i) => o.Waypoints.Select(oo => (Path: paths[i], Waypoint: oo)))
+                    .Where(o => !visitedWaypoints.Contains(o.Waypoint))
+                    .ToArray();
+
+                for (int i = 0; i < nextStartWaypoints.Length; i++)
+                {
+                    var next = nextStartWaypoints[i];
+                    next.Path = new LinkedList<Waypoint>(next.Path);
+                    next.Path.AddLast(next.Waypoint);
+                    
+                    nextStartWaypoints[i] = next;
+                }
+
+                startWaypoints = nextStartWaypoints.Select(o => o.Waypoint).ToArray();
+                paths = nextStartWaypoints.Select(o => o.Path).ToArray();
+            }
+
+            return new Waypoint[0];
         }
 
         public void Dispose()
@@ -94,4 +203,3 @@ namespace TeamZ.Assets.Code.Game.Navigation
         }
     }
 }
-
