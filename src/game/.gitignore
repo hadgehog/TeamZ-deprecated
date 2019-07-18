@@ -3,6 +3,8 @@
 /Temp
 /.vs
 /.vscode
+/.idea
+*.DotSettings.user
 *.csproj
 *.sln
 *.zip
