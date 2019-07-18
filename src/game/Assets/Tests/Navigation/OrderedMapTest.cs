@@ -71,6 +71,32 @@ namespace TeamZ.Tests.Navigation
             Assert.True(nearest.Contains(waypoint1));
         }
 
+        [Test]
+        public void AddTwoNearbyWaypointsAndRemoveOne()
+        {
+            var matrix = new OrderedMatrix<Waypoint>(o => o.Position.x, o => o.Position.y);
+            var waypoint1 = new Waypoint
+            {
+                Position = new Vector3(10, 10)
+            };
+
+            var waypoint2 = new Waypoint
+            {
+                Position = new Vector3(10, 10)
+            };
+
+            matrix.Add(waypoint1);
+            matrix.Add(waypoint2);
+
+            matrix.Remove(waypoint1);
+
+            var nearest = matrix.GetNearestInRadius(waypoint1.Position, 5);
+
+            Assert.True(nearest.Count() == 1, "There is only one in searching area.");
+            Assert.True(nearest.Contains(waypoint2));
+        }
+
+
          [Test]
         public void AddTwoWaypointsSearchInWrongPlace()
         {

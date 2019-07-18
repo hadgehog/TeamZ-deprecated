@@ -145,7 +145,7 @@ namespace TeamZ.Code.Helpers
                 return (default, true);
             }
 
-            return (values[index], true);
+            return (values[index], false);
         }
 
     }

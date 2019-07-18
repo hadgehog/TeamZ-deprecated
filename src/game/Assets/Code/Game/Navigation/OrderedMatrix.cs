@@ -68,8 +68,8 @@ namespace TeamZ.Assets.Code.Game.Navigation
             var x = this.FirstValueGetter(value);
             var y = this.SecondLevelGetter(value);
 
-            var (xItem, xEempty) = this.matrix.ExactBinarySearchValue(x, o => o.X);
-            if (xEempty)
+            var (xItem, xEmpty) = this.matrix.ExactBinarySearchValue(x, o => o.X);
+            if (xEmpty)
             {
                 return;
             }
