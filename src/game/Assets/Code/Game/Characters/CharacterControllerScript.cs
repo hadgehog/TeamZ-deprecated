@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Timers;
 using Game.Activation.Core;
 using GameSaving;
 using GameSaving.MonoBehaviours;
@@ -393,6 +392,14 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         {
             MessageBroker.Default.Publish(new TakeObjectHappened());
             // TODO: add effect of flying armor kit to armor bar on HUD
+            Destroy(col.gameObject);
+        }
+
+        if (col.gameObject.GetComponent<MutagenCapsule>() != null)
+        {
+            MessageBroker.Default.Publish(new TakeObjectHappened());
+            // TODO: add effect of flying mutagen capsule to mutagen bar on HUD
+            // start mutagen timer
             Destroy(col.gameObject);
         }
 

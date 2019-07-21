@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ArmorKit : MonoBehaviour
+public class FirstAidKit : MonoBehaviour
 {
-    public int ArmorKitCapacity;
+    public int FirstAidKitCapacity;
 
     // Use this for initialization
     void Start()
@@ -24,9 +22,10 @@ public class ArmorKit : MonoBehaviour
 
         if (character == null)
         {
+            Debug.Log("Character not founded!!!");
             return;
         }
 
-        character.TakeArmor(this.ArmorKitCapacity);
+        character.TakeHealth(this.FirstAidKitCapacity);
     }
 }
