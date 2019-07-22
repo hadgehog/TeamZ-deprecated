@@ -20,4 +20,9 @@ public class Hedgehog : Character<HedgehogState>
     {
         base.SetState(state);
     }
+
+    public override void ApplyMutagen(int duration)
+    {
+        base.ApplyMutagen(duration);
+    }
 }

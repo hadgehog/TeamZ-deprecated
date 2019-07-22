@@ -16,10 +16,11 @@ public interface ICharacter
 	int PunchImpulse { get; }
 	int KickImpulse { get; }
 
-	void TakeArmor(int armor);
     int MakeDamage(FightMode fightMode);
     void TakeDamage(int damage);
     void TakeHealth(int health);
+    void TakeArmor(int armor);
+    void ApplyMutagen(int duration);
 }
 
 
@@ -38,14 +39,17 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
     [SerializeField]
     private int punchDamage;
 
-	[SerializeField]
-	private int kickDamage;
+    [SerializeField]
+    private int kickDamage;
 
-	[SerializeField]
-	private int punchImpulse;
+    [SerializeField]
+    private int punchImpulse;
 
-	[SerializeField]
-	private int kickImpulse;
+    [SerializeField]
+    private int kickImpulse;
+
+    [SerializeField]
+    private int mutagenDuration;    // in minutes
 
     public string Name
     {
@@ -53,7 +57,7 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
         set { this.characterName = value; }
     }
 
-	public int Health
+    public int Health
     {
         get { return this.health; }
         set { this.health = value; }
@@ -71,44 +75,57 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
         set { this.punchDamage = value; }
     }
 
-	public int KickDamage
-	{
-		get { return this.kickDamage; }
-		set { this.kickDamage = value; }
-	}
+    public int KickDamage
+    {
+        get { return this.kickDamage; }
+        set { this.kickDamage = value; }
+    }
 
-	public int PunchImpulse
-	{
-		get { return this.punchImpulse; }
-	}
+    public int PunchImpulse
+    {
+        get { return this.punchImpulse; }
+    }
 
-	public int KickImpulse
-	{
-		get { return this.kickImpulse; }
-	}
+    public int KickImpulse
+    {
+        get { return this.kickImpulse; }
+    }
 
-	public override void SetState(TState state)
+    public int MutagenDuration
+    {
+        get { return this.mutagenDuration; }
+    }
+
+    public override void SetState(TState state)
     {
         this.Armor = state.Armor;
         this.PunchDamage = state.PunchDamage;
-		this.KickDamage = state.KickDamage;
-		this.Health = state.Health;
+        this.KickDamage = state.KickDamage;
+        this.Health = state.Health;
     }
 
-	// Use this for initialization
-	protected virtual void Start()
-	{
-		this.punchImpulse = this.PunchDamage * 20;
-		this.kickImpulse = this.KickDamage * 20;
-	}
-
-
-	public void TakeDamage(int value)
+    // Use this for initialization
+    protected virtual void Start()
     {
-		if (this.Health == 0)
-		{
-			return;
-		}
+        this.punchImpulse = this.PunchDamage * 20;
+        this.kickImpulse = this.KickDamage * 20;
+    }
+
+
+    public int MakeDamage(FightMode fightMode)
+    {
+        if (fightMode == FightMode.Punch)
+            return this.PunchDamage;
+        else
+            return this.KickDamage;
+    }
+
+    public void TakeDamage(int value)
+    {
+        if (this.Health == 0)
+        {
+            return;
+        }
 
         int blockedDamage = this.Armor - value;
 
@@ -126,17 +143,9 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
         {
             this.Health = 0;
 
-			MessageBroker.Default.Publish(new CharacterDead(this));
+            MessageBroker.Default.Publish(new CharacterDead(this));
             Debug.Log("You are die!");
         }
-    }
-
-    public int MakeDamage(FightMode fightMode)
-    {
-		if (fightMode == FightMode.Punch)
-			return this.PunchDamage;
-		else
-			return this.KickDamage;
     }
 
     public void TakeHealth(int value)
@@ -152,6 +161,11 @@ public abstract class Character<TState> : MonoBehaviourWithState<TState>, IChara
     public void TakeArmor(int value)
     {
         this.Armor += value;
+    }
+
+    public virtual void ApplyMutagen(int duration)
+    {
+        this.mutagenDuration = duration;
     }
 }
 

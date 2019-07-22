@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Timers;
 using Game.Activation.Core;
 using GameSaving;
 using GameSaving.MonoBehaviours;
@@ -97,6 +96,9 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
     private bool climbingSurfaceOnRightIsMissing;
     private bool climbingSurfaceOnTopIsMissing;
     private bool climbingSurfaceOnBottomIsMissing;
+
+    private bool isTopOnStairs;
+    private bool isBottomNotOnStairs;
 
     // Use this for initialization
     protected virtual void Start()
@@ -282,7 +284,7 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
 
                 this.climbingMovement = Observable
                     .EveryUpdate()
-                    .Subscribe(_ => this.CheckClimbingSurfaceBorders())
+                    .Subscribe(_ => { this.CheckClimbingSurfaceBorders(); this.CheckGroundUnderTheStairs(); })
                     .AddTo(this);
             }
             else
@@ -350,7 +352,16 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
                 verticalValue = 0;
             }
 
-            this.rigidBody.velocity = new Vector2(horizontalValue, verticalValue);
+            if (verticalValue < 0 && this.isTopOnStairs && this.isBottomNotOnStairs)
+            {
+                this.IsGrounded.Value = true;
+                this.IsClimbed.Value = false;
+                this.rigidBody.gravityScale = 1.0f;
+            }
+            else
+            {
+                this.rigidBody.velocity = new Vector2(horizontalValue, verticalValue);
+            }
         }
 
         if (!this.IsClimbed.Value)
@@ -381,6 +392,14 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         {
             MessageBroker.Default.Publish(new TakeObjectHappened());
             // TODO: add effect of flying armor kit to armor bar on HUD
+            Destroy(col.gameObject);
+        }
+
+        if (col.gameObject.GetComponent<MutagenCapsule>() != null)
+        {
+            MessageBroker.Default.Publish(new TakeObjectHappened());
+            // TODO: add effect of flying mutagen capsule to mutagen bar on HUD
+            // start mutagen timer
             Destroy(col.gameObject);
         }
 
@@ -463,22 +482,41 @@ public class CharacterControllerScript : MonoBehaviourWithState<CharacterControl
         var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
         var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
 
-        if (this.Character.Name.Equals(Characters.Hedgehog.Name))
-        {
-            hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
-            hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
-        }
-
         this.climbingSurfaceOnLeftIsMissing = hitLeft.collider == null;
         this.climbingSurfaceOnRightIsMissing = hitRight.collider == null;
         this.climbingSurfaceOnTopIsMissing = hitTop.collider == null;
         this.climbingSurfaceOnBottomIsMissing = hitBottom.collider == null;
+
+        if (this.Character.Name.Equals(Characters.Hedgehog.Name))
+        {
+            hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 1.5f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+            hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 0.8f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+
+            this.climbingSurfaceOnLeftIsMissing = hitLeft.collider == null || (hitLeft.collider != null && hitLeft.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Fence);
+            this.climbingSurfaceOnRightIsMissing = hitRight.collider == null || (hitRight.collider != null && hitRight.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Fence);
+            this.climbingSurfaceOnTopIsMissing = hitTop.collider == null || (hitTop.collider != null && hitTop.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Fence);
+            this.climbingSurfaceOnBottomIsMissing = hitBottom.collider == null || (hitBottom.collider != null && hitBottom.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Fence);
+        }
     }
 
     private void AlignCharacter()
     {
         var stairwayPos = this.climbingSurface.Position;
         this.rigidBody.position = new Vector2(stairwayPos.x, this.rigidBody.position.y);
+    }
+
+    protected virtual void CheckGroundUnderTheStairs()
+    {
+        var spriteSize = GetComponent<SpriteRenderer>().size;
+        var localScale = this.transform.localScale;
+        var characterSizeY = Math.Abs(localScale.y * spriteSize.y);
+
+        var hitTop = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 + new Vector3(0, characterSizeY / 2.0f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+        // tune the magic constant if it will work bad
+        var hitBottom = Physics2D.Raycast(this.transform.position - Vector3.forward * 2 - new Vector3(0, characterSizeY / 1.2f, 0), Vector3.forward, 6.0f, this.WhatIsSurfaceForClimbing);
+
+        this.isTopOnStairs = hitTop.collider != null && hitTop.collider.GetComponent<ClimbingSurface>().Type == ClimbingSurface.ClimbingSurfaceType.Stairway;
+        this.isBottomNotOnStairs = hitBottom.collider == null;
     }
 }
 

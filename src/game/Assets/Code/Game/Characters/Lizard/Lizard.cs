@@ -20,4 +20,9 @@ public class Lizard : Character<LizardState>
     {
         base.SetState(state);
     }
+
+    public override void ApplyMutagen(int duration)
+    {
+        base.ApplyMutagen(duration);
+    }
 }
