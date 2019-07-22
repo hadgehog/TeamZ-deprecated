@@ -20,7 +20,7 @@ namespace TeamZ.Assets.Code.DependencyInjection
         {
             get
             {
-                if (this.value == default)
+                if (this.value.Equals(default))
                 {
                     this.value = this.creator();
                 }
