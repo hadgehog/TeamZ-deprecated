@@ -105,6 +105,11 @@ namespace TeamZ.Assets.Code.Game.Navigation
 
             return nearbyItems;
         }
+
+        public void Clear()
+        {
+            this.matrix.Clear();
+        }
     }
 }
 

@@ -8,6 +8,7 @@ using GameSaving;
 using GameSaving.MonoBehaviours;
 using GameSaving.States;
 using TeamZ.Assets.Code.DependencyInjection;
+using TeamZ.Assets.Code.Game.Navigation;
 using TeamZ.Assets.Code.Game.Players;
 using TeamZ.Assets.Code.Game.UserInput;
 using TeamZ.Handlers;
@@ -52,6 +53,7 @@ public class Main : MonoBehaviour
         container.Add<EntitiesStorage>();
         container.AddScoped<UserInputMapper>();
         container.AddScoped<PlayerService>();
+        container.AddScoped<NavigationService>();
     }
 
     private void RegisterHandlers()

@@ -33,6 +33,9 @@ namespace TeamZ.Assets.Code.Game.Navigation
         {
             this.gameObject = new GameObject("~NavigationService");
 
+            var camera = GameObject.FindObjectOfType<DirectionalCamera>();
+            this.gameObject.transform.SetParent(camera.transform, false);
+
             this.rigibody2d = this.gameObject.AddComponent<Rigidbody2D>();
             this.rigibody2d.isKinematic = false;
             this.rigibody2d.gravityScale = 0;
@@ -54,7 +57,19 @@ namespace TeamZ.Assets.Code.Game.Navigation
 
         private void RemoveEntry(BoxCollider2D collider)
         {
-            throw new NotImplementedException();
+            if (!this.Planes.TryGetValue(collider, out var waypoints))
+            {
+                return;
+            }
+
+            foreach (var waypoint in waypoints)
+            {
+                this.orderedMatrix.Remove(waypoint);
+                foreach (var connectedWaypoint in waypoint.Waypoints)
+                {
+                    connectedWaypoint.Waypoints.Remove(waypoint);
+                }
+            }
         }
 
         private void AddNewEntry(BoxCollider2D collider)
@@ -101,8 +116,9 @@ namespace TeamZ.Assets.Code.Game.Navigation
 
         private (Vector2 Left, Vector2 Right) CalculateWaypointsPositions(BoxCollider2D collider)
         {
-            var center = collider.bounds.center;
-            var extents = collider.bounds.extents;
+            var bounds = collider.bounds;
+            var center = bounds.center;
+            var extents = bounds.extents;
             var left = new Vector2(center.x - extents.x * 0.9f, center.y + extents.y * 1.1f);
             var right = new Vector2(center.x + extents.x * 0.9f, center.y + extents.y * 1.1f);
 
@@ -111,6 +127,11 @@ namespace TeamZ.Assets.Code.Game.Navigation
 
         public IEnumerable<Vector3> CalculatePath(Vector3 start, Vector3 end)
         {
+            if (!this.Planes?.Any() ?? false)
+            {
+                yield break;
+            }
+            
             var startHit = Physics2D.Raycast(start, Vector3.down, 2, this.eventProvider.ImportantLayersMask);
             var endHit = Physics2D.Raycast(end, Vector3.down, 2, this.eventProvider.ImportantLayersMask);
 
@@ -200,6 +221,7 @@ namespace TeamZ.Assets.Code.Game.Navigation
         {
             GameObject.Destroy(this.gameObject);
             this.Planes.Clear();
+            this.orderedMatrix?.Clear();
         }
     }
 }

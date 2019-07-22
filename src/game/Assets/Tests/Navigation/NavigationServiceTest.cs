@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using TeamZ.Assets.Code.DependencyInjection;
 using TeamZ.Assets.Code.Game.Navigation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,8 +19,9 @@ namespace TeamZ.Tests.Navigation
         public IEnumerator StartAndEndOnSamePlane()
         {
             yield return SceneManager.LoadSceneAsync("Laboratory");
+            yield return new WaitUntil(() => GameObject.FindObjectOfType<Main>());
 
-            var navigationService = new NavigationService();
+            var navigationService = Dependency<NavigationService>.Resolve();
             navigationService.Activate();
 
             yield return new WaitUntil(() => navigationService.Planes.Any());

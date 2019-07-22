@@ -15,6 +15,7 @@ using TeamZ.Assets.Code.DependencyInjection;
 using TeamZ.Assets.Code.Game.Characters;
 using TeamZ.Assets.Code.Game.Levels;
 using TeamZ.Assets.Code.Game.Messages.GameSaving;
+using TeamZ.Assets.Code.Game.Navigation;
 using TeamZ.Assets.Code.Game.Notifications;
 using TeamZ.Assets.Code.Game.Players;
 using TeamZ.Assets.Code.Game.UserInput;
@@ -47,11 +48,11 @@ namespace GameSaving
             this.Loaded = new Subject<Unit>();
             this.VisitedLevels = new HashSet<Guid>();
 
-            MessageBroker.Default.Receive<GameSaved>().
-                Subscribe(_ => this.Notifications.Value.ShowShortMessage("Game saved", true));
+            MessageBroker.Default.Receive<GameSaved>()
+                .Subscribe(_ => this.Notifications.Value.ShowShortMessage("Game saved", true));
 
-            MessageBroker.Default.Receive<LoadGameRequest>().
-                Subscribe(async o =>
+            MessageBroker.Default.Receive<LoadGameRequest>()
+                .Subscribe(async o =>
                 {
                     MessageBroker.Default.Publish(new GameResumed(string.Empty));
                     this.ViewRouter.Value.ShowGameHUDView();
@@ -61,6 +62,9 @@ namespace GameSaving
                     MessageBroker.Default.Publish(new GameLoaded());
                     await this.BlackScreen.Value.HideAsync();
                 });
+
+            MessageBroker.Default.Receive<GameLoaded>()
+                .Subscribe(o => Dependency<NavigationService>.Resolve().Activate());
         }
 
 

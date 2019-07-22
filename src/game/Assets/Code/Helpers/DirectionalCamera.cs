@@ -45,8 +45,9 @@ public class DirectionalCamera : MonoBehaviour
                     continue;
                 }
 
-                var point = this.mainCamera.WorldToViewportPoint(new Vector3(target.position.x, target.position.y + 1.5f, target.position.z));
-                var delta = new Vector3(target.position.x, target.position.y + 1.5f, target.position.z) - this.mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
+                var targetPosition = target.position;
+                var point = this.mainCamera.WorldToViewportPoint(new Vector3(targetPosition.x, targetPosition.y + 1.5f, targetPosition.z));
+                var delta = new Vector3(targetPosition.x, targetPosition.y + 1.5f, targetPosition.z) - this.mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z));
                 var destination = this.transform.position + delta;
 
                 sum += destination;
