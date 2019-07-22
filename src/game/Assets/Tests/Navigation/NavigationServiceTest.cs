@@ -36,5 +36,27 @@ namespace TeamZ.Tests.Navigation
             Assert.AreEqual(start, path.First());
             Assert.AreEqual(end, path.Last());
         }
+        
+        [UnityTest]
+        public IEnumerator StartAndEndOnDifferentPlanes()
+        {
+            yield return SceneManager.LoadSceneAsync("Laboratory");
+            yield return new WaitUntil(() => GameObject.FindObjectOfType<Main>());
+
+            var navigationService = Dependency<NavigationService>.Resolve();
+            navigationService.Activate();
+
+            yield return new WaitUntil(() => navigationService.Planes.Any());
+
+            var start = new Vector3(-14.5f, -4f);
+            var end = new Vector3(23.5f, -4f);
+
+            var path = navigationService
+                .CalculatePath(start, end)
+                .ToArray();
+
+            Assert.AreEqual(start, path.First());
+            Assert.AreEqual(end, path.Last());
+        }
     }
 }

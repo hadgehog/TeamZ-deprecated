@@ -131,7 +131,7 @@ namespace TeamZ.Assets.Code.Game.Navigation
             {
                 yield break;
             }
-            
+
             var startHit = Physics2D.Raycast(start, Vector3.down, 2, this.eventProvider.ImportantLayersMask);
             var endHit = Physics2D.Raycast(end, Vector3.down, 2, this.eventProvider.ImportantLayersMask);
 
@@ -169,13 +169,18 @@ namespace TeamZ.Assets.Code.Game.Navigation
                 yield break;
             }
 
-            this.CalculatePathFromWaypoints(startWaypoints, endWaypoints);
+            var waypoints = this.CalculatePathFromWaypoints(startWaypoints, endWaypoints);
+            foreach (var waypoint in waypoints)
+            {
+                yield return waypoint.Position;
+            }
         }
 
         public Waypoint[] CalculatePathFromWaypoints(Waypoint[] startWaypoints, Waypoint[] endWaypoints)
         {
             var visitedWaypoints = new HashSet<Waypoint>();
             var paths = new LinkedList<Waypoint>[startWaypoints.Length];
+            var results = new List<Waypoint[]>();
 
             for (int i = 0; i < paths.Length; i++)
             {
@@ -192,8 +197,33 @@ namespace TeamZ.Assets.Code.Game.Navigation
 
                     if (endWaypoints.Contains(waypoint))
                     {
-                        return path.ToArray();
+                        results.Add(path.ToArray());
                     }
+                }
+
+                if (results.Any())
+                {
+                    var pathWithDistance = results.Select(o =>
+                    {
+                        var distance = 0f;
+                        for (int i = 1; i < o.Length; i++)
+                        {
+                            distance += Vector2.Distance(o[i - 1].Position, o[i].Position);
+                        }
+
+                        return (Distance: distance, Waypoints: o);
+                    }).ToArray();
+
+                    var minPath = pathWithDistance.First();
+                    foreach (var path in pathWithDistance)
+                    {
+                        if (minPath.Distance > path.Distance)
+                        {
+                            minPath = path;
+                        }
+                    }
+
+                    return minPath.Waypoints;
                 }
 
                 var nextStartWaypoints = startWaypoints
@@ -206,7 +236,7 @@ namespace TeamZ.Assets.Code.Game.Navigation
                     var next = nextStartWaypoints[i];
                     next.Path = new LinkedList<Waypoint>(next.Path);
                     next.Path.AddLast(next.Waypoint);
-                    
+
                     nextStartWaypoints[i] = next;
                 }
 
